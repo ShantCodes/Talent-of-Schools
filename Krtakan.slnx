@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Krtakan.Api/Krtakan.Api.csproj" />
+    <Project Path="src/Krtakan.Application/Krtakan.Application.csproj" />
+    <Project Path="src/Krtakan.Domain/Krtakan.Domain.csproj" />
+    <Project Path="src/Krtakan.Infrastructure/Krtakan.Infrastructure.csproj" />
+  </Folder>
+</Solution>

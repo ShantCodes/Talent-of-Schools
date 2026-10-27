@@ -11,7 +11,21 @@ public class EfRepository<T>(AppDbContext context) : IRepository<T> where T : Ba
     protected readonly AppDbContext Context = context;
     protected DbSet<T> Set => Context.Set<T>();
     public Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken = default) => Set.FindAsync([id], cancellationToken).AsTask();
-    public async Task<IReadOnlyList<T>> ListAsync(CancellationToken cancellationToken = default) => await Set.AsNoTracking().ToListAsync(cancellationToken);
+    public async Task<PagedResult<T>> ListAsync(
+        Expression<Func<T, bool>>? predicate,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        var query = Set.AsNoTracking().Where(predicate);
+        var totalCount = await query.CountAsync(cancellationToken);
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return new PagedResult<T>(items, totalCount, pageNumber, pageSize);
+    }
     public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default) => Set.AnyAsync(predicate, cancellationToken);
     public Task AddAsync(T entity, CancellationToken cancellationToken = default) => Set.AddAsync(entity, cancellationToken).AsTask();
     public void Update(T entity) => Set.Update(entity);

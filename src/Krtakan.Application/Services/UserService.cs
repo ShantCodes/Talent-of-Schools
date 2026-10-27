@@ -18,22 +18,33 @@ public class UserService : IUserService
         _mapper = mapper;
     }
 
-    public async Task<IReadOnlyList<UserViewModel>> ListPendingAsync(CancellationToken cancellationToken = default)
+    public async Task<PagedResult<UserViewModel>> ListPendingAsync(
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default)
     {
-        var users = await _users.ListPendingAsync(cancellationToken);
-        return _mapper.Map<IReadOnlyList<UserViewModel>>(users);
+        var users = await _users.ListPendingAsync(pageNumber, pageSize, cancellationToken);
+        var items = _mapper.Map<IEnumerable<UserViewModel>>(users.Items);
+        return new PagedResult<UserViewModel>(items, users.TotalCount, users.PageNumber, users.PageSize);
     }
 
-    public async Task<UserViewModel> ApproveAsync(int userId, CancellationToken cancellationToken = default)
+    public async Task<PagedResult<UserViewModel>> ListUsersAsync(
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        var users = await _users.ListUsersAsync(pageNumber, pageSize, cancellationToken);
+        var items = _mapper.Map<IEnumerable<UserViewModel>>(users.Items);
+        return new PagedResult<UserViewModel>(items, users.TotalCount, users.PageNumber, users.PageSize);
+    }
+
+    public async Task<UserViewModel> ApproveAsync(int userId, bool isApproved, CancellationToken cancellationToken = default)
     {
         var user = await _users.GetByIdWithDetailsAsync(userId, cancellationToken)
             ?? throw new AppException("User not found.", 404);
 
-        if (!user.IsApproved)
-        {
-            user.IsApproved = true;
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-        }
+        user.IsApproved = isApproved;
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<UserViewModel>(user);
     }

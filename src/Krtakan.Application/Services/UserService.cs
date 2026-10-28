@@ -60,4 +60,15 @@ public class UserService : IUserService
 
         return true;
     }
+    public async Task<UserViewModel> UpdateUserRoleAsync(int userId, int roleId, CancellationToken cancellationToken = default)
+    {
+        var user = await _users.GetByIdWithDetailsAsync(userId, cancellationToken)
+            ?? throw new AppException("User not found.", 404);
+
+        user.RoleId = roleId;
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return _mapper.Map<UserViewModel>(user);
+    }
+
 }

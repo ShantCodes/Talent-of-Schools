@@ -1,4 +1,5 @@
 using Krtakan.Application.ViewModels.Auth;
+using Krtakan.Domain.Common;
 
 namespace Krtakan.Application.Services;
 
@@ -16,4 +17,5 @@ public interface IUserService
 
 
     Task<UserViewModel> ApproveAsync(int userId, bool isApproved, CancellationToken cancellationToken = default);
+    Task<bool> DeleteUserAsync(int userId, CancellationToken cancellationToken = default);
 }

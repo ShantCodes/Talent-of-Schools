@@ -21,11 +21,13 @@ public class AppDbContext : DbContext, IUnitOfWork
 
     public DbSet<Performance> Performances => Set<Performance>();
 
+    public DbSet<Round> Rounds => Set<Round>();
+
     public DbSet<Scoring> Scorings => Set<Scoring>();
 
     public DbSet<School> Schools => Set<School>();
 
-    public DbSet<CompRound> CompRounds => Set<CompRound>();
+    public DbSet<Event> Events => Set<Event>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

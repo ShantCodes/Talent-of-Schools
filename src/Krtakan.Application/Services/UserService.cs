@@ -1,6 +1,7 @@
 using AutoMapper;
 using Krtakan.Application.Exceptions;
 using Krtakan.Application.ViewModels.Auth;
+using Krtakan.Domain.Common;
 using Krtakan.Domain.Interfaces;
 
 namespace Krtakan.Application.Services;
@@ -47,5 +48,16 @@ public class UserService : IUserService
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<UserViewModel>(user);
+    }
+
+    public async Task<bool> DeleteUserAsync(int userId, CancellationToken cancellationToken = default)
+    {
+        var user = await _users.GetByIdWithDetailsAsync(userId, cancellationToken)
+            ?? throw new AppException("User not found.", 404);
+
+        _users.Remove(user);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return true;
     }
 }

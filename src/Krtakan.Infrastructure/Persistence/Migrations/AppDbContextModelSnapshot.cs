@@ -17,13 +17,23 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.13");
 
-            modelBuilder.Entity("Krtakan.Domain.Entities.CompRound", b =>
+            modelBuilder.Entity("Krtakan.Domain.Entities.Event", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("EndDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly?>("MaxBirthDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly?>("MinBirthDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
@@ -36,9 +46,9 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CompRounds", null, t =>
+                    b.ToTable("Events", null, t =>
                         {
-                            t.HasCheckConstraint("CK_CompRounds_DateRange", "EndDate >= StartDate");
+                            t.HasCheckConstraint("CK_Events_DateRange", "EndDate >= StartDate");
                         });
                 });
 
@@ -118,6 +128,9 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("EventId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("MediaId")
                         .HasColumnType("INTEGER");
 
@@ -131,6 +144,8 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EventId");
 
                     b.HasIndex("MediaId");
 
@@ -175,6 +190,27 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                             Id = 3,
                             Name = "Juror"
                         });
+                });
+
+            modelBuilder.Entity("Krtakan.Domain.Entities.Round", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Rounds");
                 });
 
             modelBuilder.Entity("Krtakan.Domain.Entities.School", b =>
@@ -300,13 +336,19 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Krtakan.Domain.Entities.Performance", b =>
                 {
+                    b.HasOne("Krtakan.Domain.Entities.Event", "Event")
+                        .WithMany("Performances")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Krtakan.Domain.Entities.Media", "Media")
                         .WithMany("Performances")
                         .HasForeignKey("MediaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Krtakan.Domain.Entities.CompRound", "Round")
+                    b.HasOne("Krtakan.Domain.Entities.Round", "Round")
                         .WithMany("Performances")
                         .HasForeignKey("RoundId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -317,6 +359,8 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Event");
 
                     b.Navigation("Media");
 
@@ -369,7 +413,7 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                     b.Navigation("School");
                 });
 
-            modelBuilder.Entity("Krtakan.Domain.Entities.CompRound", b =>
+            modelBuilder.Entity("Krtakan.Domain.Entities.Event", b =>
                 {
                     b.Navigation("Performances");
                 });
@@ -392,6 +436,11 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Krtakan.Domain.Entities.Role", b =>
                 {
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Krtakan.Domain.Entities.Round", b =>
+                {
+                    b.Navigation("Performances");
                 });
 
             modelBuilder.Entity("Krtakan.Domain.Entities.School", b =>

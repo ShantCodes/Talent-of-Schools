@@ -1,5 +1,6 @@
 using Krtakan.Domain.Entities;
 using Krtakan.Domain.Interfaces;
+using Krtakan.Domain.Common;
 using Krtakan.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,8 @@ public class UserRepository(AppDbContext context) : EfRepository<User>(context),
     private IQueryable<User> Details => Set.Include(user => user.Role).Include(user => user.School);
     public Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken = default) => Set.AnyAsync(user => user.Email == email, cancellationToken);
     public Task<User?> GetByEmailWithDetailsAsync(string email, CancellationToken cancellationToken = default) => Details.SingleOrDefaultAsync(user => user.Email == email, cancellationToken);
+
+    public Task<User?> GetByIdWithDetailsAsync(int id, CancellationToken cancellationToken = default) => Details.FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
     public async Task<PagedResult<User>> ListUsersAsync(
         int pageNumber,
         int pageSize,

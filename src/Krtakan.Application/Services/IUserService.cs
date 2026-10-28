@@ -18,4 +18,5 @@ public interface IUserService
 
     Task<UserViewModel> ApproveAsync(int userId, bool isApproved, CancellationToken cancellationToken = default);
     Task<bool> DeleteUserAsync(int userId, CancellationToken cancellationToken = default);
+    Task<UserViewModel> UpdateUserRoleAsync(int userId, int roleId, CancellationToken cancellationToken = default);
 }

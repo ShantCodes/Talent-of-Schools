@@ -27,4 +27,7 @@ public class UsersController(IUserService userService) : ControllerBase
     public async Task<IActionResult> Approve(int userId, bool isApproved, CancellationToken cancellationToken) => Ok(await userService.ApproveAsync(userId, isApproved, cancellationToken));
     [HttpDelete("{userId:int}")]
     public async Task<IActionResult> Delete(int userId, CancellationToken cancellationToken) => Ok(await userService.DeleteUserAsync(userId, cancellationToken));
+    [HttpPatch("{userId:int}/role")]
+    public async Task<IActionResult> UpdateRole(int userId, int roleId, CancellationToken cancellationToken) => Ok(await userService.UpdateUserRoleAsync(userId, roleId, cancellationToken));
+
 }

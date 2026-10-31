@@ -3,6 +3,7 @@ using Krtakan.Application.ViewModels.Event;
 using Krtakan.Domain.Entities;
 using Krtakan.Domain.Interfaces;
 using AutoMapper;
+using Krtakan.Domain.Common;
 
 namespace Krtakan.Application.Services;
 
@@ -24,6 +25,13 @@ public class EventService(IEventRepository eventRepository, IUnitOfWork unitOfWo
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return mapper.Map<EventViewModel>(eventEntity);
+    }
+
+    public async Task<PagedResult<EventViewModel>> GetEventsAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    {
+        var pagedResult = await eventRepository.ListAsync(null, pageNumber, pageSize, cancellationToken);
+
+        return mapper.Map<PagedResult<EventViewModel>>(pagedResult);
     }
 }
 

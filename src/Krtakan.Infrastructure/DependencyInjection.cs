@@ -1,5 +1,6 @@
 using Krtakan.Application.Abstractions;
 using Krtakan.Application.Options;
+using Krtakan.Application.Services;
 using Krtakan.Domain.Interfaces;
 using Krtakan.Infrastructure.Persistence;
 using Krtakan.Infrastructure.Repositories;
@@ -25,6 +26,8 @@ public static class DependencyInjection
         services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IEventRepository, EventRepository>();
+        services.AddScoped<IEventService, EventService>();
         services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<AppDbContext>());
         services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
         services.AddSingleton<IJwtTokenService, JwtTokenService>();

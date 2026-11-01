@@ -32,7 +32,7 @@ public class UsersController(IUserService userService) : ControllerBase
     [HttpPatch("{userId:int}/role")]
     public async Task<IActionResult> UpdateRole(int userId, int roleId, CancellationToken cancellationToken) => Ok(await userService.UpdateUserRoleAsync(userId, roleId, cancellationToken));
 
-    [HttpPatch("/changepassword")]
+    [HttpPatch("/api/changepassword")]
     [AllowAnonymous]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken) =>
     Ok(await userService.ChangePasswordAsync(request.Username, request.Password, cancellationToken));

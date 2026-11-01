@@ -17,7 +17,11 @@ public class EfRepository<T>(AppDbContext context) : IRepository<T> where T : Ba
         int pageSize,
         CancellationToken cancellationToken = default)
     {
-        var query = Set.AsNoTracking().Where(predicate);
+        var query = Set.AsNoTracking();
+        if (predicate != null)
+        {
+            query = query.Where(predicate);
+        }
         var totalCount = await query.CountAsync(cancellationToken);
         var items = await query
             .Skip((pageNumber - 1) * pageSize)

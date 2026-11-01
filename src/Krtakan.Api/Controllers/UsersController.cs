@@ -1,7 +1,9 @@
+using Krtakan.Application.ViewModels.Auth;
 using Krtakan.Application.Services;
 using Krtakan.Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace Krtakan.Api.Controllers;
 
@@ -29,5 +31,11 @@ public class UsersController(IUserService userService) : ControllerBase
     public async Task<IActionResult> Delete(int userId, CancellationToken cancellationToken) => Ok(await userService.DeleteUserAsync(userId, cancellationToken));
     [HttpPatch("{userId:int}/role")]
     public async Task<IActionResult> UpdateRole(int userId, int roleId, CancellationToken cancellationToken) => Ok(await userService.UpdateUserRoleAsync(userId, roleId, cancellationToken));
+
+    [HttpPatch("/changepassword")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken) =>
+    Ok(await userService.ChangePasswordAsync(request.Username, request.Password, cancellationToken));
+
 
 }

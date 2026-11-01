@@ -24,5 +24,17 @@ public class EventsController(IEventService eventService) : ControllerBase
     {
         return Ok(await eventService.GetEventsAsync(pageNumber, pageSize));
     }
+
+    [HttpDelete("{id}")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var deleted = await eventService.DeleteEventAsync(id);
+        if (!deleted)
+        {
+            return NotFound();
+        }
+        return Ok();
+    }
 }
 

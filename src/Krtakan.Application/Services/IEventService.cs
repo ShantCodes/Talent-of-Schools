@@ -9,4 +9,6 @@ public interface IEventService
 {
     Task<EventViewModel> CreateEventAsync(CreateEventRequest request, CancellationToken cancellationToken = default);
     Task<PagedResult<EventViewModel>> GetEventsAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default);
+    Task<bool> DeleteEventAsync(int id, CancellationToken cancellationToken = default);
+
 }

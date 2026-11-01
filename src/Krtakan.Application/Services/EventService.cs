@@ -33,5 +33,18 @@ public class EventService(IEventRepository eventRepository, IUnitOfWork unitOfWo
 
         return mapper.Map<PagedResult<EventViewModel>>(pagedResult);
     }
+
+    public async Task<bool> DeleteEventAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var entity = await eventRepository.GetByIdAsync(id, cancellationToken);
+        if (entity == null)
+        {
+            return false;
+        }
+
+        eventRepository.Remove(entity);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        return true;
+    }
 }
 

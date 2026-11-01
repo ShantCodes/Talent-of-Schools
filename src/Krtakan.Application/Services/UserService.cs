@@ -1,4 +1,5 @@
 using AutoMapper;
+using Krtakan.Application.Abstractions;
 using Krtakan.Application.Exceptions;
 using Krtakan.Application.ViewModels.Auth;
 using Krtakan.Domain.Common;
@@ -11,12 +12,15 @@ public class UserService : IUserService
     private readonly IUserRepository _users;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IPasswordHasher _passwordHasher;
 
-    public UserService(IUserRepository users, IUnitOfWork unitOfWork, IMapper mapper)
+
+    public UserService(IUserRepository users, IUnitOfWork unitOfWork, IMapper mapper, IPasswordHasher passwordHasher)
     {
         _users = users;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _passwordHasher = passwordHasher;
     }
 
     public async Task<PagedResult<UserViewModel>> ListPendingAsync(
@@ -69,6 +73,20 @@ public class UserService : IUserService
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<UserViewModel>(user);
+    }
+
+    public async Task<bool> ChangePasswordAsync(string email, string newPassword, CancellationToken cancellationToken = default)
+    {
+        if (newPassword.Length is < 8 or > 72)
+            throw new AppException("Password must be between 8 and 72 characters.");
+
+        var user = await _users.GetByEmailWithDetailsAsync(email, cancellationToken)
+            ?? throw new AppException("User not found.", 404);
+
+        user.PasswordHash = _passwordHasher.Hash(newPassword);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return true;
     }
 
 }

@@ -99,8 +99,8 @@ public class AuthService : IAuthService
         if (user is null || !_passwordHasher.Verify(dto.Password, user.PasswordHash))
             throw new AppException("Email or password is incorrect.", 401);
 
-        if (!user.IsApproved)
-            throw new AppException("Your account is waiting for administrator approval.", 403);
+        // if (!user.IsApproved)
+        //     throw new AppException("Your account is waiting for administrator approval.", 403);
 
         var fullName = $"{user.Name} {user.LastName}".Trim();
         var accessToken = _tokenService.CreateToken(user.Id, user.Email, user.Role.Name, fullName);

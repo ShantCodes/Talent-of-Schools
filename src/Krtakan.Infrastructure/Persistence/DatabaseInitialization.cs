@@ -26,5 +26,21 @@ public static class DatabaseInitialization
         var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
         context.Users.Add(new User { Name = seed.AdminName, LastName = seed.AdminLastName, Email = adminEmail, PasswordHash = hasher.Hash(seed.AdminPassword), RoleId = role.Id, BirthDate = new DateOnly(2000, 1, 1), RegisterDate = DateTime.UtcNow, IsApproved = true });
         await context.SaveChangesAsync();
+
+        if (seed.MediaFolders != null && seed.MediaFolders.Any())
+        {
+            if (!await context.MediaFolders.AnyAsync())
+            {
+                foreach (var folderName in seed.MediaFolders)
+                {
+                    context.MediaFolders.Add(new MediaFolder
+                    {
+                        Name = folderName,
+                        Path = $"/media/{folderName.ToLower()}"
+                    });
+                }
+                await context.SaveChangesAsync();
+            }
+        }
     }
 }

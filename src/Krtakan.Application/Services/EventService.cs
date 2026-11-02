@@ -46,5 +46,22 @@ public class EventService(IEventRepository eventRepository, IUnitOfWork unitOfWo
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return true;
     }
+    public async Task<bool> EditEventAsync(int id, CreateEventRequest request, CancellationToken cancellationToken = default)
+    {
+        var entity = await eventRepository.GetByIdAsync(id, cancellationToken);
+        if (entity == null)
+        {
+            return false;
+        }
+        entity.Name = request.Name;
+        entity.Description = request.Description;
+        entity.StartDate = request.StartDate;
+        entity.EndDate = request.EndDate;
+        entity.MinBirthDate = request.MinBirthDate;
+        entity.MaxBirthDate = request.MaxBirthDate;
+
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        return true;
+    }
 }
 

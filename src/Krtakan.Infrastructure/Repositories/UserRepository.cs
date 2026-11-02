@@ -27,6 +27,21 @@ public class UserRepository(AppDbContext context) : EfRepository<User>(context),
 
         return new PagedResult<User>(items, totalCount, pageNumber, pageSize);
     }
+
+        public async Task<PagedResult<User>> ListApprovedUsersAsync(
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        var query = Details.Where(status => status.IsApproved).OrderBy(user => user.RegisterDate);
+        var totalCount = await query.CountAsync(cancellationToken);
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return new PagedResult<User>(items, totalCount, pageNumber, pageSize);
+    }
     public async Task<PagedResult<User>> ListPendingAsync(
         int pageNumber,
         int pageSize,

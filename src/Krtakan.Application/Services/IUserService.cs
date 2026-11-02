@@ -14,6 +14,10 @@ public interface IUserService
         int pageNumber,
         int pageSize,
         CancellationToken cancellationToken = default);
+    Task<PagedResult<UserViewModel>> ListApprovedUsersAsync(
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default);
 
 
     Task<UserViewModel> ApproveAsync(int userId, bool isApproved, CancellationToken cancellationToken = default);

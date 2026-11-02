@@ -16,6 +16,11 @@ public interface IUserRepository : IRepository<User>
         int pageSize,
         CancellationToken cancellationToken = default);
 
+    Task<PagedResult<User>> ListApprovedUsersAsync(
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default);
+
     Task<PagedResult<User>> ListPendingAsync(
         int pageNumber,
         int pageSize,

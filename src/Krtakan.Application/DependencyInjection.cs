@@ -10,6 +10,6 @@ public static class DependencyInjection
         services.AddAutoMapper(typeof(DependencyInjection));
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserService, UserService>();
-        return services;
-    }
+        services.AddScoped<IRoleService, RoleService>();
+        return services;    }
 }

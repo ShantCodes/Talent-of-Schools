@@ -52,6 +52,40 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Krtakan.Domain.Entities.EventParticipant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Author")
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("DocumentId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DocumentId");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EventParticipants", (string)null);
+                });
+
             modelBuilder.Entity("Krtakan.Domain.Entities.Media", b =>
                 {
                     b.Property<int>("Id")
@@ -321,6 +355,32 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                     b.HasIndex("SchoolId");
 
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("Krtakan.Domain.Entities.EventParticipant", b =>
+                {
+                    b.HasOne("Krtakan.Domain.Entities.Media", "Document")
+                        .WithMany()
+                        .HasForeignKey("DocumentId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Krtakan.Domain.Entities.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Krtakan.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Document");
+
+                    b.Navigation("Event");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Krtakan.Domain.Entities.Media", b =>

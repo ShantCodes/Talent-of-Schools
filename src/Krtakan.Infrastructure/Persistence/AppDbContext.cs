@@ -26,8 +26,10 @@ public class AppDbContext : DbContext, IUnitOfWork
     public DbSet<Scoring> Scorings => Set<Scoring>();
 
     public DbSet<School> Schools => Set<School>();
-
     public DbSet<Event> Events => Set<Event>();
+
+    public DbSet<EventParticipant> EventParticipants => Set<EventParticipant>();
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

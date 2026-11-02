@@ -92,22 +92,42 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("FormatId")
+                    b.Property<int>("FolderId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("TEXT");
+                    b.Property<int>("FormatId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<long>("Size")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("FolderId");
+
                     b.HasIndex("FormatId");
 
                     b.ToTable("Media", (string)null);
+                });
+
+            modelBuilder.Entity("Krtakan.Domain.Entities.MediaFolder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Path")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MediaFolders", (string)null);
                 });
 
             modelBuilder.Entity("Krtakan.Domain.Entities.MediaFormat", b =>
@@ -385,11 +405,19 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Krtakan.Domain.Entities.Media", b =>
                 {
+                    b.HasOne("Krtakan.Domain.Entities.MediaFolder", "Folder")
+                        .WithMany("MediaItems")
+                        .HasForeignKey("FolderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Krtakan.Domain.Entities.MediaFormat", "Format")
                         .WithMany("MediaItems")
                         .HasForeignKey("FormatId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Folder");
 
                     b.Navigation("Format");
                 });
@@ -481,6 +509,11 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Krtakan.Domain.Entities.Media", b =>
                 {
                     b.Navigation("Performances");
+                });
+
+            modelBuilder.Entity("Krtakan.Domain.Entities.MediaFolder", b =>
+                {
+                    b.Navigation("MediaItems");
                 });
 
             modelBuilder.Entity("Krtakan.Domain.Entities.MediaFormat", b =>

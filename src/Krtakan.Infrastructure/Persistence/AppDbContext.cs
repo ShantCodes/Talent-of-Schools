@@ -29,9 +29,10 @@ public class AppDbContext : DbContext, IUnitOfWork
     public DbSet<Event> Events => Set<Event>();
 
     public DbSet<EventParticipant> EventParticipants => Set<EventParticipant>();
-
+    public DbSet<MediaFolder> MediaFolders => Set<MediaFolder>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
+
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
     }

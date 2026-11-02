@@ -36,5 +36,16 @@ public class EventsController(IEventService eventService) : ControllerBase
         }
         return Ok();
     }
+    [HttpPut("{id}")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public async Task<IActionResult> EditEvent(int id, [FromBody] CreateEventRequest request)
+    {
+        var updated = await eventService.EditEventAsync(id, request);
+        if (!updated)
+        {
+            return NotFound();
+        }
+        return Ok();
+    }
 }
 

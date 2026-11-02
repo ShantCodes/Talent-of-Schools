@@ -19,11 +19,16 @@ public class UsersController(IUserService userService) : ControllerBase
         [FromQuery] int pageSize = 10) => Ok(await userService.ListPendingAsync(pageNumber, pageSize, cancellationToken));
 
 
-    [HttpGet]
+    [HttpGet("GetAllUsers")]
     public async Task<IActionResult> ListUsers(
         CancellationToken cancellationToken,
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10) => Ok(await userService.ListUsersAsync(pageNumber, pageSize, cancellationToken));
+    [HttpGet("GetApprovedUsers")]
+    public async Task<IActionResult> ListApprovedUsers(
+        CancellationToken cancellationToken,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10) => Ok(await userService.ListApprovedUsersAsync(pageNumber, pageSize, cancellationToken));
 
     [HttpPatch("{userId:int}/approve")]
     public async Task<IActionResult> Approve(int userId, bool isApproved, CancellationToken cancellationToken) => Ok(await userService.ApproveAsync(userId, isApproved, cancellationToken));

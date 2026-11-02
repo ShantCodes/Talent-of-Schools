@@ -43,6 +43,16 @@ public class UserService : IUserService
         return new PagedResult<UserViewModel>(items, users.TotalCount, users.PageNumber, users.PageSize);
     }
 
+        public async Task<PagedResult<UserViewModel>> ListApprovedUsersAsync(
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        var users = await _users.ListApprovedUsersAsync(pageNumber, pageSize, cancellationToken);
+        var items = _mapper.Map<IEnumerable<UserViewModel>>(users.Items);
+        return new PagedResult<UserViewModel>(items, users.TotalCount, users.PageNumber, users.PageSize);
+    }
+
     public async Task<UserViewModel> ApproveAsync(int userId, bool isApproved, CancellationToken cancellationToken = default)
     {
         var user = await _users.GetByIdWithDetailsAsync(userId, cancellationToken)

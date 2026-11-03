@@ -29,6 +29,12 @@ public static class DatabaseInitialization
 
         if (seed.MediaFolders != null && seed.MediaFolders.Any())
         {
+            foreach (var folderName in seed.MediaFolders)
+            {
+                var path = $"storage/media/{folderName.ToLower()}";
+                Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), path));
+            }
+
             if (!await context.MediaFolders.AnyAsync())
             {
                 foreach (var folderName in seed.MediaFolders)
@@ -36,7 +42,7 @@ public static class DatabaseInitialization
                     context.MediaFolders.Add(new MediaFolder
                     {
                         Name = folderName,
-                        Path = $"/media/{folderName.ToLower()}"
+                        Path = $"storage/media/{folderName.ToLower()}"
                     });
                 }
                 await context.SaveChangesAsync();

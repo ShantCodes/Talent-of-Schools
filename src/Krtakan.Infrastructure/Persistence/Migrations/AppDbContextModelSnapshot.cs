@@ -98,6 +98,10 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                     b.Property<int>("FormatId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("RelativePath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<long>("Size")
                         .HasColumnType("INTEGER");
 

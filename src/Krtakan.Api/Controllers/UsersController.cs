@@ -3,7 +3,8 @@ using Krtakan.Application.Services;
 using Krtakan.Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using Krtakan.Application.DTOs;
+using Krtakan.Api.ViewModels;
 
 namespace Krtakan.Api.Controllers;
 
@@ -17,7 +18,6 @@ public class UsersController(IUserService userService) : ControllerBase
         CancellationToken cancellationToken,
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10) => Ok(await userService.ListPendingAsync(pageNumber, pageSize, cancellationToken));
-
 
     [HttpGet("GetAllUsers")]
     public async Task<IActionResult> ListUsers(
@@ -42,5 +42,30 @@ public class UsersController(IUserService userService) : ControllerBase
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken) =>
     Ok(await userService.ChangePasswordAsync(request.Username, request.Password, cancellationToken));
 
+    [HttpPut("api/user/updateProfile")]
+    [Authorize]
+    public async Task<IActionResult> UpdateProfile(
+        [FromForm] UpdateUserViewModel request,
+        CancellationToken cancellationToken)
+    {
+        var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
 
+        var dto = new UpdateUserDto
+        {
+            Name = request.Name,
+            LastName = request.LastName,
+            BirthDate = request.BirthDate,
+            SchoolId = request.SchoolId,
+            Grade = request.Grade
+        };
+
+        if (request.ProfilePicture is not null)
+        {
+            dto.ProfilePictureStream = request.ProfilePicture.OpenReadStream();
+            dto.ProfilePictureFileName = request.ProfilePicture.FileName;
+        }
+
+        var result = await userService.UpdateUserAsync(userId, dto, cancellationToken);
+        return Ok(result);
+    }
 }

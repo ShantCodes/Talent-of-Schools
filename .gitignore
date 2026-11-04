@@ -31,3 +31,7 @@ out/
 # OS
 .DS_Store
 Thumbs.db
+
+
+#media
+storage/media/

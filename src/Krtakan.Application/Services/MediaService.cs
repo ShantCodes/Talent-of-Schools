@@ -8,11 +8,32 @@ using System.IO;
 
 namespace Krtakan.Application.Services;
 
-public class MediaService(IMediaRepository mediaRepository, IFileStorage fileStorage, IOptions<FileStorageOptions> storageOptions) : IMediaService
+public class MediaService(IMediaRepository mediaRepository, IFileStorage fileStorage, IUnitOfWork unitOfWork, IOptions<FileStorageOptions> storageOptions) : IMediaService
 {
     public async Task<Media?> GetMediaByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         return await mediaRepository.GetByIdWithDetailsAsync(id, cancellationToken);
+    }
+
+    public async Task<Media> UploadMediaAsync(Stream content, string fileName, int folderId, int formatId, CancellationToken cancellationToken = default)
+    {
+        var extension = Path.GetExtension(fileName).ToLowerInvariant();
+        if (string.IsNullOrWhiteSpace(extension)) throw new InvalidOperationException("A file extension is required.");
+
+        var storedFile = await fileStorage.SaveAsync(content, fileName, cancellationToken);
+
+        var media = new Media
+        {
+            RelativePath = storedFile.RelativePath,
+            Size = storedFile.SizeBytes,
+            FormatId = formatId,
+            FolderId = folderId
+        };
+
+        await mediaRepository.AddAsync(media, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return media;
     }
 
     public string GetDownloadUrl(Media media)
@@ -25,22 +46,8 @@ public class MediaService(IMediaRepository mediaRepository, IFileStorage fileSto
         var media = await GetMediaByIdAsync(id, cancellationToken);
         if (media == null) throw new AppException("Media not found.", 404);
 
-        var folder = media.Folder;
-        if (string.IsNullOrEmpty(folder?.Path)) throw new AppException("Media folder path is not configured.", 500);
-
-        // The path in the DB is absolute-ish starting from /media/
-        // We need to resolve it relative to the app root + storage root.
-        // Since IFileStorage.GetPhysicalPath uses _root (which is contentRoot/RootPath)
-        // we can leverage that if we adjust the path.
-
-        // Example: Folder Path = "/media/images"
-        // RootPath = "storage/media"
-        // We want to reach "storage/media/images"
-
-        var relativePath = folder.Path.Replace("/media", "");
-        // If Path was "/media/images", relativePath becomes "/images"
-
-        var physicalPath = Path.Combine(Directory.GetCurrentDirectory(), "storage", "media", relativePath.TrimStart('/'));
+        var relativePath = media.RelativePath.TrimStart('/');
+        var physicalPath = fileStorage.GetPhysicalPath(relativePath);
 
         if (!File.Exists(physicalPath))
         {

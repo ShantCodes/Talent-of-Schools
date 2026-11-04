@@ -11,6 +11,7 @@ public class Media : BaseEntity
     public MediaFormat Format { get; set; } = null!;
 
     public long Size { get; set; }
+    public string RelativePath { get; set; } = string.Empty;
 
     public ICollection<Performance> Performances { get; set; } = new List<Performance>();
 }

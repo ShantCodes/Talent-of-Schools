@@ -27,4 +27,6 @@ public class UserViewModel
     public DateTime RegisterDate { get; set; }
 
     public int? ProfilePictureMediaId { get; set; }
+
+    public string? ProfilePictureUrl { get; set; }
 }

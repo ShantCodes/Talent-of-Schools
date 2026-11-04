@@ -1,6 +1,7 @@
 using Krtakan.Application.Abstractions;
 using Krtakan.Application.Exceptions;
 using Krtakan.Application.Options;
+using Krtakan.Domain.Constants;
 using Krtakan.Domain.Entities;
 using Krtakan.Domain.Interfaces;
 using Microsoft.Extensions.Options;
@@ -38,7 +39,7 @@ public class MediaService(IMediaRepository mediaRepository, IFileStorage fileSto
 
     public string GetDownloadUrl(Media media)
     {
-        return $"/api/media/download/{media.Id}";
+        return $"{MediaUrlConstants.DownloadUrl}{media.Id}";
     }
 
     public async Task<Stream> GetFileStreamAsync(int id, CancellationToken cancellationToken = default)

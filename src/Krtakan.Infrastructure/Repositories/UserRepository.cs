@@ -8,7 +8,7 @@ namespace Krtakan.Infrastructure.Repositories;
 
 public class UserRepository(AppDbContext context) : EfRepository<User>(context), IUserRepository
 {
-    private IQueryable<User> Details => Set.Include(user => user.Role).Include(user => user.School);
+    private IQueryable<User> Details => Set.Include(user => user.Role).Include(user => user.School).Include(user => user.ProfilePicture);
     public Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken = default) => Set.AnyAsync(user => user.Email == email, cancellationToken);
     public Task<User?> GetByEmailWithDetailsAsync(string email, CancellationToken cancellationToken = default) => Details.SingleOrDefaultAsync(user => user.Email == email, cancellationToken);
 

@@ -9,7 +9,7 @@ using System.IO;
 
 namespace Krtakan.Application.Services;
 
-public class MediaService(IMediaRepository mediaRepository, IFileStorage fileStorage, IUnitOfWork unitOfWork, IOptions<FileStorageOptions> storageOptions) : IMediaService
+public class MediaService(IMediaRepository mediaRepository, IFileStorage fileStorage, IUnitOfWork unitOfWork, IOptions<FileStorageOptions> storageOptions, IMediaFolderRepository folderRepository) : IMediaService
 {
     public async Task<Media?> GetMediaByIdAsync(int id, CancellationToken cancellationToken = default)
     {
@@ -21,7 +21,12 @@ public class MediaService(IMediaRepository mediaRepository, IFileStorage fileSto
         var extension = Path.GetExtension(fileName).ToLowerInvariant();
         if (string.IsNullOrWhiteSpace(extension)) throw new InvalidOperationException("A file extension is required.");
 
-        var storedFile = await fileStorage.SaveAsync(content, fileName, cancellationToken);
+        var folder = await folderRepository.GetByIdAsync(folderId, cancellationToken);
+        if (folder == null) throw new AppException("Media folder not found.", 404);
+
+        var directory = !string.IsNullOrEmpty(folder.Path) ? folder.Path : folder.Name;
+
+        var storedFile = await fileStorage.SaveAsync(content, fileName, directory, cancellationToken);
 
         var media = new Media
         {

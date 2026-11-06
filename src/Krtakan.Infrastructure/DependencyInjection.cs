@@ -28,6 +28,7 @@ public static class DependencyInjection
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<ISchoolRepository, SchoolRepository>();
         services.AddScoped<IMediaRepository, MediaRepository>();
+        services.AddScoped<IMediaFolderRepository, MediaFolderRepository>();
         services.AddScoped<IEventRepository, EventRepository>();
         services.AddScoped<IEventParticipantRepository, EventParticipantRepository>();
         services.AddScoped<IEventService, EventService>();

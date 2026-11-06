@@ -9,3 +9,8 @@ public class UpdateUserViewModel
     public int? Grade { get; set; }
     public IFormFile? ProfilePicture {get; set;}
 }
+
+public class ChangPasswordViewModel
+{
+    public required string Password {get; set;}
+}

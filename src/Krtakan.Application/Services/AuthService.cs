@@ -120,4 +120,16 @@ public class AuthService : IAuthService
 
         return _mapper.Map<UserViewModel>(user);
     }
+    public async Task<bool> ChangePasswordAsync(int userId, string password)
+    {
+        if (password.Length is < 8 or > 72)
+            throw new AppException("Password must be between 8 and 72 characters.");
+        var user = await _users.GetByIdWithDetailsAsync(userId)
+            ?? throw new AppException("User not found.", 401);
+
+        user.PasswordHash = _passwordHasher.Hash(password);
+        await _unitOfWork.SaveChangesAsync();
+
+        return true;
+    }
 }

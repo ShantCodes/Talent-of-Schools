@@ -34,4 +34,6 @@ Thumbs.db
 
 
 #media
+storage/
 storage/media/
+src/Krtakan.Api/storage/  

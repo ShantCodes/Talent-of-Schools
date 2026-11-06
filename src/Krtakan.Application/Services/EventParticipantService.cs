@@ -16,6 +16,12 @@ public class EventParticipantService(
 {
     public async Task<EventParticipantViewModel> CreateEventParticipantAsync(CreateEventParticipantRequest request, CancellationToken cancellationToken = default)
     {
+        var existingUser = await eventParticipantRepository.GetEventParticipantByUserIdAndEventIdAsync(request.UserId, request.EventId);
+        if (existingUser != null)
+        {
+            throw new InvalidOperationException(
+                $"User {request.UserId} is already a participant of event {request.EventId}.");
+        }
         int? documentId = request.DocumentId;
 
         if (request.FileStream != null && !string.IsNullOrEmpty(request.FileName))
@@ -44,7 +50,6 @@ public class EventParticipantService(
 
         return mapper.Map<EventParticipantViewModel>(participant);
     }
-    // ... rest of the methods
 
     public async Task<PagedResult<EventParticipantViewModel>> GetParticipantsByEventIdAsync(int eventId, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
     {

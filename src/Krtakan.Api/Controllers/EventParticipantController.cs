@@ -27,10 +27,11 @@ public class EventParticipantController(
     [Authorize(Roles = "Student")]
     public async Task<IActionResult> Create(EventsViewModels.SignUpFormViewModel request)
     {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var createRequest = new CreateEventParticipantRequest(
             request.Title,
             request.Author,
-            request.UserId,
+            userId,
             request.EventId,
             null,
             request.File != null ? request.File.OpenReadStream() : null,

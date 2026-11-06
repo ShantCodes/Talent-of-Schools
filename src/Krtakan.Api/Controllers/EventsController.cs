@@ -17,7 +17,7 @@ public class EventsController(IEventService eventService) : ControllerBase
         [FromBody] CreateEventRequest request) => Ok(await eventService.CreateEventAsync(request));
 
     [HttpGet]
-    [Authorize(Roles = RoleNames.Student + "," + RoleNames.Admin)]
+    [Authorize(Roles = RoleNames.Student + "," + RoleNames.Admin + "," + RoleNames.Juror)]
     public async Task<IActionResult> GetAll(
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10)

@@ -11,17 +11,32 @@ namespace Krtakan.Application.Services;
 public class EventParticipantService(
     IEventParticipantRepository eventParticipantRepository,
     IUnitOfWork unitOfWork,
-    IMapper mapper) : IEventParticipantService
+    IMapper mapper,
+    IMediaService mediaService) : IEventParticipantService
 {
     public async Task<EventParticipantViewModel> CreateEventParticipantAsync(CreateEventParticipantRequest request, CancellationToken cancellationToken = default)
     {
+        int? documentId = request.DocumentId;
+
+        if (request.FileStream != null && !string.IsNullOrEmpty(request.FileName))
+        {
+            var media = await mediaService.UploadMediaAsync(
+                request.FileStream,
+                request.FileName,
+                2,
+                1,
+                cancellationToken
+            );
+            documentId = media.Id;
+        }
+
         var participant = new EventParticipant
         {
             Title = request.Title,
             Author = request.Author,
             UserId = request.UserId,
             EventId = request.EventId,
-            DocumentId = request.DocumentId
+            DocumentId = documentId
         };
 
         await eventParticipantRepository.AddAsync(participant, cancellationToken);
@@ -29,6 +44,7 @@ public class EventParticipantService(
 
         return mapper.Map<EventParticipantViewModel>(participant);
     }
+    // ... rest of the methods
 
     public async Task<PagedResult<EventParticipantViewModel>> GetEventParticipantsAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
     {

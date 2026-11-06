@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Krtakan.Api.ViewModels;
 using Krtakan.Application.DTOs.Auth;
 using Krtakan.Application.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -23,5 +24,12 @@ public class AuthController(IAuthService authService) : ControllerBase
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         return Ok(await authService.GetCurrentUserAsync(userId, cancellationToken));
+    }
+    [HttpPost("/api/ChangePassword")]
+    [Authorize]
+    public async Task<IActionResult> ChangePassword(ChangPasswordViewModel password, CancellationToken cancellationToken)
+    {
+        var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value!);
+        return Ok(await authService.ChangePasswordAsync(userId, password.Password));
     }
 }

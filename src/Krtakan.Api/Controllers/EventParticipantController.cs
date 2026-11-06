@@ -3,13 +3,15 @@ using Krtakan.Application.Services;
 using Krtakan.Application.ViewModels.EventParticipant;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Krtakan.Api.ViewModels;
 using System.Security.Claims;
 
 namespace Krtakan.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class EventParticipantController(IEventParticipantService eventParticipantService) : ControllerBase
+public class EventParticipantController(
+    IEventParticipantService eventParticipantService) : ControllerBase
 {
     [HttpGet]
     [Authorize(Roles = "Admin")]
@@ -21,9 +23,19 @@ public class EventParticipantController(IEventParticipantService eventParticipan
 
     [HttpPost("signup")]
     [Authorize(Roles = "Student")]
-    public async Task<IActionResult> Create(CreateEventParticipantRequest request)
+    public async Task<IActionResult> Create(EventsViewModels.SignUpFormViewModel request)
     {
-        var result = await eventParticipantService.CreateEventParticipantAsync(request);
+        var createRequest = new CreateEventParticipantRequest(
+            request.Title,
+            request.Author,
+            request.UserId,
+            request.EventId,
+            null,
+            request.File != null ? request.File.OpenReadStream() : null,
+            request.File?.FileName
+        );
+
+        var result = await eventParticipantService.CreateEventParticipantAsync(createRequest);
         return Created($"api/{request.Title}", result);
     }
 

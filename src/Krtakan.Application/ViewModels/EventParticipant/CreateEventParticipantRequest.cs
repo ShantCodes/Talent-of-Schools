@@ -8,5 +8,7 @@ public record CreateEventParticipantRequest(
     [Required] string Author,
     [Required] int UserId,
     [Required] int EventId,
-    int? DocumentId
+    int? DocumentId = null,
+    Stream? FileStream = null,
+    string? FileName = null
 );

@@ -8,11 +8,11 @@ public class LocalFileStorage : IFileStorage
 {
     private readonly string _root;
     public LocalFileStorage(string contentRoot, IOptions<FileStorageOptions> options) => _root = Path.GetFullPath(Path.Combine(contentRoot, options.Value.RootPath));
-    public async Task<StoredFile> SaveAsync(Stream content, string originalFileName, CancellationToken cancellationToken = default)
+    public async Task<StoredFile> SaveAsync(Stream content, string originalFileName, string directory, CancellationToken cancellationToken = default)
     {
         var extension = Path.GetExtension(originalFileName).ToLowerInvariant();
         if (string.IsNullOrWhiteSpace(extension)) throw new InvalidOperationException("A file extension is required.");
-        var relativePath = Path.Combine(DateTime.UtcNow.ToString("yyyy/MM"), $"{Guid.NewGuid():N}{extension}").Replace('\\', '/');
+        var relativePath = Path.Combine(directory, DateTime.UtcNow.ToString("yyyy/MM"), $"{Guid.NewGuid():N}{extension}").Replace('\\', '/');
         var physicalPath = GetPhysicalPath(relativePath);
         Directory.CreateDirectory(Path.GetDirectoryName(physicalPath)!);
         await using var output = File.Create(physicalPath);

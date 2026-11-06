@@ -10,4 +10,5 @@ public interface IAuthService
     Task<AuthResponseViewModel> LoginAsync(LoginDto dto, CancellationToken cancellationToken = default);
 
     Task<UserViewModel> GetCurrentUserAsync(int userId, CancellationToken cancellationToken = default);
+    Task<bool> ChangePasswordAsync(int userId, string password);
 }

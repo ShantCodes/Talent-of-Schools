@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Krtakan.Api.ViewModels;
 using System.Security.Claims;
+using Krtakan.Domain.Constants;
 
 namespace Krtakan.Api.Controllers;
 
@@ -13,13 +14,14 @@ namespace Krtakan.Api.Controllers;
 public class EventParticipantController(
     IEventParticipantService eventParticipantService) : ControllerBase
 {
-    [HttpGet]
-    [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> GetAll()
+    [HttpGet("event/{eventId}")]
+    [Authorize(Roles = RoleNames.Juror + "," + RoleNames.Admin)]
+    public async Task<IActionResult> GetParticipantsByEvent(int eventId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var result = await eventParticipantService.GetEventParticipantsAsync(1, 100);
+        var result = await eventParticipantService.GetParticipantsByEventIdAsync(eventId, pageNumber, pageSize);
         return Ok(result);
     }
+
 
     [HttpPost("signup")]
     [Authorize(Roles = "Student")]

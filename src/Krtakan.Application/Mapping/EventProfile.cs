@@ -13,6 +13,8 @@ public class EventProfile : Profile
         CreateMap<Event, EventViewModel>();
         CreateMap<PagedResult<Event>, PagedResult<EventViewModel>>()
             .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
+        CreateMap<PagedResult<EventParticipant>, PagedResult<EventParticipantViewModel>>()
+            .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
         CreateMap<EventParticipant, EventParticipantViewModel>();
     }
 }

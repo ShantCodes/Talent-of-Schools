@@ -4,9 +4,12 @@ namespace Krtakan.Domain.Entities;
 
 public class Scoring : BaseEntity
 {
-    public int PerformanceId { get; set; }
+    public int? PerformanceId { get; set; }
 
-    public Performance Performance { get; set; } = null!;
+    public Performance? Performance { get; set; }
+
+    public int EventParticipantId { get; set; }
+    public EventParticipant Participant { get; set; } = null!;
 
     public int JurorId { get; set; }
 

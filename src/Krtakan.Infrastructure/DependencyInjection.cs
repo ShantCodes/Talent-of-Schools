@@ -11,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Krtakan.Application.Services;
+using Krtakan.Application.DTOs;
 
 namespace Krtakan.Infrastructure;
 
@@ -33,6 +35,8 @@ public static class DependencyInjection
         services.AddScoped<IEventParticipantRepository, EventParticipantRepository>();
         services.AddScoped<IEventService, EventService>();
         services.AddScoped<IEventParticipantService, EventParticipantService>();
+        services.AddScoped<IScoringService, ScoringService>();
+        services.AddScoped<IScoringRepository, ScoringRepository>();
         services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<AppDbContext>());
         services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
         services.AddSingleton<IJwtTokenService, JwtTokenService>();

@@ -1,5 +1,6 @@
 using Krtakan.Domain.Common;
 using Krtakan.Domain.Entities;
+using System.Collections.Generic;
 
 namespace Krtakan.Domain.Entities;
 
@@ -13,4 +14,5 @@ public class EventParticipant : BaseEntity
     public Media? Document { get; set; }
     public string? Title { get; set; }
     public string? Author { get; set; }
+    public ICollection<Scoring> Scorings { get; set; } = new List<Scoring>();
 }

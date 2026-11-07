@@ -1,4 +1,5 @@
 using Krtakan.Domain.Common;
+using System.Collections.Generic;
 
 namespace Krtakan.Domain.Entities;
 
@@ -11,4 +12,5 @@ public class Event : BaseEntity
     public DateOnly? MinBirthDate { get; set; }
     public DateOnly? MaxBirthDate { get; set; }
     public ICollection<Performance> Performances { get; set; } = new List<Performance>();
+    public bool IsOnline { get; set; }
 }

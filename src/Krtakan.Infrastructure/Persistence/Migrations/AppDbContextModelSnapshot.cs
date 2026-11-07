@@ -30,6 +30,9 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsOnline")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateOnly?>("MaxBirthDate")
                         .HasColumnType("TEXT");
 
@@ -292,31 +295,32 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Krtakan.Domain.Entities.Scoring", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("EventParticipantId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("JurorId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("PerformanceId")
+                    b.Property<int>("Id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("PerformanceId")
                         .HasColumnType("INTEGER");
 
                     b.Property<decimal>("Score")
                         .HasPrecision(5, 2)
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("EventParticipantId", "JurorId");
 
                     b.HasIndex("JurorId");
 
-                    b.HasIndex("PerformanceId", "JurorId")
+                    b.HasIndex("PerformanceId");
+
+                    b.HasIndex("EventParticipantId", "JurorId")
                         .IsUnique();
 
-                    b.ToTable("Scorings", null, t =>
-                        {
-                            t.HasCheckConstraint("CK_Scorings_Score", "Score >= 0 AND Score <= 100");
-                        });
+                    b.ToTable("Scorings", (string)null);
                 });
 
             modelBuilder.Entity("Krtakan.Domain.Entities.User", b =>
@@ -463,6 +467,12 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Krtakan.Domain.Entities.Scoring", b =>
                 {
+                    b.HasOne("Krtakan.Domain.Entities.EventParticipant", "Participant")
+                        .WithMany("Scorings")
+                        .HasForeignKey("EventParticipantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Krtakan.Domain.Entities.User", "Juror")
                         .WithMany("GivenScores")
                         .HasForeignKey("JurorId")
@@ -472,10 +482,11 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                     b.HasOne("Krtakan.Domain.Entities.Performance", "Performance")
                         .WithMany("Scorings")
                         .HasForeignKey("PerformanceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Juror");
+
+                    b.Navigation("Participant");
 
                     b.Navigation("Performance");
                 });
@@ -508,6 +519,11 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Krtakan.Domain.Entities.Event", b =>
                 {
                     b.Navigation("Performances");
+                });
+
+            modelBuilder.Entity("Krtakan.Domain.Entities.EventParticipant", b =>
+                {
+                    b.Navigation("Scorings");
                 });
 
             modelBuilder.Entity("Krtakan.Domain.Entities.Media", b =>

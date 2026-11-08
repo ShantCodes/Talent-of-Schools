@@ -74,8 +74,7 @@ public class AuthService : IAuthService
             Email = email,
             PasswordHash = _passwordHasher.Hash(dto.Password),
             RegisterDate = DateTime.UtcNow,
-            RoleId = studentRole.Id,
-            Role = studentRole,
+            Roles = new List<Role> { studentRole },
             SchoolId = dto.SchoolId,
             Grade = dto.Grade,
             IsApproved = false
@@ -103,7 +102,9 @@ public class AuthService : IAuthService
         //     throw new AppException("Your account is waiting for administrator approval.", 403);
 
         var fullName = $"{user.Name} {user.LastName}".Trim();
-        var accessToken = _tokenService.CreateToken(user.Id, user.Email, user.Role.Name, fullName);
+        var roleName = user.Roles.FirstOrDefault()?.Name ?? "User";
+        var accessToken = _tokenService.CreateToken(user.Id, user.Email, roleName, fullName);
+
 
         return new AuthResponseViewModel
         {

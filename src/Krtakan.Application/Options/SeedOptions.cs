@@ -8,4 +8,5 @@ public class SeedOptions
     public string AdminName { get; set; } = "System";
     public string AdminLastName { get; set; } = "Administrator";
     public List<string> MediaFolders { get; set; } = new();
+    public List<string> AdminRoles { get; set; } = new();
 }

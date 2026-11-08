@@ -10,10 +10,6 @@ public class User : BaseEntity
 
     public DateOnly BirthDate { get; set; }
 
-    public int RoleId { get; set; }
-
-    public Role Role { get; set; } = null!;
-
     public string Email { get; set; } = string.Empty;
 
     public string PasswordHash { get; set; } = string.Empty;
@@ -35,4 +31,6 @@ public class User : BaseEntity
     public ICollection<Performance> Performances { get; set; } = new List<Performance>();
 
     public ICollection<Scoring> GivenScores { get; set; } = new List<Scoring>();
+
+    public ICollection<Role> Roles { get; set; } = new List<Role>();
 }

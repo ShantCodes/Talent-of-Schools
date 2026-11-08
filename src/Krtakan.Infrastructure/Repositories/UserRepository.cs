@@ -8,11 +8,15 @@ namespace Krtakan.Infrastructure.Repositories;
 
 public class UserRepository(AppDbContext context) : EfRepository<User>(context), IUserRepository
 {
-    private IQueryable<User> Details => Set.Include(user => user.Role).Include(user => user.School).Include(user => user.ProfilePicture);
+    private IQueryable<User> Details => Set.Include(user => user.Roles).Include(user => user.School).Include(user => user.ProfilePicture).Include(user => user.Roles);
     public Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken = default) => Set.AnyAsync(user => user.Email == email, cancellationToken);
     public Task<User?> GetByEmailWithDetailsAsync(string email, CancellationToken cancellationToken = default) => Details.SingleOrDefaultAsync(user => user.Email == email, cancellationToken);
 
-    public Task<User?> GetByIdWithDetailsAsync(int id, CancellationToken cancellationToken = default) => Details.FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
+    public Task<User?> GetByIdWithDetailsAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var test = Details.FirstOrDefaultAsync(user => user.Id == id, cancellationToken);
+        return test;
+    }
     public async Task<PagedResult<User>> ListUsersAsync(
         int pageNumber,
         int pageSize,
@@ -28,10 +32,10 @@ public class UserRepository(AppDbContext context) : EfRepository<User>(context),
         return new PagedResult<User>(items, totalCount, pageNumber, pageSize);
     }
 
-        public async Task<PagedResult<User>> ListApprovedUsersAsync(
-        int pageNumber,
-        int pageSize,
-        CancellationToken cancellationToken = default)
+    public async Task<PagedResult<User>> ListApprovedUsersAsync(
+    int pageNumber,
+    int pageSize,
+    CancellationToken cancellationToken = default)
     {
         var query = Details.Where(status => status.IsApproved).OrderBy(user => user.RegisterDate);
         var totalCount = await query.CountAsync(cancellationToken);

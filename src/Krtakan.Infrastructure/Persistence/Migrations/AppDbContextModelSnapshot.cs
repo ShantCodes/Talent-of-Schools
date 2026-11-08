@@ -365,9 +365,6 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("RegisterDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int?>("SchoolId")
                         .HasColumnType("INTEGER");
 
@@ -378,11 +375,24 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ProfilePictureMediaId");
 
-                    b.HasIndex("RoleId");
-
                     b.HasIndex("SchoolId");
 
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("RoleUser", b =>
+                {
+                    b.Property<int>("RolesId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UsersId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("RolesId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("RoleUser");
                 });
 
             modelBuilder.Entity("Krtakan.Domain.Entities.EventParticipant", b =>
@@ -498,12 +508,6 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                         .HasForeignKey("ProfilePictureMediaId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("Krtakan.Domain.Entities.Role", "Role")
-                        .WithMany("Users")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Krtakan.Domain.Entities.School", "School")
                         .WithMany("Users")
                         .HasForeignKey("SchoolId")
@@ -511,9 +515,22 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
 
                     b.Navigation("ProfilePicture");
 
-                    b.Navigation("Role");
-
                     b.Navigation("School");
+                });
+
+            modelBuilder.Entity("RoleUser", b =>
+                {
+                    b.HasOne("Krtakan.Domain.Entities.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Krtakan.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Krtakan.Domain.Entities.Event", b =>
@@ -544,11 +561,6 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Krtakan.Domain.Entities.Performance", b =>
                 {
                     b.Navigation("Scorings");
-                });
-
-            modelBuilder.Entity("Krtakan.Domain.Entities.Role", b =>
-                {
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Krtakan.Domain.Entities.Round", b =>

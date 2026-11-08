@@ -12,6 +12,7 @@ namespace Krtakan.Api.Controllers;
 public class RolesController(IRoleService roleService) : ControllerBase
 {
     [HttpGet]
+    [Authorize(Roles = RoleNames.Admin)]
     public async Task<IActionResult> GetAll(
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10,

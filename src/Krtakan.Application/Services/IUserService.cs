@@ -23,7 +23,7 @@ public interface IUserService
 
     Task<UserViewModel> ApproveAsync(int userId, bool isApproved, CancellationToken cancellationToken = default);
     Task<bool> DeleteUserAsync(int userId, CancellationToken cancellationToken = default);
-    Task<UserViewModel> UpdateUserRoleAsync(int userId, int roleId, CancellationToken cancellationToken = default);
+    Task<UserViewModel> UpdateUserRolesAsync(int userId, List<int> roleIds, CancellationToken cancellationToken = default);
     Task<bool> ChangePasswordAsync(string email, string newPassword, CancellationToken cancellationToken = default);
     Task<UserViewModel> UpdateUserAsync(int userId, UpdateUserDto dto, CancellationToken cancellationToken = default);
 

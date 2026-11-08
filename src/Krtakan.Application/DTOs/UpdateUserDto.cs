@@ -11,5 +11,6 @@ public class UpdateUserDto
     public int? SchoolId { get; set; }
     public int? Grade { get; set; }
     public Stream? ProfilePictureStream { get; set; }
-    public string? ProfilePictureFileName { get; set; }    
+    public string? ProfilePictureFileName { get; set; }
+    public List<int>? RoleIds { get; set; }
 }

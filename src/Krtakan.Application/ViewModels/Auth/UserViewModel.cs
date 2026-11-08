@@ -14,7 +14,9 @@ public class UserViewModel
 
     public DateOnly BirthDate { get; set; }
 
-    public string Role { get; set; } = string.Empty;
+    // public string Role { get; set; } = string.Empty;
+
+    public List<string> Roles { get; set; } = new List<string>();
 
     public int? SchoolId { get; set; }
 

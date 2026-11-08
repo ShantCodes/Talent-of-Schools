@@ -35,7 +35,7 @@ public class UsersController(IUserService userService) : ControllerBase
     [HttpDelete("{userId:int}")]
     public async Task<IActionResult> Delete(int userId, CancellationToken cancellationToken) => Ok(await userService.DeleteUserAsync(userId, cancellationToken));
     [HttpPatch("{userId:int}/role")]
-    public async Task<IActionResult> UpdateRole(int userId, int roleId, CancellationToken cancellationToken) => Ok(await userService.UpdateUserRoleAsync(userId, roleId, cancellationToken));
+    public async Task<IActionResult> UpdateRole(int userId, List<int> roleIds, CancellationToken cancellationToken) => Ok(await userService.UpdateUserRolesAsync(userId, roleIds, cancellationToken));
 
     [HttpPatch("/api/adminchangepassword")]
     [AllowAnonymous]

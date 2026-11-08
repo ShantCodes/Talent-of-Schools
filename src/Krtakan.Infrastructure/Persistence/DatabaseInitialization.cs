@@ -22,9 +22,38 @@ public static class DatabaseInitialization
 
         if (await context.Users.AnyAsync(user => user.Email == adminEmail)) return;
 
-        var role = await context.Roles.SingleAsync(role => role.Name == RoleNames.Admin);
+        // Seed Roles
+        var rolesToSeed = new[] { RoleNames.Admin, RoleNames.Student, RoleNames.Juror };
+        foreach (var roleName in rolesToSeed)
+        {
+            if (!await context.Roles.AnyAsync(r => r.Name == roleName))
+            {
+                context.Roles.Add(new Role { Name = roleName });
+            }
+        }
+
         var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
-        context.Users.Add(new User { Name = seed.AdminName, LastName = seed.AdminLastName, Email = adminEmail, PasswordHash = hasher.Hash(seed.AdminPassword), RoleId = role.Id, BirthDate = new DateOnly(2000, 1, 1), RegisterDate = DateTime.UtcNow, IsApproved = true });
+        var adminRoles = new List<Role>();
+        foreach (var roleName in seed.AdminRoles)
+        {
+            var role = await context.Roles.FirstOrDefaultAsync(r => r.Name == roleName);
+            if (role != null)
+            {
+                adminRoles.Add(role);
+            }
+        }
+
+        context.Users.Add(new User
+        {
+            Name = seed.AdminName,
+            LastName = seed.AdminLastName,
+            Email = adminEmail,
+            PasswordHash = hasher.Hash(seed.AdminPassword),
+            Roles = adminRoles,
+            BirthDate = new DateOnly(2000, 1, 1),
+            RegisterDate = DateTime.UtcNow,
+            IsApproved = true
+        });
         await context.SaveChangesAsync();
 
         if (seed.MediaFolders != null && seed.MediaFolders.Any())

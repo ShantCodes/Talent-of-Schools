@@ -12,14 +12,16 @@ namespace Krtakan.Application.Services;
 public class UserService : IUserService
 {
     private readonly IUserRepository _users;
+    private readonly IRoleRepository _roles;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IMediaService _mediaService;
 
-    public UserService(IUserRepository users, IUnitOfWork unitOfWork, IMapper mapper, IPasswordHasher passwordHasher, IMediaService mediaService)
+    public UserService(IUserRepository users, IRoleRepository roles, IUnitOfWork unitOfWork, IMapper mapper, IPasswordHasher passwordHasher, IMediaService mediaService)
     {
         _users = users;
+        _roles = roles;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _passwordHasher = passwordHasher;
@@ -78,12 +80,20 @@ public class UserService : IUserService
         return true;
     }
 
-    public async Task<UserViewModel> UpdateUserRoleAsync(int userId, int roleId, CancellationToken cancellationToken = default)
+    public async Task<UserViewModel> UpdateUserRolesAsync(int userId, List<int> roleIds, CancellationToken cancellationToken = default)
     {
         var user = await _users.GetByIdWithDetailsAsync(userId, cancellationToken)
             ?? throw new AppException("User not found.", 404);
 
-        user.RoleId = roleId;
+        user.Roles.Clear();
+        foreach (var roleId in roleIds)
+        {
+            var role = await _roles.GetByIdAsync(roleId, cancellationToken);
+            if (role != null)
+            {
+                user.Roles.Add(role);
+            }
+        }
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<UserViewModel>(user);
@@ -114,6 +124,18 @@ public class UserService : IUserService
         user.SchoolId = dto.SchoolId;
         user.Grade = dto.Grade;
 
+        if (dto.RoleIds != null)
+        {
+            user.Roles.Clear();
+            foreach (var roleId in dto.RoleIds)
+            {
+                var role = await _roles.GetByIdAsync(roleId, cancellationToken);
+                if (role != null)
+                {
+                    user.Roles.Add(role);
+                }
+            }
+        }
 
         if (dto.ProfilePictureStream is not null && !string.IsNullOrWhiteSpace(dto.ProfilePictureFileName))
         {
@@ -137,5 +159,5 @@ public class UserService : IUserService
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<UserViewModel>(user);
-    }    
+    }
 }

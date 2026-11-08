@@ -17,10 +17,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(user => user.RegisterDate).IsRequired();
         builder.Property(user => user.IsApproved).IsRequired();
 
-        builder.HasOne(user => user.Role)
-            .WithMany(role => role.Users)
-            .HasForeignKey(user => user.RoleId)
-            .OnDelete(DeleteBehavior.Restrict);
+        builder.HasMany(user => user.Roles)
+            .WithMany(role => role.Users);
 
         builder.HasOne(user => user.School)
             .WithMany(school => school.Users)

@@ -15,6 +15,8 @@ public class EventProfile : Profile
             .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
         CreateMap<PagedResult<EventParticipant>, PagedResult<EventParticipantViewModel>>()
             .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
-        CreateMap<EventParticipant, EventParticipantViewModel>();
+        CreateMap<EventParticipant, EventParticipantViewModel>()
+            .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User.Name + " " + src.User.LastName))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email));
     }
 }

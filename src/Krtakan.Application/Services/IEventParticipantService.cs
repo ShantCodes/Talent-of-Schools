@@ -12,5 +12,6 @@ public interface IEventParticipantService
     Task<PagedResult<EventParticipantViewModel>> GetParticipantsByEventIdAsync(int eventId, int pageNumber, int pageSize, CancellationToken cancellationToken = default);
     Task<bool> DeleteEventParticipantAsync(int id, CancellationToken cancellationToken = default);
     Task<bool> UpdateEventParticipantAsync(int id, UpdateEventParticipantRequest request, int currentUserId, CancellationToken cancellationToken = default);
+    Task<PagedResult<EventParticipantViewModel>> GetParticipantsWithUserDetailsAsync(int eventId, int pageNumber, int pageSize, CancellationToken cancellationToken = default);
 
 }

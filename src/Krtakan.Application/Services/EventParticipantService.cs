@@ -57,6 +57,12 @@ public class EventParticipantService(
         return mapper.Map<PagedResult<EventParticipantViewModel>>(pagedResult);
     }
 
+    public async Task<PagedResult<EventParticipantViewModel>> GetParticipantsWithUserDetailsAsync(int eventId, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    {
+        var pagedResult = await eventParticipantRepository.GetParticipantsWithUserDetailsAsync(eventId, pageNumber, pageSize, cancellationToken);
+        return mapper.Map<PagedResult<EventParticipantViewModel>>(pagedResult);
+    }
+
     public async Task<bool> DeleteEventParticipantAsync(int id, CancellationToken cancellationToken = default)
     {
         var entity = await eventParticipantRepository.GetByIdAsync(id, cancellationToken);

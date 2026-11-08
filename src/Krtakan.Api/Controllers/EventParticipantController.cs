@@ -22,6 +22,14 @@ public class EventParticipantController(
         return Ok(result);
     }
 
+    [HttpGet("event/{eventId}/details")]
+    [Authorize(Roles = RoleNames.Juror + "," + RoleNames.Admin)]
+    public async Task<IActionResult> GetParticipantsWithUserDetails(int eventId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    {
+        var result = await eventParticipantService.GetParticipantsWithUserDetailsAsync(eventId, pageNumber, pageSize);
+        return Ok(result);
+    }
+
 
     [HttpPost("signup")]
     [Authorize(Roles = "Student")]

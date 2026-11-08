@@ -10,4 +10,8 @@ public record EventParticipantViewModel(
     int UserId,
     int EventId,
     int? DocumentId
-);
+)
+{
+    public string FullName { get; init; }
+    public string Email { get; init; }
+};

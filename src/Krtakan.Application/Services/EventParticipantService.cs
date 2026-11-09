@@ -5,6 +5,10 @@ using Krtakan.Domain.Interfaces;
 using AutoMapper;
 using Krtakan.Domain.Common;
 using System.Security.Claims;
+using Krtakan.Api.ViewModels;
+using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Krtakan.Application.Services;
 
@@ -12,7 +16,8 @@ public class EventParticipantService(
     IEventParticipantRepository eventParticipantRepository,
     IUnitOfWork unitOfWork,
     IMapper mapper,
-    IMediaService mediaService) : IEventParticipantService
+    IMediaService mediaService,
+    IScoringRepository scoringRepository) : IEventParticipantService
 {
     public async Task<EventParticipantViewModel> CreateEventParticipantAsync(CreateEventParticipantRequest request, CancellationToken cancellationToken = default)
     {
@@ -96,5 +101,52 @@ public class EventParticipantService(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return true;
+    }
+
+    public async Task<IReadOnlyList<ParticipantResultViewModel>> GetParticipantResultsAsync(
+    int eventId,
+    CancellationToken cancellationToken = default)
+    {
+        var scores = await scoringRepository.GetScoresByEventIdAsync(eventId);
+
+        if (scores is null || !scores.Any())
+        {
+            return Array.Empty<ParticipantResultViewModel>();
+        }
+
+        var results = scores
+            .GroupBy(s => s.EventParticipantId)
+            .Select(g => new
+            {
+                EventParticipantId = g.Key,
+                AverageScore = g.Average(s => s.Score)
+            })
+            .ToList();
+
+        var participantIds = results.Select(r => r.EventParticipantId).ToList();
+
+        var participants = await eventParticipantRepository
+            .GetParticipantsWithUserDetailsByIdsAsync(participantIds, cancellationToken);
+
+        var participantLookup = participants.ToDictionary(p => p.Id);
+
+        return results
+            .Where(r => participantLookup.ContainsKey(r.EventParticipantId))
+            .Select(r =>
+            {
+                var participant = participantLookup[r.EventParticipantId];
+
+                return new ParticipantResultViewModel
+                {
+                    Title = participant.Title,
+                    Author = participant.Author,
+                    UserName = participant.User.Name,
+                    UserLastName = participant.User.LastName,
+                    ProfilePictureId = participant.User.ProfilePictureMediaId,
+                    AverageScore = Math.Round(r.AverageScore, 2)
+                };
+            })
+            .OrderByDescending(r => r.AverageScore)   // optional: ranked by score
+            .ToList();
     }
 }

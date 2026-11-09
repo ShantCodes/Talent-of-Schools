@@ -29,6 +29,7 @@ public class ScoringService : IScoringService
             EventParticipantId = request.EventParticipantId,
             JurorId = request.JurorId,
             Score = request.Score,
+            EventId = request.EventId,
             PerformanceId = request.PerformanceId
         };
 
@@ -40,6 +41,7 @@ public class ScoringService : IScoringService
             scoring.Id,
             scoring.EventParticipantId,
             scoring.JurorId,
+            scoring.EventId,
             scoring.Score,
             request.PerformanceId.HasValue ? request.PerformanceId.Value : null
         );

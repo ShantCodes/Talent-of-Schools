@@ -74,4 +74,16 @@ public class EventParticipantController(
         }
         return Ok();
     }
+
+    [HttpGet("/results/{eventId}")]
+    [Authorize(Roles = RoleNames.Juror + "," + RoleNames.Admin)]
+    public async Task<IActionResult> GetResults(int eventId)
+    {
+        var result = await eventParticipantService.GetParticipantResultsAsync(eventId);
+        if (result == null)
+        {
+            return NotFound();
+        }
+        return Ok(result);
+    }
 }

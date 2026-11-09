@@ -14,6 +14,8 @@ public class Scoring : BaseEntity
     public int JurorId { get; set; }
 
     public User Juror { get; set; } = null!;
-
     public decimal Score { get; set; }
+
+    public int? EventId { get; set; }
+    public Event? Event { get; set; }
 }

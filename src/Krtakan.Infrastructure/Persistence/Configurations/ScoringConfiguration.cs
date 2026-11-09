@@ -14,6 +14,8 @@ public class ScoringConfiguration : IEntityTypeConfiguration<Scoring>
         builder.Property(scoring => scoring.Score).HasPrecision(5, 2).IsRequired();
         builder.HasIndex(scoring => new { scoring.EventParticipantId, scoring.JurorId }).IsUnique();
 
+
+
         builder.HasOne(scoring => scoring.Performance)
             .WithMany(performance => performance.Scorings)
             .HasForeignKey(scoring => scoring.PerformanceId)

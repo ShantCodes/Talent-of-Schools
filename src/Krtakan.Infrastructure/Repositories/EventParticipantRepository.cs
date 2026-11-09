@@ -33,4 +33,17 @@ public class EventParticipantRepository(AppDbContext context) : EfRepository<Eve
 
         return new PagedResult<EventParticipant>(items, totalCount, pageNumber, pageSize);
     }
+
+    public async Task<List<EventParticipant>> GetParticipantsWithUserDetailsByIdsAsync(
+    IEnumerable<int> participantIds,
+    CancellationToken cancellationToken = default)
+    {
+        if (participantIds is null || !participantIds.Any())
+            return new List<EventParticipant>();
+
+        return await Set.AsNoTracking()
+            .Where(p => participantIds.Contains(p.Id))
+            .Include(p => p.User)
+            .ToListAsync(cancellationToken);
+    }
 }

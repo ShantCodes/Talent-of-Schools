@@ -301,6 +301,9 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                     b.Property<int>("JurorId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("EventId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("Id")
                         .HasColumnType("INTEGER");
 
@@ -312,6 +315,8 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("EventParticipantId", "JurorId");
+
+                    b.HasIndex("EventId");
 
                     b.HasIndex("JurorId");
 
@@ -477,6 +482,10 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Krtakan.Domain.Entities.Scoring", b =>
                 {
+                    b.HasOne("Krtakan.Domain.Entities.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId");
+
                     b.HasOne("Krtakan.Domain.Entities.EventParticipant", "Participant")
                         .WithMany("Scorings")
                         .HasForeignKey("EventParticipantId")
@@ -493,6 +502,8 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                         .WithMany("Scorings")
                         .HasForeignKey("PerformanceId")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Event");
 
                     b.Navigation("Juror");
 

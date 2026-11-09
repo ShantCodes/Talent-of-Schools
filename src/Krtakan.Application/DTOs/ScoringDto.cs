@@ -3,6 +3,7 @@ namespace Krtakan.Application.DTOs;
 public record CreateScoringRequest(
     int EventParticipantId,
     int JurorId,
+    int EventId,
     decimal Score,
     int? PerformanceId
 )
@@ -14,6 +15,7 @@ public record ScoringResponse(
     int Id,
     int EventParticipantId,
     int JurorId,
+    int? EventId,
     decimal Score,
     int? PerformanceId
 );

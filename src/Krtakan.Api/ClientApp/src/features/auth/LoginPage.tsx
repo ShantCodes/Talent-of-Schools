@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { authApi } from './authApi'
 import { authStore } from './authStore'
+import { Link } from 'react-router-dom'
 
 export function LoginPage() {
   const [email, setEmail] = useState('')
@@ -49,6 +50,11 @@ export function LoginPage() {
         >
           {busy ? 'Signing in…' : 'Sign in'}
         </button>
+        <div className="text-center mt-4">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Don't have an account? <Link to="/signup" className="text-blue-600 dark:text-blue-400 hover:underline">Sign up</Link>
+          </p>
+        </div>
       </form>
     </main>
   )

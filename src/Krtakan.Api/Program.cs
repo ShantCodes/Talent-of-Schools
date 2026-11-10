@@ -33,6 +33,17 @@ builder.Services.AddSwaggerGen(x =>
 });
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration, builder.Environment);
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
 
 var jwt = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
 if (string.IsNullOrWhiteSpace(jwt.Secret) || jwt.Secret.Length < 32)
@@ -65,6 +76,7 @@ app.Logger.LogInformation("Database is ready.");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

@@ -19,4 +19,13 @@ public class JwtTokenService(IOptions<JwtOptions> options) : IJwtTokenService
         var token = new JwtSecurityToken(settings.Issuer, settings.Audience, claims, expires: expiresAt, signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
         return new AccessToken(new JwtSecurityTokenHandler().WriteToken(token), expiresAt);
     }
+
+    public (string Token, DateTime ExpiresAt) CreateRefreshToken()
+    {
+        var settings = options.Value;
+        var expiresAt = DateTime.UtcNow.AddMinutes(settings.RefreshTokenExpiryMinutes);
+        var randomNumber = System.Security.Cryptography.RandomNumberGenerator.GetBytes(64);
+        var token = Convert.ToBase64String(randomNumber);
+        return (token, expiresAt);
+    }
 }

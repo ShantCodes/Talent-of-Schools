@@ -11,4 +11,5 @@ public class JwtOptions
     public string Secret { get; set; } = string.Empty;
 
     public int ExpiryMinutes { get; set; } = 120;
+    public int RefreshTokenExpiryMinutes { get; set; } = 20160; // 14 days
 }

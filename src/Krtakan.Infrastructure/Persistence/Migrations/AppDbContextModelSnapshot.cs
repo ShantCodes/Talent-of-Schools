@@ -217,6 +217,35 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                     b.ToTable("Performances", (string)null);
                 });
 
+            modelBuilder.Entity("Krtakan.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("Krtakan.Domain.Entities.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -480,6 +509,17 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Krtakan.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("Krtakan.Domain.Entities.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Krtakan.Domain.Entities.Scoring", b =>
                 {
                     b.HasOne("Krtakan.Domain.Entities.Event", "Event")
@@ -589,6 +629,8 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                     b.Navigation("GivenScores");
 
                     b.Navigation("Performances");
+
+                    b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618
         }

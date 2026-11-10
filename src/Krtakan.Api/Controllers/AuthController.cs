@@ -18,6 +18,8 @@ public class AuthController(IAuthService authService) : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto dto, CancellationToken cancellationToken) => Ok(await authService.LoginAsync(dto, cancellationToken));
 
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh(RefreshTokenDto dto, CancellationToken cancellationToken) => Ok(await authService.RefreshTokenAsync(dto, cancellationToken));
     [Authorize]
     [HttpGet("me")]
     public async Task<IActionResult> Me(CancellationToken cancellationToken)

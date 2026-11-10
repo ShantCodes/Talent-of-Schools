@@ -27,6 +27,7 @@ public class AppDbContext : DbContext, IUnitOfWork
 
     public DbSet<School> Schools => Set<School>();
     public DbSet<Event> Events => Set<Event>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>(); 
 
     public DbSet<EventParticipant> EventParticipants => Set<EventParticipant>();
     public DbSet<MediaFolder> MediaFolders => Set<MediaFolder>();

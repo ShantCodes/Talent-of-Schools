@@ -33,4 +33,5 @@ public class User : BaseEntity
     public ICollection<Scoring> GivenScores { get; set; } = new List<Scoring>();
 
     public ICollection<Role> Roles { get; set; } = new List<Role>();
+    public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 }

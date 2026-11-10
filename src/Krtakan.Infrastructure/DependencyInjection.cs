@@ -40,6 +40,7 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<AppDbContext>());
         services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
         services.AddSingleton<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddSingleton<IFileStorage>(provider => new LocalFileStorage(
             environment.ContentRootPath,
             provider.GetRequiredService<IOptions<FileStorageOptions>>()));

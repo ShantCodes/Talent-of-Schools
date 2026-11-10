@@ -17,6 +17,7 @@ public class AuthService : IAuthService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IJwtTokenService _tokenService;
+    private readonly IRefreshTokenRepository _refreshTokens;
     private readonly IMapper _mapper;
 
     public AuthService(
@@ -26,6 +27,7 @@ public class AuthService : IAuthService
         IUnitOfWork unitOfWork,
         IPasswordHasher passwordHasher,
         IJwtTokenService tokenService,
+        IRefreshTokenRepository refreshTokens,
         IMapper mapper)
     {
         _users = users;
@@ -34,6 +36,7 @@ public class AuthService : IAuthService
         _unitOfWork = unitOfWork;
         _passwordHasher = passwordHasher;
         _tokenService = tokenService;
+        _refreshTokens = refreshTokens;
         _mapper = mapper;
     }
 
@@ -98,18 +101,68 @@ public class AuthService : IAuthService
         if (user is null || !_passwordHasher.Verify(dto.Password, user.PasswordHash))
             throw new AppException("Email or password is incorrect.", 401);
 
-        // if (!user.IsApproved)
-        //     throw new AppException("Your account is waiting for administrator approval.", 403);
-
         var fullName = $"{user.Name} {user.LastName}".Trim();
         var roleName = user.Roles.FirstOrDefault()?.Name ?? "User";
         var accessToken = _tokenService.CreateToken(user.Id, user.Email, roleName, fullName);
 
+        var (refreshToken, expiresAt) = _tokenService.CreateRefreshToken();
+
+        var refreshTokenEntity = new RefreshToken
+        {
+            Token = refreshToken,
+            ExpiresAt = expiresAt,
+            UserId = user.Id
+        };
+
+        await _refreshTokens.AddAsync(refreshTokenEntity, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new AuthResponseViewModel
         {
             Token = accessToken.Token,
             ExpiresAt = accessToken.ExpiresAt,
+            RefreshToken = refreshToken,
+            RefreshTokenExpiresAt = expiresAt,
+            User = _mapper.Map<UserViewModel>(user)
+        };
+    }
+
+    public async Task<AuthResponseViewModel> RefreshTokenAsync(RefreshTokenDto dto, CancellationToken cancellationToken = default)
+    {
+        var refreshToken = await _refreshTokens.GetByTokenAsync(dto.Token, cancellationToken)
+            ?? throw new AppException("Invalid refresh token.", 401);
+
+        if (refreshToken.ExpiresAt < DateTime.UtcNow || refreshToken.IsRevoked)
+            throw new AppException("Refresh token is expired or revoked.", 401);
+
+        var user = await _users.GetByIdWithDetailsAsync(refreshToken.UserId, cancellationToken)
+            ?? throw new AppException("User not found.", 401);
+
+        var fullName = $"{user.Name} {user.LastName}".Trim();
+        var roleName = user.Roles.FirstOrDefault()?.Name ?? "User";
+        var accessToken = _tokenService.CreateToken(user.Id, user.Email, roleName, fullName);
+
+        var (newRefreshToken, newExpiresAt) = _tokenService.CreateRefreshToken();
+
+        // Invalidate the old refresh token by creating a new one
+        refreshToken.IsRevoked = true;
+
+        var newRefreshTokenEntity = new RefreshToken
+        {
+            Token = newRefreshToken,
+            ExpiresAt = newExpiresAt,
+            UserId = user.Id
+        };
+
+        await _refreshTokens.AddAsync(newRefreshTokenEntity, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return new AuthResponseViewModel
+        {
+            Token = accessToken.Token,
+            ExpiresAt = accessToken.ExpiresAt,
+            RefreshToken = newRefreshToken,
+            RefreshTokenExpiresAt = newExpiresAt,
             User = _mapper.Map<UserViewModel>(user)
         };
     }
@@ -121,6 +174,7 @@ public class AuthService : IAuthService
 
         return _mapper.Map<UserViewModel>(user);
     }
+
     public async Task<bool> ChangePasswordAsync(int userId, string password)
     {
         if (password.Length is < 8 or > 72)

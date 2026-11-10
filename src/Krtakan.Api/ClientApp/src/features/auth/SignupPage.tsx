@@ -67,7 +67,7 @@ export function SignupPage() {
           <p className="mt-2 text-gray-600 dark:text-gray-400">Create an account to participate.</p>
         </div>
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               First Name
               <input
@@ -89,7 +89,7 @@ export function SignupPage() {
               />
             </label>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Email
               <input
@@ -131,7 +131,7 @@ export function SignupPage() {
               className="mt-1 w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800"
             />
           </label>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               School
               <select

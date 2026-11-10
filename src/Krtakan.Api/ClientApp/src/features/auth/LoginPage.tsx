@@ -28,26 +28,28 @@ export function LoginPage() {
           <h1 className="mt-1 text-3xl font-bold text-gray-900 dark:text-white">Competition portal</h1>
           <p className="mt-2 text-gray-600 dark:text-gray-400">Sign in to submit or review performances.</p>
         </div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-          Email
-          <input
-            value={email}
-            onChange={event => setEmail(event.target.value)}
-            type="email"
-            required
-            className="mt-1 w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800"
-          />
-        </label>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-          Password
-          <input
-            value={password}
-            onChange={event => setPassword(event.target.value)}
-            type="password"
-            required
-            className="mt-1 w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800"
-          />
-        </label>
+        <div className="space-y-4">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Email
+            <input
+              value={email}
+              onChange={event => setEmail(event.target.value)}
+              type="email"
+              required
+              className="mt-1 w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800"
+            />
+          </label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Password
+            <input
+              value={password}
+              onChange={event => setPassword(event.target.value)}
+              type="password"
+              required
+              className="mt-1 w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800"
+            />
+          </label>
+        </div>
         {message && <p className="text-sm text-red-600 dark:text-red-400" role="status">{message}</p>}
         <button
           disabled={busy}

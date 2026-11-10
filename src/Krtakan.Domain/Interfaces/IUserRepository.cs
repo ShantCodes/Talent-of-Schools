@@ -8,6 +8,7 @@ public interface IUserRepository : IRepository<User>
     Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken = default);
 
     Task<User?> GetByEmailWithDetailsAsync(string email, CancellationToken cancellationToken = default);
+    Task<bool> PhoneExistsAsync(string phone, CancellationToken cancellationToken = default);
 
     Task<User?> GetByIdWithDetailsAsync(int id, CancellationToken cancellationToken = default);
 

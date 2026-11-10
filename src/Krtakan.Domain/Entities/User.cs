@@ -8,7 +8,7 @@ public class User : BaseEntity
 
     public string LastName { get; set; } = string.Empty;
 
-    public DateOnly BirthDate { get; set; }
+    public DateOnly? BirthDate { get; set; }
 
     public string Email { get; set; } = string.Empty;
 
@@ -27,6 +27,9 @@ public class User : BaseEntity
     public int? ProfilePictureMediaId { get; set; }
 
     public Media? ProfilePicture { get; set; }
+
+    public string PhoneNumber { get; set; } = string.Empty;
+
 
     public ICollection<Performance> Performances { get; set; } = new List<Performance>();
 

@@ -45,17 +45,10 @@ public class AuthService : IAuthService
         var name = dto.Name.Trim();
         var lastName = dto.LastName.Trim();
         var email = dto.Email.Trim().ToLowerInvariant();
+        var phone = dto.PhoneNumber.Trim();
 
         if (name.Length == 0 || lastName.Length == 0)
             throw new AppException("Name and last name are required.");
-
-        if (dto.BirthDate == default
-            || dto.BirthDate > DateOnly.FromDateTime(DateTime.UtcNow)
-            || dto.BirthDate.Year < DateTime.UtcNow.Year - 120)
-            throw new AppException("Birth date is not valid.");
-
-        if (dto.Grade is < 1 or > 12)
-            throw new AppException("Grade must be between 1 and 12.");
 
         if (dto.Password.Length is < 8 or > 72)
             throw new AppException("Password must be between 8 and 72 characters.");
@@ -63,8 +56,8 @@ public class AuthService : IAuthService
         if (await _users.EmailExistsAsync(email, cancellationToken))
             throw new AppException("An account with this email already exists.", 409);
 
-        if (dto.SchoolId is int schoolId && !await _schools.AnyAsync(school => school.Id == schoolId, cancellationToken))
-            throw new AppException("The selected school does not exist.");
+        if (await _users.PhoneExistsAsync(phone, cancellationToken))
+            throw new AppException("An account with this phone already exists.", 409);
 
         var studentRole = await _roles.GetByNameAsync(RoleNames.Student, cancellationToken)
             ?? throw new AppException("The student role is not configured.", 500);
@@ -73,13 +66,12 @@ public class AuthService : IAuthService
         {
             Name = name,
             LastName = lastName,
-            BirthDate = dto.BirthDate,
             Email = email,
+            PhoneNumber = dto.PhoneNumber,            
             PasswordHash = _passwordHasher.Hash(dto.Password),
             RegisterDate = DateTime.UtcNow,
-            Roles = new List<Role> { studentRole },
             SchoolId = dto.SchoolId,
-            Grade = dto.Grade,
+            Roles = new List<Role> { studentRole },
             IsApproved = false
         };
 

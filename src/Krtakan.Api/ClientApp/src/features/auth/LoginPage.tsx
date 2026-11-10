@@ -1,20 +1,25 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { authApi } from './authApi'
-import { authStore } from './authStore'
+import { useAuth } from '../../context/AuthContext'
 import { Link } from 'react-router-dom'
 
 export function LoginPage() {
+  const { login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
   const [busy, setBusy] = useState(false)
+
   async function submit(event: FormEvent) {
     event.preventDefault(); setBusy(true); setMessage('')
-    try { const auth = await authApi.login({ email, password }); authStore.save(auth); setMessage(`Welcome, ${auth.user.fullName}.`) }
+    try {
+      await login({ email, password })
+      setMessage(`Welcome, ${email}.`)
+    }
     catch (error) { setMessage(error instanceof Error ? error.message : 'Unable to sign in.') }
     finally { setBusy(false) }
-    }
+  }
+
   return (
     <main className="grid min-h-screen place-items-center p-6">
       <form onSubmit={submit} className="w-full max-w-md space-y-5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-8 shadow-xl">

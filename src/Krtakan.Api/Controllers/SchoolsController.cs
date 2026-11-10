@@ -12,6 +12,7 @@ namespace Krtakan.Api.Controllers;
 public class SchoolsController(ISchoolService schoolService) : ControllerBase
 {
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> GetAll(
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10,

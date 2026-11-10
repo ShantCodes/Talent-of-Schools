@@ -5,4 +5,6 @@ export const authStore = {
   clear: () => localStorage.removeItem(key),
   get: (): AuthResponse | null => { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) as AuthResponse : null },
   getToken: () => authStore.get()?.token ?? null,
+  getRefreshToken: () => authStore.get()?.refreshToken ?? null,
+  getUser: () => authStore.get()?.user ?? null,
 }

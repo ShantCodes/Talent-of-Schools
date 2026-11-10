@@ -10,6 +10,7 @@ public class UserRepository(AppDbContext context) : EfRepository<User>(context),
 {
     private IQueryable<User> Details => Set.Include(user => user.Roles).Include(user => user.School).Include(user => user.ProfilePicture).Include(user => user.Roles);
     public Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken = default) => Set.AnyAsync(user => user.Email == email, cancellationToken);
+    public Task<bool> PhoneExistsAsync(string phone, CancellationToken cancellationToken = default) => Set.AnyAsync(user => user.PhoneNumber == phone, cancellationToken);
     public Task<User?> GetByEmailWithDetailsAsync(string email, CancellationToken cancellationToken = default) => Details.SingleOrDefaultAsync(user => user.Email == email, cancellationToken);
 
     public Task<User?> GetByIdWithDetailsAsync(int id, CancellationToken cancellationToken = default)

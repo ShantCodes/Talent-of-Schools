@@ -13,9 +13,6 @@ public class RegisterDto
     public string LastName { get; set; } = string.Empty;
 
     [Required]
-    public DateOnly BirthDate { get; set; }
-
-    [Required]
     [EmailAddress]
     [MaxLength(256)]
     public string Email { get; set; } = string.Empty;
@@ -25,8 +22,6 @@ public class RegisterDto
     [MaxLength(72)]
     public string Password { get; set; } = string.Empty;
 
+    public string PhoneNumber { get; set; } = string.Empty;
     public int? SchoolId { get; set; }
-
-    [Range(1, 12)]
-    public int? Grade { get; set; }
 }

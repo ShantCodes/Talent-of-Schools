@@ -363,7 +363,7 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly>("BirthDate")
+                    b.Property<DateOnly?>("BirthDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
@@ -392,6 +392,10 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("TEXT")
                         .HasColumnName("Password");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("ProfilePictureMediaId")
                         .HasColumnType("INTEGER");

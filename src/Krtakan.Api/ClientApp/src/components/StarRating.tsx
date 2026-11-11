@@ -59,7 +59,7 @@ export function StarRating({ value, onChange, disabled, readOnly, label }: Props
       tabIndex={interactive ? 0 : undefined}
       onKeyDown={onKeyDown}
       onMouseLeave={() => setHover(null)}
-      className={`inline-flex items-center gap-0.5 rounded outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${disabled ? 'opacity-60' : ''}`}
+      className={`inline-flex items-center gap-0.5 rounded outline-none focus-visible:ring-2 focus-visible:ring-primary/50 ${disabled ? 'opacity-60' : ''}`}
     >
       {Array.from({ length: MAX }, (_, i) => {
         const star = i + 1;
@@ -71,17 +71,17 @@ export function StarRating({ value, onChange, disabled, readOnly, label }: Props
             onMouseMove={interactive ? event => setHover(valueAt(event, star)) : undefined}
             onClick={interactive ? event => onChange!(valueAt(event, star)) : undefined}
           >
-            <Star className={`absolute inset-0 ${size} text-gray-300 dark:text-gray-600`} aria-hidden />
+            <Star className={`absolute inset-0 ${size} text-line-strong`} aria-hidden />
             {fill !== 'empty' && (
               <span className={`absolute inset-y-0 start-0 overflow-hidden ${fill === 'half' ? 'w-1/2' : 'w-full'}`}>
-                <Star className={`absolute start-0 top-0 ${size} fill-amber-400 text-amber-400`} aria-hidden />
+                <Star className={`absolute start-0 top-0 ${size} fill-accent text-accent`} aria-hidden />
               </span>
             )}
           </span>
         );
       })}
       {!readOnly && (
-        <span className="ms-2 w-12 text-sm tabular-nums text-gray-600 dark:text-gray-400" dir="ltr">
+        <span className="ms-2 w-12 text-sm tabular-nums text-fg-muted" dir="ltr">
           {shown ? `${shown} / ${MAX}` : '—'}
         </span>
       )}

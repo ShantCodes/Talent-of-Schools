@@ -64,7 +64,7 @@ export function UserCreatePage() {
           </select>
         </Field>
         <div>
-          <p className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">{t('common.roles')}</p>
+          <p className="mb-2 text-sm font-medium text-fg">{t('common.roles')}</p>
           <RoleCheckboxes roles={roles} selected={roleIds} onChange={setRoleIds} />
         </div>
         <div className="flex flex-wrap justify-end gap-2 pt-2">

@@ -3,11 +3,60 @@
 @tailwind utilities;
 
 @layer base {
-  body {
-    @apply min-h-screen bg-white text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+  /* Color tokens as "R G B" so Tailwind opacity modifiers (e.g. bg-primary/10) work. Used via tailwind.config.js. */
+  :root {
+    color-scheme: light;
+    --canvas: 250 250 249;
+    --surface: 255 255 255;
+    --surface-muted: 245 245 244;
+    --line: 231 229 228;
+    --line-strong: 214 211 209;
+    --fg: 28 25 23;
+    --fg-muted: 87 83 78;
+    --fg-subtle: 107 101 96;
+    --primary: 30 58 95;
+    --primary-fg: 255 255 255;
+    --primary-soft: 232 238 246;
+    --accent: 202 138 4;
+    --success: 21 128 61;
+    --success-fg: 255 255 255;
+    --success-soft: 240 253 244;
+    --danger: 185 28 28;
+    --danger-fg: 255 255 255;
+    --danger-soft: 254 242 242;
+    --warning: 180 83 9;
   }
-  input { @apply w-full rounded-lg border border-slate-600 bg-white px-3 py-2 text-slate-900 outline-none focus:border-indigo-400 dark:bg-slate-900 dark:text-slate-100 dark:border-slate-700; }
+
+  .dark {
+    color-scheme: dark;
+    --canvas: 12 10 9;
+    --surface: 28 25 23;
+    --surface-muted: 41 37 36;
+    --line: 56 52 49;
+    --line-strong: 87 83 78;
+    --fg: 245 245 244;
+    --fg-muted: 168 162 158;
+    --fg-subtle: 150 144 139;
+    --primary: 147 184 227;
+    --primary-fg: 15 27 45;
+    --primary-soft: 26 40 60;
+    --accent: 234 179 8;
+    --success: 74 222 128;
+    --success-fg: 5 46 22;
+    --success-soft: 20 45 30;
+    --danger: 248 113 113;
+    --danger-fg: 69 10 10;
+    --danger-soft: 50 20 20;
+    --warning: 251 191 36;
+  }
+
+  body {
+    @apply min-h-screen bg-canvas text-fg antialiased;
+    accent-color: rgb(var(--primary));
+  }
+  input { @apply w-full rounded-lg border border-line-strong bg-surface px-3 py-2 text-fg outline-none placeholder:text-fg-subtle focus:border-primary focus:ring-2 focus:ring-primary/20; }
   button { @apply rounded-lg px-4 py-2 font-medium transition disabled:cursor-not-allowed disabled:opacity-60; }
+  a:focus-visible, button:focus-visible, select:focus-visible { @apply outline-none ring-2 ring-primary/50 ring-offset-2 ring-offset-canvas; }
 
   /* Only the Arabic-script subset of Vazirmatn is loaded, so Latin text falls through to the system font. */
   html[lang='fa'] body { font-family: 'Vazirmatn', ui-sans-serif, system-ui, 'Segoe UI', Tahoma, sans-serif; }

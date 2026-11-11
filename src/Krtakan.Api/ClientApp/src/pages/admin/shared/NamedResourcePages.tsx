@@ -61,11 +61,11 @@ export function NamedListPage({ resource }: { resource: NamedResource }) {
       <Table headers={[t('common.id'), t('common.name'), '']} empty={!loading && items.length === 0}>
         {items.map(item => (
           <tr key={item.id}>
-            <td className={`${cell} w-16 text-gray-500`}>{item.id}</td>
+            <td className={`${cell} w-16 text-fg-subtle`}>{item.id}</td>
             <td className={`${cell} font-medium`}>{label(item)}</td>
             <td className={`${cell} text-end`}>
               {resource.isLocked?.(item)
-                ? <span className="inline-flex items-center gap-1 text-xs text-gray-500"><Lock className="h-3.5 w-3.5" aria-hidden />{t('common.builtIn')}</span>
+                ? <span className="inline-flex items-center gap-1 text-xs text-fg-subtle"><Lock className="h-3.5 w-3.5" aria-hidden />{t('common.builtIn')}</span>
                 : (
                   <div className="flex justify-end gap-2">
                     <LinkButton small icon={Pencil} to={`${base}/${item.id}/edit`} state={{ item }}>{t('common.edit')}</LinkButton>
@@ -97,7 +97,7 @@ export function NamedFormPage({ resource }: { resource: NamedResource }) {
   }
   return (
     <FormCard title={t(`${prefix}.editTitle`)} {...back}>
-      {loading && <p className="text-gray-500">{t('common.loading')}</p>}
+      {loading && <p className="text-fg-subtle">{t('common.loading')}</p>}
       {!loading && !item && <Alert message={error} />}
       {item && (resource.isLocked?.(item)
         ? <Alert message={t(`${prefix}.locked`, { name: item.name })} />

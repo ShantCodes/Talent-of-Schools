@@ -43,7 +43,7 @@ export function EventListPage() {
           <tr key={event.id}>
             <td className={cell}>
               <div className="font-medium">{event.name}</div>
-              <div className="line-clamp-1 text-xs text-gray-500">{event.description}</div>
+              <div className="line-clamp-1 text-xs text-fg-subtle">{event.description}</div>
             </td>
             <td className={`${cell} whitespace-nowrap`}>{formatDate(event.startDate)}</td>
             <td className={`${cell} whitespace-nowrap`}>{formatDate(event.endDate)}</td>

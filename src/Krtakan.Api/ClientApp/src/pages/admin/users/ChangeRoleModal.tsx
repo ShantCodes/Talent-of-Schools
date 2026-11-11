@@ -25,9 +25,9 @@ export function ChangeRoleModal({ user, roles, onClose, onSaved }:
       message: (
         <div className="space-y-2">
           <p>{t('users.changeRolesIntro', { name: user.fullName, email: user.email })}</p>
-          <p><span className="text-gray-500">{t('users.from')}</span> {roleList(user.roles)}</p>
-          <p><span className="text-gray-500">{t('users.to')}</span> <strong>{roleList(newNames)}</strong></p>
-          <p className="text-xs text-gray-500">{t('users.nextSignIn')}</p>
+          <p><span className="text-fg-subtle">{t('users.from')}</span> {roleList(user.roles)}</p>
+          <p><span className="text-fg-subtle">{t('users.to')}</span> <strong>{roleList(newNames)}</strong></p>
+          <p className="text-xs text-fg-subtle">{t('users.nextSignIn')}</p>
         </div>
       ),
     });
@@ -45,9 +45,9 @@ export function ChangeRoleModal({ user, roles, onClose, onSaved }:
   return (
     <Modal title={t('users.roleModalTitle', { name: user.fullName })} onClose={onClose}>
       <Alert message={error} />
-      <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">{t('users.currentRoles', { roles: roleList(user.roles) })}</p>
+      <p className="mb-3 text-sm text-fg-muted">{t('users.currentRoles', { roles: roleList(user.roles) })}</p>
       <RoleCheckboxes roles={roles} selected={selected} onChange={setSelected} />
-      <p className="mt-4 text-xs text-gray-500">{t('users.firstRoleHint')}</p>
+      <p className="mt-4 text-xs text-fg-subtle">{t('users.firstRoleHint')}</p>
       <div className="mt-6 flex flex-wrap justify-end gap-2">
         <Button variant="secondary" icon={X} onClick={onClose}>{t('common.cancel')}</Button>
         <Button disabled={busy || unchanged} icon={busy ? LoaderCircle : Save} onClick={save}>{busy ? t('common.saving') : t('users.saveRoles')}</Button>

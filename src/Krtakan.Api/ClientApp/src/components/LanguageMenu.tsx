@@ -48,7 +48,7 @@ export function LanguageMenu() {
         aria-expanded={open}
         aria-label={`${t('nav.language')}: ${current.label}`}
         title={t('nav.language')}
-        className={`inline-flex items-center gap-1.5 !px-2.5 !py-1.5 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 ${open ? 'bg-gray-100 dark:bg-gray-800' : ''}`}
+        className={`inline-flex items-center gap-1.5 !px-2.5 !py-1.5 text-sm text-fg-muted hover:bg-surface-muted ${open ? 'bg-surface-muted' : ''}`}
       >
         <Languages className="h-5 w-5" aria-hidden />
         <span className="text-xs font-semibold">{current.short}</span>
@@ -60,7 +60,7 @@ export function LanguageMenu() {
           role="menu"
           aria-label={t('nav.language')}
           onKeyDown={onMenuKeyDown}
-          className="absolute end-0 top-full z-50 mt-2 w-44 overflow-hidden rounded-xl border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-900"
+          className="absolute end-0 top-full z-50 mt-2 w-44 overflow-hidden rounded-xl border border-line bg-surface py-1 shadow-lg"
         >
           {languages.map((option, index) => {
             const active = option.code === language;
@@ -73,10 +73,10 @@ export function LanguageMenu() {
                 lang={option.code}
                 onClick={() => { setLanguage(option.code); close(); }}
                 className={`flex w-full items-center gap-3 !rounded-none !px-3 !py-2 text-start text-sm focus:outline-none ${active
-                  ? 'bg-blue-50 font-semibold text-blue-700 dark:bg-blue-950 dark:text-blue-300'
-                  : 'text-gray-700 hover:bg-gray-100 focus:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800 dark:focus:bg-gray-800'}`}
+                  ? 'bg-primary-soft font-semibold text-primary'
+                  : 'text-fg hover:bg-surface-muted focus:bg-surface-muted'}`}
               >
-                <span className="w-7 shrink-0 rounded bg-gray-100 py-0.5 text-center text-xs font-semibold text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                <span className="w-7 shrink-0 rounded bg-surface-muted py-0.5 text-center text-xs font-semibold text-fg-muted">
                   {option.short}
                 </span>
                 <span className="flex-1">{option.label}</span>

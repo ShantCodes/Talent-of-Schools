@@ -7,7 +7,7 @@ import { useI18n } from '../i18n/I18nContext';
 import { LanguageMenu } from './LanguageMenu';
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
-  `inline-flex items-center gap-1.5 text-sm ${isActive ? 'font-semibold text-blue-600 dark:text-blue-400' : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'}`;
+  `inline-flex items-center gap-1.5 text-sm ${isActive ? 'font-semibold text-primary' : 'text-fg-muted hover:text-fg'}`;
 
 const icon = 'h-4 w-4';
 
@@ -18,9 +18,9 @@ export const Navbar: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 py-2 flex justify-between items-center gap-3 sticky top-0 z-40 transition-colors duration-300">
+    <nav className="bg-surface border-b border-line px-4 py-2 flex justify-between items-center gap-3 sticky top-0 z-40 transition-colors duration-300">
       <div className="flex items-center gap-6">
-        <Link to="/" className="text-xl font-bold text-blue-600 dark:text-blue-400">{t('brand')}</Link>
+        <Link to="/" className="text-xl font-bold text-primary">{t('brand')}</Link>
         {isAuthenticated && (
           <div className="flex items-center gap-4">
             {hasRole(Roles.Student, Roles.Admin, Roles.Juror) && (
@@ -44,20 +44,20 @@ export const Navbar: React.FC = () => {
             </NavLink>
             <button
               onClick={() => { logout(); navigate('/login'); }}
-              className="inline-flex items-center gap-1.5 bg-red-600 dark:bg-red-500 text-white px-3 py-2 sm:px-4 rounded-md hover:bg-red-700 dark:hover:bg-red-600 transition-colors"
+              className="inline-flex items-center gap-1.5 text-fg-muted px-3 py-2 rounded-md hover:bg-danger-soft hover:text-danger transition-colors"
               title={t('nav.logout')}
             >
               <LogOut className={icon} /><span className="hidden sm:inline">{t('nav.logout')}</span>
             </button>
           </div>
         ) : (
-          <Link to="/login" className="inline-flex items-center gap-1.5 bg-blue-600 dark:bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors">
+          <Link to="/login" className="inline-flex items-center gap-1.5 bg-primary text-primary-fg px-4 py-2 rounded-md hover:bg-primary/90 transition-colors">
             <LogIn className={icon} />{t('nav.login')}
           </Link>
         )}
         <button
           onClick={toggleTheme}
-          className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300 transition-colors"
+          className="p-2 rounded-md hover:bg-surface-muted text-fg-muted transition-colors"
           aria-label={t('nav.toggleTheme')}
           title={t('nav.toggleTheme')}
         >

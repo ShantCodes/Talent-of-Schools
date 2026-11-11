@@ -4,7 +4,7 @@ import { roleLabel, useI18n } from '../../../i18n/I18nContext';
 export function RoleCheckboxes({ roles, selected, onChange }: { roles: Role[]; selected: number[]; onChange: (ids: number[]) => void }) {
   const { t } = useI18n();
   if (roles.length === 0) {
-    return <p className="text-sm text-amber-600 dark:text-amber-400">{t('users.rolesLoadFailed')}</p>;
+    return <p className="text-sm text-warning">{t('users.rolesLoadFailed')}</p>;
   }
   return (
     <div className="flex flex-wrap gap-x-6 gap-y-2">

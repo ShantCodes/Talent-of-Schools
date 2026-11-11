@@ -37,11 +37,11 @@ export function AccountPage() {
   return (
     <main className="mx-auto max-w-xl p-4 sm:p-6">
       <PageHeader title={t('account.title')} />
-      <dl className="mb-8 grid grid-cols-[8rem_1fr] gap-y-2 rounded-2xl border border-gray-200 p-5 text-sm dark:border-gray-800">
-        <dt className="text-gray-500">{t('users.col.name')}</dt><dd>{user.fullName}</dd>
-        <dt className="text-gray-500">{t('common.email')}</dt><dd className="break-all">{user.email}</dd>
-        <dt className="text-gray-500">{t('common.school')}</dt><dd>{user.schoolName ?? '—'}</dd>
-        <dt className="text-gray-500">{t('common.roles')}</dt><dd>{user.roles.length > 0 ? roleList(user.roles) : '—'}</dd>
+      <dl className="mb-8 grid grid-cols-[8rem_1fr] gap-y-2 rounded-2xl border border-line p-5 text-sm">
+        <dt className="text-fg-subtle">{t('users.col.name')}</dt><dd>{user.fullName}</dd>
+        <dt className="text-fg-subtle">{t('common.email')}</dt><dd className="break-all">{user.email}</dd>
+        <dt className="text-fg-subtle">{t('common.school')}</dt><dd>{user.schoolName ?? '—'}</dd>
+        <dt className="text-fg-subtle">{t('common.roles')}</dt><dd>{user.roles.length > 0 ? roleList(user.roles) : '—'}</dd>
       </dl>
 
       <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold"><KeyRound className="h-5 w-5" aria-hidden />{t('account.changePassword')}</h2>

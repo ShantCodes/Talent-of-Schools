@@ -6,7 +6,7 @@ export const TopPerformances: React.FC = () => {
   return (
     <section className="py-10">
       <h2 className="text-2xl font-bold mb-4">{t('landing.topPerformances')}</h2>
-      <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded">
+      <div className="rounded-xl border border-line bg-surface p-4 text-fg-muted">
         {t('landing.topComingSoon')}
       </div>
     </section>

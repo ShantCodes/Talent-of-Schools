@@ -37,7 +37,7 @@ export function EventFormPage() {
   if (!id) return <EventForm event={null} />;
   return (
     <FormCard title={t('events.editTitle')} backTo="/admin/events" backLabel={t('events.back')}>
-      {loading ? <p className="text-gray-500">{t('common.loading')}</p> : event ? <EventForm key={event.id} event={event} bare /> : <Alert message={error} />}
+      {loading ? <p className="text-fg-subtle">{t('common.loading')}</p> : event ? <EventForm key={event.id} event={event} bare /> : <Alert message={error} />}
     </FormCard>
   );
 }
@@ -79,7 +79,7 @@ function EventForm({ event, bare }: { event: EventItem | null; bare?: boolean })
       <Field label={t('common.name')}><input value={form.name} onChange={set('name')} required maxLength={150} /></Field>
       <Field label={t('events.field.description')}>
         <textarea value={form.description} onChange={set('description')} required rows={4}
-          className="w-full rounded-lg border border-slate-600 bg-white px-3 py-2 dark:border-slate-700 dark:bg-slate-900" />
+          className="w-full rounded-lg border border-line-strong bg-surface px-3 py-2" />
       </Field>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label={t('events.field.start')}><input type="datetime-local" value={form.startDate} onChange={set('startDate')} required /></Field>

@@ -50,8 +50,8 @@ const sections: Section[] = [
 
 const itemClass = (active: boolean) =>
   `flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm transition-colors ${active
-    ? 'bg-blue-600 font-medium text-white dark:bg-blue-500'
-    : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'}`;
+    ? 'bg-primary font-medium text-primary-fg'
+    : 'text-fg hover:bg-surface-muted'}`;
 
 function SidebarSection({ section }: { section: Section }) {
   const { t } = useI18n();
@@ -66,7 +66,7 @@ function SidebarSection({ section }: { section: Section }) {
 
   return (
     <div>
-      <p className={`mb-1 flex items-center gap-2 px-3 text-xs font-semibold uppercase tracking-wide ${inSection ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500'}`}>
+      <p className={`mb-1 flex items-center gap-2 px-3 text-xs font-semibold uppercase tracking-wide ${inSection ? 'text-primary' : 'text-fg-subtle'}`}>
         <SectionIcon className="h-4 w-4" aria-hidden />{t(section.title)}
       </p>
       <ul className="space-y-0.5">
@@ -118,11 +118,11 @@ function MobileMenu() {
         onClick={() => setOpen(true)}
         aria-expanded={open}
         aria-controls="admin-drawer"
-        className="flex w-full items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 text-start dark:border-gray-800 dark:bg-gray-900"
+        className="flex w-full items-center gap-3 rounded-xl border border-line bg-surface px-4 py-3 text-start"
       >
         <Menu className="h-5 w-5 shrink-0" aria-hidden />
         <span className="flex-1">
-          <span className="block text-xs uppercase tracking-wide text-gray-500">{t('admin.menu')}</span>
+          <span className="block text-xs uppercase tracking-wide text-fg-subtle">{t('admin.menu')}</span>
           <span className="flex items-center gap-1.5 font-medium"><CurrentIcon className="h-4 w-4" aria-hidden />{current ? t(current.title) : t('nav.admin')}</span>
         </span>
       </button>
@@ -134,11 +134,11 @@ function MobileMenu() {
         />
         <aside
           id="admin-drawer"
-          className={`absolute inset-y-0 start-0 flex w-72 max-w-[85vw] flex-col bg-white shadow-xl transition-transform duration-200 dark:bg-gray-900 ${open ? 'translate-x-0' : '-translate-x-full rtl:translate-x-full'}`}
+          className={`absolute inset-y-0 start-0 flex w-72 max-w-[85vw] flex-col bg-surface shadow-xl transition-transform duration-200 ${open ? 'translate-x-0' : '-translate-x-full rtl:translate-x-full'}`}
         >
-          <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-800">
+          <div className="flex items-center justify-between border-b border-line px-4 py-3">
             <span className="font-semibold">{t('admin.panel')}</span>
-            <button onClick={() => setOpen(false)} className="!p-1 text-gray-500 hover:text-gray-900 dark:hover:text-white" aria-label={t('admin.closeMenu')}>
+            <button onClick={() => setOpen(false)} className="!p-1 text-fg-subtle hover:text-fg" aria-label={t('admin.closeMenu')}>
               <X className="h-5 w-5" />
             </button>
           </div>
@@ -154,7 +154,7 @@ export function AdminLayout() {
     <div className="mx-auto flex max-w-7xl flex-col gap-6 p-4 sm:p-6 md:flex-row">
       <MobileMenu />
       <aside className="hidden md:block md:w-56 md:shrink-0">
-        <div className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900 md:sticky md:top-20">
+        <div className="rounded-2xl border border-line bg-surface p-4 md:sticky md:top-20">
           <SidebarNav />
         </div>
       </aside>

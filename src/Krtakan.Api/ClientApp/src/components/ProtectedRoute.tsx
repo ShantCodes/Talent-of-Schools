@@ -14,7 +14,7 @@ export const ProtectedRoute = ({ roles }: { roles?: string[] }) => {
     return (
       <main className="mx-auto max-w-xl p-10 text-center">
         <h1 className="text-2xl font-bold">{t('access.deniedTitle')}</h1>
-        <p className="mt-2 text-gray-600 dark:text-gray-400">{t('access.deniedText', { roles: roles.map(roleLabel).join(', ') })}</p>
+        <p className="mt-2 text-fg-muted">{t('access.deniedText', { roles: roles.map(roleLabel).join(', ') })}</p>
       </main>
     );
   }

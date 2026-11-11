@@ -66,12 +66,12 @@ export function EventParticipantsPage() {
             <td className={cell}>{participant.author}</td>
             <td className={cell}>
               <div>{studentName(participant)}</div>
-              <div className="text-xs text-gray-500">{participant.email}</div>
+              <div className="text-xs text-fg-subtle">{participant.email}</div>
             </td>
             <td className={cell}>
               {participant.documentId
                 ? <Button small variant="secondary" icon={Download} onClick={() => download(participant)}>{t('common.download')}</Button>
-                : <span className="text-gray-500">—</span>}
+                : <span className="text-fg-subtle">—</span>}
             </td>
             <td className={`${cell} text-end`}>
               <Button small variant="danger" icon={Trash2} onClick={() => remove(participant)}>{t('common.remove')}</Button>

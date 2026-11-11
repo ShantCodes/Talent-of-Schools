@@ -23,16 +23,16 @@ export const PendingEvents: React.FC = () => {
   return (
     <section className="py-10">
       <h2 className="text-2xl font-bold mb-4">{t('landing.pendingEvents')}</h2>
-      <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded space-y-3">
+      <div className="rounded-xl border border-line bg-surface p-4 space-y-3">
         {!isAuthenticated && (
-          <p>{beforeLink}<Link to="/login" className="text-blue-600 dark:text-blue-400 hover:underline">{t('landing.signIn')}</Link>{afterLink}</p>
+          <p>{beforeLink}<Link to="/login" className="text-primary hover:underline">{t('landing.signIn')}</Link>{afterLink}</p>
         )}
-        {isAuthenticated && failed && <p className="text-red-600 dark:text-red-400">{t('landing.loadFailed')}</p>}
+        {isAuthenticated && failed && <p className="text-danger">{t('landing.loadFailed')}</p>}
         {isAuthenticated && !failed && events.length === 0 && <p>{t('landing.noUpcoming')}</p>}
         {events.map(event => (
-          <Link key={event.id} to="/events" className="block rounded-lg bg-white p-3 hover:shadow dark:bg-gray-900">
+          <Link key={event.id} to="/events" className="block rounded-lg border border-line p-3 transition-colors hover:bg-surface-muted">
             <div className="font-semibold">{event.name}</div>
-            <div className="text-xs text-gray-500">{formatDate(event.startDate)} – {formatDate(event.endDate)}</div>
+            <div className="text-xs text-fg-subtle">{formatDate(event.startDate)} – {formatDate(event.endDate)}</div>
           </Link>
         ))}
       </div>

@@ -8,9 +8,9 @@ import type { School, SchoolResponse } from './types'
 import { PasswordInput } from '../../components/ui'
 import { normalizeIranMobile, phoneInputProps } from '../../lib/phone'
 
-const boxClass = 'w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800'
+const boxClass = 'w-full p-2 border border-line-strong rounded-md bg-surface'
 const inputClass = `mt-1 ${boxClass}`
-const labelClass = 'block text-sm font-medium text-gray-700 dark:text-gray-300'
+const labelClass = 'block text-sm font-medium text-fg'
 
 export function SignupPage() {
   const { t } = useI18n()
@@ -74,11 +74,11 @@ export function SignupPage() {
 
   return (
     <main className="grid min-h-screen place-items-center p-6">
-      <form onSubmit={submit} className="w-full max-w-md space-y-5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-8 shadow-xl">
+      <form onSubmit={submit} className="w-full max-w-md space-y-5 rounded-2xl border border-line bg-surface p-8 shadow-xl">
         <div className="flex flex-col">
-          <p className="text-sm font-semibold uppercase text-blue-600 dark:text-blue-400">{t('brand')}</p>
-          <h1 className="mt-1 text-3xl font-bold text-gray-900 dark:text-white">{t('signup.title')}</h1>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">{t('signup.subtitle')}</p>
+          <p className="text-sm font-semibold uppercase text-primary">{t('brand')}</p>
+          <h1 className="mt-1 text-3xl font-bold text-fg">{t('signup.title')}</h1>
+          <p className="mt-2 text-fg-muted">{t('signup.subtitle')}</p>
         </div>
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -129,16 +129,16 @@ export function SignupPage() {
             </select>
           </label>
         </div>
-        {message && <p className={`text-sm ${registered ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`} role="status">{message}</p>}
+        {message && <p className={`text-sm ${registered ? 'text-success' : 'text-danger'}`} role="status">{message}</p>}
         <button
           disabled={busy || registered}
-          className="w-full bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white font-semibold py-2 rounded-md transition-colors"
+          className="w-full bg-primary hover:bg-primary/90 text-primary-fg font-semibold py-2 rounded-md transition-colors"
         >
           {busy ? t('signup.submitting') : t('signup.submit')}
         </button>
         <div className="text-center mt-4">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            {t('signup.haveAccount')} <Link to="/login" className="text-blue-600 dark:text-blue-400 hover:underline">{t('signup.signIn')}</Link>
+          <p className="text-sm text-fg-muted">
+            {t('signup.haveAccount')} <Link to="/login" className="text-primary hover:underline">{t('signup.signIn')}</Link>
           </p>
         </div>
       </form>

@@ -76,7 +76,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   return (
     <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, logout, hasRole }}>
-      {ready ? children : <p className="p-10 text-center text-gray-500">{translate('common.loading')}</p>}
+      {ready ? children : <p className="p-10 text-center text-fg-subtle">{translate('common.loading')}</p>}
     </AuthContext.Provider>
   );
 };

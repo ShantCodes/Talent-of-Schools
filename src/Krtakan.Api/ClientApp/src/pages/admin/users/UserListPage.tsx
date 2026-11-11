@@ -80,21 +80,21 @@ export function UserListPage() {
           <tr key={user.id}>
             <td className={cell}>
               <div className="font-medium">{user.fullName}</div>
-              <div className="text-xs text-gray-500">{user.email}</div>
+              <div className="text-xs text-fg-subtle">{user.email}</div>
             </td>
             <td className={cell}>{user.schoolName ?? '—'}</td>
             <td className={cell}>
               <div className="flex flex-wrap gap-1">
-                {user.roles.length === 0 && <span className="text-xs text-gray-500">{t('common.none')}</span>}
+                {user.roles.length === 0 && <span className="text-xs text-fg-subtle">{t('common.none')}</span>}
                 {user.roles.map(role => (
-                  <span key={role} className="rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">{roleLabel(role)}</span>
+                  <span key={role} className="rounded-full bg-primary-soft px-2 py-0.5 text-xs text-primary">{roleLabel(role)}</span>
                 ))}
               </div>
             </td>
             <td className={cell}>
               {user.isApproved
-                ? <span className="text-green-600 dark:text-green-400">{t('common.approved')}</span>
-                : <span className="text-amber-600 dark:text-amber-400">{t('common.pending')}</span>}
+                ? <span className="text-success">{t('common.approved')}</span>
+                : <span className="text-warning">{t('common.pending')}</span>}
             </td>
             <td className={`${cell} whitespace-nowrap`}>{formatDate(user.registerDate)}</td>
             <td className={`${cell} text-end`}>

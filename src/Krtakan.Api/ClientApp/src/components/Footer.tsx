@@ -8,6 +8,11 @@ import { Logo } from './Logo';
 const linkClass = 'text-fg-muted transition-colors hover:text-primary';
 const headingClass = 'text-sm font-semibold uppercase tracking-wide text-fg';
 const year = new Date().getFullYear();
+const creators = [
+  { nameKey: 'footer.creator.shant', phone: '+98 912 830 9473' },
+  { nameKey: 'footer.creator.satenik', phone: '+98 936 727 9332' },
+] as const;
+const showCreatorPhones = false;
 
 export function Footer() {
   const { t } = useI18n();
@@ -57,6 +62,18 @@ export function Footer() {
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-4 text-xs text-fg-subtle">
           <p>{t('footer.rights', { year, brand: t('brand') })}</p>
           <p>{t('footer.heritage')}</p>
+          <p className="w-full text-center">
+            {t('footer.createdBy')}{' '}
+            {creators.map(({ nameKey, phone }, index) => (
+              <span key={phone}>
+                {index > 0 && ` ${t('footer.and')} `}
+                <bdi className="font-medium text-fg-muted">{t(nameKey)}</bdi>
+                {showCreatorPhones && (
+                  <> (<a href={`tel:${phone.replace(/\s/g, '')}`} dir="ltr" className="hover:text-primary">{phone}</a>)</>
+                )}
+              </span>
+            ))}
+          </p>
         </div>
       </div>
     </footer>

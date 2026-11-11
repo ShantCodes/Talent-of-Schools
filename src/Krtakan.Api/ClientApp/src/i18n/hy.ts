@@ -120,6 +120,10 @@ export const hy: Record<MessageKey, string> = {
   'footer.disciplines': 'Ուղղություններ',
   'footer.rights': '© {year} {brand}։ Բոլոր իրավունքները պաշտպանված են։',
   'footer.heritage': 'Ոգեշնչված հայկական արվեստով և ժառանգությամբ։',
+  'footer.createdBy': 'Ստեղծողներ՝',
+  'footer.and': 'և',
+  'footer.creator.shant': 'Շանթ Իսաղուլեան',
+  'footer.creator.satenik': 'Սաթենիկ Շահիջանեան',
 
   'access.deniedTitle': 'Մուտքն արգելված է',
   'access.deniedText': 'Ձեր հաշիվը չունի այս էջի համար անհրաժեշտ դերը ({roles})։',

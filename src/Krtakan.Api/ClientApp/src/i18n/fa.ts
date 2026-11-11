@@ -120,6 +120,10 @@ export const fa: Record<MessageKey, string> = {
   'footer.disciplines': 'رشته‌ها',
   'footer.rights': '© {year} {brand}. تمامی حقوق محفوظ است.',
   'footer.heritage': 'الهام‌گرفته از هنر و میراث ارمنی.',
+  'footer.createdBy': 'سازندگان:',
+  'footer.and': 'و',
+  'footer.creator.shant': 'شانت ایساغولیان',
+  'footer.creator.satenik': 'ساتنیک شاهیجانی',
 
   'access.deniedTitle': 'دسترسی ممنوع',
   'access.deniedText': 'حساب شما نقش لازم برای این صفحه را ندارد ({roles}).',

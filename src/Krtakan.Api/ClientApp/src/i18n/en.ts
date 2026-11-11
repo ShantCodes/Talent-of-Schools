@@ -118,6 +118,10 @@ export const en = {
   'footer.disciplines': 'Disciplines',
   'footer.rights': '© {year} {brand}. All rights reserved.',
   'footer.heritage': 'Inspired by Armenian art and heritage.',
+  'footer.createdBy': 'Created by',
+  'footer.and': 'and',
+  'footer.creator.shant': 'Shant Isaghoolian',
+  'footer.creator.satenik': 'Satenik Shahijanian',
 
   'access.deniedTitle': 'Access denied',
   'access.deniedText': 'Your account does not have the role needed for this page ({roles}).',

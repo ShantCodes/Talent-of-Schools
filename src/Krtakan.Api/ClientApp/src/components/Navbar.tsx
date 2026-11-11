@@ -55,8 +55,13 @@ export const Navbar: React.FC = () => {
             </button>
           </div>
         ) : (
-          <Link to="/login" className="inline-flex items-center gap-1.5 bg-primary text-primary-fg px-4 py-2 rounded-md hover:bg-primary/90 transition-colors">
-            <LogIn className={icon} />{t('nav.login')}
+          <Link
+            to="/login"
+            className="inline-flex items-center gap-1.5 bg-primary text-primary-fg px-3 sm:px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
+            title={t('nav.login')}
+            aria-label={t('nav.login')}
+          >
+            <LogIn className={icon} /><span className="hidden sm:inline">{t('nav.login')}</span>
           </Link>
         )}
         <button

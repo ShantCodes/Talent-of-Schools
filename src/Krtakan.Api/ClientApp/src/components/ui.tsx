@@ -4,6 +4,7 @@ import { ArrowLeft, Check, ChevronLeft, ChevronRight, CircleAlert, CircleCheck, 
 import type { LucideIcon } from 'lucide-react';
 import type { PagedResult } from '../features/auth/types';
 import { currentLocale, translate, useI18n } from '../i18n/I18nContext';
+import { PageTitle } from './PageTitle';
 
 const variants = {
   primary: 'bg-primary text-primary-fg hover:bg-primary/90',
@@ -35,6 +36,7 @@ export function Button({ variant = 'primary', small, icon: Icon, className = '',
 export function PageHeader({ title, subtitle, action }: { title: string; subtitle?: string; action?: React.ReactNode }) {
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+      <PageTitle title={title} />
       <div>
         <h1 className="text-2xl font-bold text-fg">{title}</h1>
         {subtitle && <p className="mt-1 text-sm text-fg-muted">{subtitle}</p>}

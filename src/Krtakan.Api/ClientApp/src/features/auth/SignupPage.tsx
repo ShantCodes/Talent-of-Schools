@@ -6,6 +6,7 @@ import { api } from '../../lib/api'
 import { useI18n } from '../../i18n/I18nContext'
 import type { School, SchoolResponse } from './types'
 import { PasswordInput } from '../../components/ui'
+import { PageTitle } from '../../components/PageTitle'
 import { normalizeIranMobile, phoneInputProps } from '../../lib/phone'
 
 const boxClass = 'w-full p-2 border border-line-strong rounded-md bg-surface'
@@ -74,6 +75,7 @@ export function SignupPage() {
 
   return (
     <main className="grid min-h-screen place-items-center p-6">
+      <PageTitle title={t('login.signUp')} />
       <form onSubmit={submit} className="w-full max-w-md space-y-5 rounded-2xl border border-line bg-surface p-8 shadow-xl">
         <div className="flex flex-col">
           <p className="text-sm font-semibold uppercase text-primary">{t('brand')}</p>

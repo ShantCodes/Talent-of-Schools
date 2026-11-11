@@ -1,4 +1,5 @@
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { LandingPage } from './features/landing/LandingPage';
 import { LoginPage } from './features/auth/LoginPage';
 import { SignupPage } from './features/auth/SignupPage';
@@ -22,6 +23,7 @@ import { AccountPage } from './pages/account/AccountPage';
 
 export default function App() {
   return (
+    <HelmetProvider>
     <HashRouter>
       <ThemeProvider>
         <I18nProvider>
@@ -64,5 +66,6 @@ export default function App() {
         </I18nProvider>
       </ThemeProvider>
     </HashRouter>
+    </HelmetProvider>
   );
 }

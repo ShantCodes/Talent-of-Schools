@@ -73,7 +73,6 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     document.documentElement.lang = language;
     document.documentElement.dir = dir;
-    document.title = translate('brand');
   }, [language, dir]);
 
   const setLanguage = useCallback((next: Language) => {

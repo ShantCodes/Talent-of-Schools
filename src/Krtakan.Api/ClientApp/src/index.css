@@ -8,4 +8,13 @@
   }
   input { @apply w-full rounded-lg border border-slate-600 bg-white px-3 py-2 text-slate-900 outline-none focus:border-indigo-400 dark:bg-slate-900 dark:text-slate-100 dark:border-slate-700; }
   button { @apply rounded-lg px-4 py-2 font-medium transition disabled:cursor-not-allowed disabled:opacity-60; }
+
+  /* Only the Arabic-script subset of Vazirmatn is loaded, so Latin text falls through to the system font. */
+  html[lang='fa'] body { font-family: 'Vazirmatn', ui-sans-serif, system-ui, 'Segoe UI', Tahoma, sans-serif; }
+  /* Letter-spacing breaks the joined letters of Persian script. */
+  html[lang='fa'] .tracking-wide { letter-spacing: normal; }
+
+  /* Emails, passwords, numbers and dates read left-to-right even on RTL pages. */
+  input[type='email'], input[type='password'], input[data-password], input[type='tel'], input[type='number'], input[type='date'], input[type='datetime-local'] { direction: ltr; }
+  [dir='rtl'] input[type='email'], [dir='rtl'] input[type='password'], [dir='rtl'] input[data-password], [dir='rtl'] input[type='tel'], [dir='rtl'] input[type='number'] { text-align: right; }
 }

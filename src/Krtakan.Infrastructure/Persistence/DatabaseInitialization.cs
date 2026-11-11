@@ -17,6 +17,9 @@ public static class DatabaseInitialization
         await context.Database.MigrateAsync();
 
         var seed = scope.ServiceProvider.GetRequiredService<IOptions<SeedOptions>>().Value;
+
+        await SeedMediaFoldersAsync(context, seed);
+
         var adminEmail = seed.AdminEmail.Trim().ToLowerInvariant();
         if (string.IsNullOrWhiteSpace(adminEmail) || string.IsNullOrWhiteSpace(seed.AdminPassword)) return;
 
@@ -55,27 +58,25 @@ public static class DatabaseInitialization
             IsApproved = true
         });
         await context.SaveChangesAsync();
+    }
 
-        if (seed.MediaFolders != null && seed.MediaFolders.Any())
+    private static async Task SeedMediaFoldersAsync(AppDbContext context, SeedOptions seed)
+    {
+        if (seed.MediaFolders == null || seed.MediaFolders.Count == 0) return;
+
+        var existingNames = await context.MediaFolders.Select(f => f.Name).ToListAsync();
+
+        foreach (var folderName in seed.MediaFolders)
         {
-            foreach (var folderName in seed.MediaFolders)
-            {
-                var path = $"storage/media/{folderName.ToLower()}";
-                Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), path));
-            }
+            var path = $"storage/media/{folderName.ToLower()}";
+            Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), path));
 
-            if (!await context.MediaFolders.AnyAsync())
+            if (!existingNames.Contains(folderName))
             {
-                foreach (var folderName in seed.MediaFolders)
-                {
-                    context.MediaFolders.Add(new MediaFolder
-                    {
-                        Name = folderName,
-                        Path = $"storage/media/{folderName.ToLower()}"
-                    });
-                }
-                await context.SaveChangesAsync();
+                context.MediaFolders.Add(new MediaFolder { Name = folderName, Path = path });
             }
         }
+
+        await context.SaveChangesAsync();
     }
 }

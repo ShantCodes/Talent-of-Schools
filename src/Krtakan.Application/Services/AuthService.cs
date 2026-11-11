@@ -45,10 +45,11 @@ public class AuthService : IAuthService
         var name = dto.Name.Trim();
         var lastName = dto.LastName.Trim();
         var email = dto.Email.Trim().ToLowerInvariant();
-        var phone = dto.PhoneNumber.Trim();
-
         if (name.Length == 0 || lastName.Length == 0)
             throw new AppException("Name and last name are required.");
+
+        if (!IranMobile.TryNormalize(dto.PhoneNumber, out var phone))
+            throw new AppException("Enter a valid Iranian mobile number, e.g. 09123456789.");
 
         if (dto.Password.Length is < 8 or > 72)
             throw new AppException("Password must be between 8 and 72 characters.");
@@ -67,7 +68,7 @@ public class AuthService : IAuthService
             Name = name,
             LastName = lastName,
             Email = email,
-            PhoneNumber = dto.PhoneNumber,            
+            PhoneNumber = phone,
             PasswordHash = _passwordHasher.Hash(dto.Password),
             RegisterDate = DateTime.UtcNow,
             SchoolId = dto.SchoolId,

@@ -20,6 +20,9 @@ import { SchoolFormPage, SchoolListPage } from './pages/admin/schools/SchoolPage
 import { StudentEventsPage } from './pages/student/EventsPage';
 import { JuryPage } from './pages/jury/JuryPage';
 import { AccountPage } from './pages/account/AccountPage';
+import { Footer } from './components/Footer';
+import { ScrollToTop } from './components/ScrollToTop';
+import { MotionConfig } from 'framer-motion';
 
 export default function App() {
   return (
@@ -28,7 +31,11 @@ export default function App() {
       <ThemeProvider>
         <I18nProvider>
         <AuthProvider>
+          <MotionConfig reducedMotion="user">
+          <ScrollToTop />
+          <div className="flex min-h-screen flex-col">
           <Navbar />
+          <div className="flex-1">
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
@@ -62,6 +69,10 @@ export default function App() {
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          </div>
+          <Footer />
+          </div>
+          </MotionConfig>
         </AuthProvider>
         </I18nProvider>
       </ThemeProvider>

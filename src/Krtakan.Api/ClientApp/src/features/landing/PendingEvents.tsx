@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { CalendarDays } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useI18n } from '../../i18n/I18nContext';
 import { eventsApi } from '../../lib/endpoints';
@@ -21,9 +22,12 @@ export const PendingEvents: React.FC = () => {
   }, [isAuthenticated]);
 
   return (
-    <section className="py-10">
-      <h2 className="text-2xl font-bold mb-4">{t('landing.pendingEvents')}</h2>
-      <div className="rounded-xl border border-line bg-surface p-4 space-y-3">
+    <section className="h-full">
+      <h2 className="mb-4 inline-flex items-center gap-2 text-2xl font-bold">
+        <CalendarDays className="h-6 w-6 text-heritage-red" aria-hidden />
+        {t('landing.pendingEvents')}
+      </h2>
+      <div className="space-y-3 rounded-2xl border border-line bg-surface p-5 shadow-sm">
         {!isAuthenticated && (
           <p>{beforeLink}<Link to="/login" className="text-primary hover:underline">{t('landing.signIn')}</Link>{afterLink}</p>
         )}

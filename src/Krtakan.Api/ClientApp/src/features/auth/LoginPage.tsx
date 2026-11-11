@@ -27,7 +27,7 @@ export function LoginPage() {
   }
 
   return (
-    <main className="grid min-h-screen place-items-center p-6">
+    <main className="grid place-items-center px-6 py-12 sm:py-16">
       <PageTitle title={t('nav.login')} />
       <form onSubmit={submit} className="w-full max-w-md space-y-5 rounded-2xl border border-line bg-surface p-8 shadow-xl">
         <div className="flex flex-col">

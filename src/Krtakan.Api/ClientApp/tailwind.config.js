@@ -17,6 +17,8 @@ export default {
         success: { DEFAULT: token('success'), fg: token('success-fg'), soft: token('success-soft') },
         danger: { DEFAULT: token('danger'), fg: token('danger-fg'), soft: token('danger-soft') },
         warning: token('warning'),
+        /** Armenian flag colors, used for decorative ornaments in both themes. */
+        heritage: { red: '#D90012', blue: '#0033A0', apricot: '#F2A800' },
       },
     },
   },

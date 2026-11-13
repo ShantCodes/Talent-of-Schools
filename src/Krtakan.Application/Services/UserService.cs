@@ -120,9 +120,11 @@ public class UserService : IUserService
 
         user.Name = dto.Name;
         user.LastName = dto.LastName;
-        // user.BirthDate = dto.BirthDate;
+        user.BirthDate = dto.BirthDate;
+        user.Email = dto.Email;
         user.SchoolId = dto.SchoolId;
-        user.Grade = dto.Grade;
+        user.Grade = dto.Grade;        
+        user.PhoneNumber = dto.PhoneNumber;
 
         if (dto.RoleIds != null)
         {

@@ -297,4 +297,5 @@ export const fa: Record<MessageKey, string> = {
   'account.title': 'حساب من',
   'account.changePassword': 'تغییر رمز عبور',
   'account.passwordChanged': 'رمز عبور شما تغییر کرد.',
+  'account.profileUpdated': 'پروفایل شما به‌روز شد.',
 };

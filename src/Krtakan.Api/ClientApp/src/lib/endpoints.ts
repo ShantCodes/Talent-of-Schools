@@ -1,5 +1,6 @@
-import { api, json } from './api'
+import { api, apiUrl, buildHeaders, json } from './api'
 import type { PagedResult, RegisterRequest, RegisterResult, Role, School, User } from '../features/auth/types'
+import { authStore } from '../features/auth/authStore';
 
 export type EventItem = {
   id: number;
@@ -84,6 +85,22 @@ export const usersApi = {
   setRoles: (id: number, roleIds: number[]) => api<User>(`/api/users/${id}/role`, json('PATCH', roleIds)),
   remove: (id: number) => api(`/api/users/${id}`, { method: 'DELETE' }),
   setPassword: (email: string, password: string) => api('/api/adminchangepassword', json('PATCH', { username: email, password })),
+  updateProfile: (input: FormData) =>
+    api<User>('/api/users/updateProfile', {
+      method: 'POST',
+      body: input,
+    }),
+  getProfilePicture: async (mediaId: number): Promise<Blob> => {
+    const response = await fetch(apiUrl(`/api/media/download/${mediaId}`), {
+      headers: buildHeaders({}, authStore.getToken()),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch profile picture');
+    }
+
+    return response.blob();
+  },
 }
 
 export const rolesApi = {

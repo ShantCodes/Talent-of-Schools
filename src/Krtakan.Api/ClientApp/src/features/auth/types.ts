@@ -10,6 +10,7 @@ export type User = {
   schoolName?: string | null;
   grade?: number | null;
   isApproved: boolean;
+  phoneNumber: string | null;
   registerDate?: string;
   profilePictureMediaId?: number | null;
   profilePictureUrl?: string | null;

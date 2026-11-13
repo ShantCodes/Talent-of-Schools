@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     allowedHosts: [
-      'hits-nirvana-medications-discussed.trycloudflare.com'
+      '.trycloudflare.com'
     ],
     proxy: {
       '/api': 'http://localhost:5076'

@@ -42,7 +42,7 @@ public class UsersController(IUserService userService) : ControllerBase
     public async Task<IActionResult> AdminChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken) =>
     Ok(await userService.ChangePasswordAsync(request.Username, request.Password, cancellationToken));    
 
-    [HttpPut("api/user/updateProfile")]
+    [HttpPost("updateProfile")]
     [Authorize]
     public async Task<IActionResult> UpdateProfile(
         [FromForm] UpdateUserViewModel request,
@@ -56,7 +56,9 @@ public class UsersController(IUserService userService) : ControllerBase
             LastName = request.LastName,
             BirthDate = request.BirthDate,
             SchoolId = request.SchoolId,
-            Grade = request.Grade
+            Grade = request.Grade,
+            PhoneNumber = request.PhoneNumber,
+            Email = request.Email
         };
 
         if (request.ProfilePicture is not null)

@@ -29,7 +29,7 @@ export const en = {
   'common.newPassword': 'New password',
   'common.confirmNewPassword': 'Confirm new password',
   'common.showPassword': 'Show password',
-  'common.hidePassword': 'Hide password',
+  'common.hidePassword': 'Hide password',  
   'common.school': 'School',
   'common.noSchool': 'No school',
   'common.roles': 'Roles',
@@ -47,6 +47,9 @@ export const en = {
   'common.score': 'Score',
   'common.id': 'ID',
   'common.nameTaken': 'The name may already be in use.',
+  'common.birthDate': 'Birth date',
+  'common.grade': 'Grade',
+  'common.updateProfile': 'Update profile',
 
   'error.forbidden': 'You do not have permission to do this.',
   'error.notFound': 'Not found.',
@@ -294,7 +297,7 @@ export const en = {
 
   'account.title': 'My account',
   'account.changePassword': 'Change password',
-  'account.passwordChanged': 'Your password was changed.',
+  'account.profileUpdated': 'Your profile was updated.',
 } as const;
 
 export type MessageKey = keyof typeof en;

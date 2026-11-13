@@ -7,6 +7,8 @@ public class UpdateUserViewModel
     public DateOnly? BirthDate { get; set; }
     public int? SchoolId { get; set; }
     public int? Grade { get; set; }
+    public string PhoneNumber { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
     public IFormFile? ProfilePicture {get; set;}
 }
 

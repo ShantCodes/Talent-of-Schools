@@ -297,4 +297,5 @@ export const hy: Record<MessageKey, string> = {
   'account.title': 'Իմ հաշիվը',
   'account.changePassword': 'Փոխել գաղտնաբառը',
   'account.passwordChanged': 'Ձեր գաղտնաբառը փոխված է։',
+  'account.profileUpdated': 'Ձեր պրոֆիլը թարմացվել է:',
 };

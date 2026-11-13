@@ -117,24 +117,26 @@ public class UserService : IUserService
     {
         var user = await _users.GetByIdWithDetailsAsync(userId, cancellationToken)
             ?? throw new AppException("User not found.", 404);
-
-        user.Name = dto.Name;
-        user.LastName = dto.LastName;
-        user.BirthDate = dto.BirthDate;
-        user.Email = dto.Email;
-        user.SchoolId = dto.SchoolId;
-        user.Grade = dto.Grade;        
-        user.PhoneNumber = dto.PhoneNumber;
-
-        if (dto.RoleIds != null)
+        if (dto.ProfilePictureStream is null)
         {
-            user.Roles.Clear();
-            foreach (var roleId in dto.RoleIds)
+            user.Name = dto.Name;
+            user.LastName = dto.LastName;
+            user.BirthDate = dto.BirthDate;
+            user.Email = dto.Email;
+            user.SchoolId = dto.SchoolId;
+            user.Grade = dto.Grade;
+            user.PhoneNumber = dto.PhoneNumber;
+
+            if (dto.RoleIds != null)
             {
-                var role = await _roles.GetByIdAsync(roleId, cancellationToken);
-                if (role != null)
+                user.Roles.Clear();
+                foreach (var roleId in dto.RoleIds)
                 {
-                    user.Roles.Add(role);
+                    var role = await _roles.GetByIdAsync(roleId, cancellationToken);
+                    if (role != null)
+                    {
+                        user.Roles.Add(role);
+                    }
                 }
             }
         }
@@ -157,9 +159,7 @@ public class UserService : IUserService
 
             user.ProfilePictureMediaId = newMedia.Id;
         }
-
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-
         return _mapper.Map<UserViewModel>(user);
     }
 }

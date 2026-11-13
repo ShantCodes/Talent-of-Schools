@@ -1,11 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { KeyRound, LoaderCircle, Save, PenLine, X } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { authApi } from '../../features/auth/authApi';
 import { schoolsApi } from '../../lib/endpoints';
-import { apiUrl, buildHeaders } from '../../lib/api';
 import { usersApi } from '../../lib/endpoints';
-import { authStore } from '../../features/auth/authStore';
 import { useAuth } from '../../context/AuthContext';
 import { roleList, useI18n } from '../../i18n/I18nContext';
 import { Alert, Button, Field, PageHeader, PasswordInput, errorText, Modal } from '../../components/ui';
@@ -18,6 +16,9 @@ export function AccountPage() {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
+  const profileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingPicture, setUploadingPicture] = useState(false);
+  const [picturePreview, setPicturePreview] = useState<string | null>(null);
   const [profilePic, setProfilePic] = useState<string | null>(null);
   const [showEditForm, setShowEditForm] = useState(false);
   const [schools, setSchools] = useState<{ id: number; name: string }[]>([]);
@@ -30,6 +31,14 @@ export function AccountPage() {
     email: '',
     phoneNumber: '',
   });
+
+  useEffect(() => {
+    return () => {
+      if (picturePreview) {
+        URL.revokeObjectURL(picturePreview);
+      }
+    };
+  }, [picturePreview]);
 
   useEffect(() => {
     let objectUrl: string | null = null;
@@ -150,24 +159,84 @@ export function AccountPage() {
     }
   }
 
+  async function uploadProfilePicture(file?: File) {
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setError('Please select a valid image.');
+      return;
+    }
+
+    setUploadingPicture(true);
+    setError('');
+    setNotice('');
+
+    try {
+      const data = new FormData();
+      data.append('ProfilePicture', file);
+
+      await usersApi.updateProfile(data);
+
+      setPicturePreview(URL.createObjectURL(file));
+      setNotice('Profile picture updated successfully.');
+    } catch (err) {
+      setError(errorText(err));
+    } finally {
+      setUploadingPicture(false);
+    }
+  }
+
   if (!user) return null;
 
   return (
     <main className="mx-auto max-w-xl p-4 sm:p-6">
       <PageHeader title={t('account.title')} />
       <div className="flex gap-6 mb-8 items-start">
-        {profilePic || user.profilePictureUrl ? (
-          <img
-            src={profilePic || user.profilePictureUrl!}
-            alt="Profile"
-            className="h-24 w-24 shrink-0 rounded-full object-cover border border-line"
-          />
-        ) : (
-          <div className="h-24 w-24 shrink-0 rounded-full border border-line bg-primary-soft flex items-center justify-center text-primary text-2xl font-bold">
-            {user.name?.charAt(0).toUpperCase()}
-            {user.lastName?.charAt(0).toUpperCase()}
+        <div className="flex gap-6 mb-8 items-start">
+          <div className="relative group shrink-0">
+            <input
+              ref={profileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={e => {
+                uploadProfilePicture(e.target.files?.[0]);
+                e.target.value = '';
+              }}
+            />
+
+            <button
+              type="button"
+              onClick={() => profileInputRef.current?.click()}
+              disabled={uploadingPicture}
+              className="relative h-24 w-24 rounded-full overflow-hidden border border-line cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
+              title="Change profile picture"
+            >
+              {picturePreview || profilePic || user.profilePictureUrl ? (
+                <img
+                  src={picturePreview || profilePic || user.profilePictureUrl!}
+                  alt="Profile"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              ) : (
+                <div className="absolute inset-0 h-full w-full rounded-full flex items-center justify-center bg-primary-soft text-primary text-2xl font-bold">
+                  {user.name?.charAt(0).toUpperCase()}
+                  {user.lastName?.charAt(0).toUpperCase()}
+                </div>
+              )}
+
+              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                {uploadingPicture ? (
+                  <LoaderCircle className="h-6 w-6 text-white animate-spin" />
+                ) : (
+                  <PenLine className="h-6 w-6 text-white" />
+                )}
+              </div>
+            </button>
           </div>
-        )}
+
+
+        </div>
         <dl className="flex-1 grid grid-cols-[auto_1fr] gap-y-2 rounded-2xl border border-line p-5 text-sm">
           <dt className="text-fg-subtle">{t('users.col.name')}</dt><dd>{user.fullName}</dd>
           <dt className="text-fg-subtle">{t('common.email')}</dt><dd className="break-all">{user.email}</dd>

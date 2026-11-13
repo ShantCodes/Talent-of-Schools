@@ -42,7 +42,7 @@ public class EventService(IEventRepository eventRepository, IUnitOfWork unitOfWo
             return false;
         }
 
-        eventRepository.Remove(entity);
+        entity.IsDeleted = true;
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return true;
     }

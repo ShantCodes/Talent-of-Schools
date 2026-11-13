@@ -30,6 +30,9 @@ namespace Krtakan.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool>("IsOnline")
                         .HasColumnType("INTEGER");
 

@@ -13,4 +13,5 @@ public class Event : BaseEntity
     public DateOnly? MaxBirthDate { get; set; }
     public ICollection<Performance> Performances { get; set; } = new List<Performance>();
     public bool IsOnline { get; set; }
+    public bool IsDeleted { get; set; } = false;
 }

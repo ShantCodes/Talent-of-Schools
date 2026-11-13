@@ -43,7 +43,7 @@ public class UsersController(IUserService userService) : ControllerBase
     Ok(await userService.ChangePasswordAsync(request.Username, request.Password, cancellationToken));    
 
     [HttpPost("updateProfile")]
-    [Authorize]
+    [AllowAnonymous]
     public async Task<IActionResult> UpdateProfile(
         [FromForm] UpdateUserViewModel request,
         CancellationToken cancellationToken)

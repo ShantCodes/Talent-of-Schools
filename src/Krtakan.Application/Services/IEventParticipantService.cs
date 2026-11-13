@@ -10,7 +10,7 @@ namespace Krtakan.Application.Services;
 
 public interface IEventParticipantService
 {
-    Task<EventParticipantViewModel> CreateEventParticipantAsync(CreateEventParticipantRequest request, System.Threading.CancellationToken cancellationToken = default);
+    Task<EventParticipantViewModel> CreateEventParticipantAsync(CreateEventParticipantRequest request, int userID, System.Threading.CancellationToken cancellationToken = default);
     Task<PagedResult<EventParticipantViewModel>> GetParticipantsByEventIdAsync(int eventId, int pageNumber, int pageSize, System.Threading.CancellationToken cancellationToken = default);
     Task<PagedResult<EventParticipantViewModel>> GetParticipantsWithUserDetailsAsync(int eventId, int pageNumber, int pageSize, System.Threading.CancellationToken cancellationToken = default);
     Task<bool> DeleteEventParticipantAsync(int id, System.Threading.CancellationToken cancellationToken = default);

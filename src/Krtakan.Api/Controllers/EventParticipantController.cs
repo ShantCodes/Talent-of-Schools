@@ -46,7 +46,7 @@ public class EventParticipantController(
             request.File?.FileName
         );
 
-        var result = await eventParticipantService.CreateEventParticipantAsync(createRequest);
+        var result = await eventParticipantService.CreateEventParticipantAsync(createRequest, userId);
         return Created($"api/{request.Title}", result);
     }
 

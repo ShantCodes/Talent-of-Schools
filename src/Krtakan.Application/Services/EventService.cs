@@ -33,6 +33,11 @@ public class EventService(IEventRepository eventRepository, IUnitOfWork unitOfWo
 
         return mapper.Map<PagedResult<EventViewModel>>(pagedResult);
     }
+    public async Task<EventViewModel> GetEventAsync(int eventId, CancellationToken cancellationToken = default)
+    {
+        var pagedResult = await eventRepository.GetByIdAsync(eventId);
+        return mapper.Map<EventViewModel>(pagedResult);
+    }
 
     public async Task<bool> DeleteEventAsync(int id, CancellationToken cancellationToken = default)
     {

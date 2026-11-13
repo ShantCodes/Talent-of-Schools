@@ -15,9 +15,28 @@ function eventStatus(event: EventItem): { label: MessageKey; ended: boolean; sty
   return { label: 'studentEvents.status.ended', ended: true, style: 'bg-surface-muted text-fg-muted' };
 }
 
+function isBirthDateEligible(event: EventItem, birthDate?: string | null): boolean {
+  if (!birthDate) return false;
+
+  const birth = new Date(birthDate);
+  if (Number.isNaN(birth.getTime())) return false;
+
+  if (event.minBirthDate) {
+    const min = new Date(event.minBirthDate);
+    if (birth < min) return false;
+  }
+
+  if (event.maxBirthDate) {
+    const max = new Date(event.maxBirthDate);
+    if (birth > max) return false;
+  }
+
+  return true;
+}
+
 export function StudentEventsPage() {
   const { t } = useI18n();
-  const { hasRole } = useAuth();
+  const { hasRole, user } = useAuth();
   const { items, page, loading, error, setError, setPageNumber } = usePaged(eventsApi.list);
   const [joining, setJoining] = useState<EventItem | null>(null);
   const [notice, setNotice] = useState('');
@@ -33,6 +52,7 @@ export function StudentEventsPage() {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {items.map(event => {
           const status = eventStatus(event);
+          const isEligible = isBirthDateEligible(event, user?.birthDate);
           return (
             <article key={event.id} className="flex flex-col rounded-2xl border border-line bg-surface p-5 shadow-sm">
               <div className="flex items-start justify-between gap-3">
@@ -51,8 +71,17 @@ export function StudentEventsPage() {
                 )}
               </dl>
               {isStudent && (
-                <Button className="mt-4" icon={status.ended ? Lock : Send} disabled={status.ended} onClick={() => setJoining(event)}>
-                  {status.ended ? t('studentEvents.closed') : t('studentEvents.signUp')}
+                <Button
+                  className="mt-4"
+                  icon={status.ended || !isEligible ? Lock : Send}
+                  disabled={status.ended || !isEligible}
+                  onClick={() => setJoining(event)}
+                >
+                  {status.ended
+                    ? t('studentEvents.closed')
+                    : !isEligible
+                      ? t('studentEvents.notEligible')
+                      : t('studentEvents.signUp')}
                 </Button>
               )}
             </article>

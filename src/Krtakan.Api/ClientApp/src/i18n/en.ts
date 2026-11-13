@@ -267,6 +267,7 @@ export const en = {
   'schools.locked': '"{name}" cannot be changed.',
 
   'studentEvents.title': 'Events',
+  'studentEvents.notEligible': 'Not Eligable',  
   'studentEvents.subtitle': 'Pick a competition and submit your work.',
   'studentEvents.none': 'There are no events yet.',
   'studentEvents.status.upcoming': 'Upcoming',

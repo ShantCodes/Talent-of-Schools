@@ -17,11 +17,19 @@ public class EventParticipantService(
     IUnitOfWork unitOfWork,
     IMapper mapper,
     IMediaService mediaService,
+    IAuthService authService,
+    IEventService eventService,
     IScoringRepository scoringRepository) : IEventParticipantService
 {
-    public async Task<EventParticipantViewModel> CreateEventParticipantAsync(CreateEventParticipantRequest request, CancellationToken cancellationToken = default)
+    public async Task<EventParticipantViewModel> CreateEventParticipantAsync(CreateEventParticipantRequest request, int userId, CancellationToken cancellationToken = default)
     {
         var existingUser = await eventParticipantRepository.GetEventParticipantByUserIdAndEventIdAsync(request.UserId, request.EventId);
+        var existingEvent = await eventService.GetEventAsync(request.EventId);
+        var user = await authService.GetCurrentUserAsync(userId);        
+        if (user.BirthDate < existingEvent.MinBirthDate || user.BirthDate > existingEvent.MaxBirthDate)
+        {
+            throw new InvalidOperationException("the user is not in the age range");
+        }
         if (existingUser != null)
         {
             throw new InvalidOperationException(

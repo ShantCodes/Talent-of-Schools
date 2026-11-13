@@ -84,6 +84,23 @@ export function AccountPage() {
     fetchSchools();
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      const isNameEmpty = !user.name || user.name.trim() === '';
+      const isLastNameEmpty = !user.lastName || user.lastName.trim() === '';
+      const isEmailEmpty = !user.email || user.email.trim() === '';
+      const isPhoneEmpty = !user.phoneNumber || user.phoneNumber.trim() === '';
+      const isBirthDateEmpty = !user.birthDate || user.birthDate.trim() === '';
+      const isSchoolEmpty = user.schoolId === null || user.schoolId === undefined;
+      const isGradeEmpty = user.grade === null || user.grade === undefined;
+
+      if (isNameEmpty || isLastNameEmpty || isEmailEmpty || isPhoneEmpty || isBirthDateEmpty || isSchoolEmpty || isGradeEmpty) {
+        setShowEditForm(true);
+      }
+    }
+  }, [user]);
+
+
   async function submit(e: FormEvent) {
     e.preventDefault();
     setError(''); setNotice('');
@@ -149,8 +166,11 @@ export function AccountPage() {
         <dl className="flex-1 grid grid-cols-[auto_1fr] gap-y-2 rounded-2xl border border-line p-5 text-sm">
           <dt className="text-fg-subtle">{t('users.col.name')}</dt><dd>{user.fullName}</dd>
           <dt className="text-fg-subtle">{t('common.email')}</dt><dd className="break-all">{user.email}</dd>
-          <dt className="text-fg-subtle">{t('common.school')}</dt><dd>{user.schoolName ?? '—'}</dd>
-          <dt className="text-fg-subtle">{t('common.roles')}</dt><dd>{user.roles.length > 0 ? roleList(user.roles) : '—'}</dd>
+          <dt className="text-fg-subtle">{t('common.phone')}</dt><dd className="break-all">{user.phoneNumber}</dd>
+          <dt className="text-fg-subtle">{t('common.birthDate')}</dt><dd className="break-all">{user.birthDate}</dd>
+          <dt className="text-fg-subtle">{t('common.school')}</dt><dd className="break-all">{user.schoolName ?? '—'}</dd>
+          <dt className="text-fg-subtle">{t('common.grade')}</dt><dd className="break-all">{user.grade ?? '—'}</dd>
+          <dt className="text-fg-subtle">{t('common.roles')}</dt><dd className="break-all">{user.roles.length > 0 ? roleList(user.roles) : '—'}</dd>
         </dl>
         <Button
           variant="secondary"

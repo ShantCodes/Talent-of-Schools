@@ -28,8 +28,20 @@ function tokenRoles(token: string): string[] {
     return [];
   }
 }
-
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  function isProfileIncomplete(user: User | null): boolean {
+    if (!user) return false;
+    const isNameEmpty = !user.name || user.name.trim() === '';
+    const isLastNameEmpty = !user.lastName || user.lastName.trim() === '';
+    const isEmailEmpty = !user.email || user.email.trim() === '';
+    const isPhoneEmpty = !user.phoneNumber || user.phoneNumber.trim() === '';
+    const isBirthDateEmpty = !user.birthDate || user.birthDate.trim() === '';
+    const isSchoolEmpty = user.schoolId === null || user.schoolId === undefined;
+    const isGradeEmpty = user.grade === null || user.grade === undefined;
+
+    return isNameEmpty || isLastNameEmpty || isEmailEmpty || isPhoneEmpty || isBirthDateEmpty || isSchoolEmpty || isGradeEmpty;
+  }
+
   const [user, setUser] = useState<User | null>(() => authStore.getUser());
   const [ready, setReady] = useState(() => !authStore.getToken());
 
@@ -57,6 +69,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const latest = authStore.get();
         if (latest) authStore.save({ ...latest, user: fresh });
         setUser(fresh);
+
+        if (isProfileIncomplete(fresh) && !window.location.pathname.startsWith('/account')) {
+          window.location.replace('/account');
+        }
       })
       .catch(() => { /* keep cached user; api() logs out if the session is gone */ })
       .finally(() => setReady(true));

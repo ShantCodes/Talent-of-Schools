@@ -11,7 +11,8 @@ export function LoginPage() {
   const { login } = useAuth()
   const { t } = useI18n()
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
+  // const [email, setEmail] = useState('')
+  const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
   const [busy, setBusy] = useState(false)
@@ -19,7 +20,7 @@ export function LoginPage() {
   async function submit(event: FormEvent) {
     event.preventDefault(); setBusy(true); setMessage('')
     try {
-      const user = await login({ email, password })
+      const user = await login({ email: identifier, password })
       navigate(homePathFor(user))
     }
     catch (error) { setMessage(error instanceof Error ? error.message : t('login.failed')) }
@@ -42,10 +43,12 @@ export function LoginPage() {
               {t('common.email')}
             </span>
             <input
-              value={email}
-              onChange={event => setEmail(event.target.value)}
-              type="email"
+              value={identifier}
+              onChange={event => setIdentifier(event.target.value)}
+              type="text"
               required
+              autoComplete="username"
+              placeholder="Email or phone number"
               className="mt-1 w-full p-2 border border-line-strong rounded-md bg-surface"
             />
           </label>

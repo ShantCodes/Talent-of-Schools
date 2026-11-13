@@ -8,7 +8,7 @@ export function apiUrl(path: string) {
   return path.startsWith('http') ? path : `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`
 }
 
-function buildHeaders(init: RequestInit, token: string | null) {
+export function buildHeaders(init: RequestInit, token: string | null) {
   const headers = new Headers(init.headers)
   if (init.body !== undefined && !(init.body instanceof FormData)) headers.set('Content-Type', 'application/json')
   if (token) headers.set('Authorization', `Bearer ${token}`)

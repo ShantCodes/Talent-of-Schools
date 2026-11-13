@@ -9,7 +9,7 @@ export default defineConfig({
       'hits-nirvana-medications-discussed.trycloudflare.com'
     ],
     proxy: {
-      '/api': 'https://localhost:5076'
+      '/api': 'http://localhost:5076'
     }
   }
 })

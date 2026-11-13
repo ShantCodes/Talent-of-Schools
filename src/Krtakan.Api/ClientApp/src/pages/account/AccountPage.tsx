@@ -156,12 +156,17 @@ export function AccountPage() {
     <main className="mx-auto max-w-xl p-4 sm:p-6">
       <PageHeader title={t('account.title')} />
       <div className="flex gap-6 mb-8 items-start">
-        {(profilePic || user.profilePictureUrl) && (
+        {profilePic || user.profilePictureUrl ? (
           <img
-            src={(profilePic || user.profilePictureUrl) || undefined}
+            src={profilePic || user.profilePictureUrl!}
             alt="Profile"
-            className="h-24 w-24 rounded-full object-cover border border-line"
+            className="h-24 w-24 shrink-0 rounded-full object-cover border border-line"
           />
+        ) : (
+          <div className="h-24 w-24 shrink-0 rounded-full border border-line bg-primary-soft flex items-center justify-center text-primary text-2xl font-bold">
+            {user.name?.charAt(0).toUpperCase()}
+            {user.lastName?.charAt(0).toUpperCase()}
+          </div>
         )}
         <dl className="flex-1 grid grid-cols-[auto_1fr] gap-y-2 rounded-2xl border border-line p-5 text-sm">
           <dt className="text-fg-subtle">{t('users.col.name')}</dt><dd>{user.fullName}</dd>

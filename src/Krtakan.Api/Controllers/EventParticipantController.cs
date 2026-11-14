@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Krtakan.Api.ViewModels;
 using System.Security.Claims;
 using Krtakan.Domain.Constants;
+using Krtakan.Domain.Entities;
 
 namespace Krtakan.Api.Controllers;
 
@@ -85,5 +86,23 @@ public class EventParticipantController(
             return NotFound();
         }
         return Ok(result);
+    }
+
+    [HttpPost("/adminsignupuser")]
+    [Authorize(Roles = RoleNames.Admin)]
+    public async Task<IActionResult> AdminCreateEventParticipant(int userId, EventsViewModels.SignUpFormViewModel request)
+    {        
+        var createRequest = new CreateEventParticipantRequest(
+            request.Title,
+            request.Author,
+            userId,
+            request.EventId,
+            null,
+            request.File != null ? request.File.OpenReadStream() : null,
+            request.File?.FileName
+        );
+
+        var result = await eventParticipantService.CreateEventParticipantAsync(createRequest, userId);
+        return Created($"api/{request.Title}", result);
     }
 }

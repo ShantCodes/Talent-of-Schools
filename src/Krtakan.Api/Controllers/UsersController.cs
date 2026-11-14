@@ -40,7 +40,7 @@ public class UsersController(IUserService userService) : ControllerBase
     [HttpPatch("/api/adminchangepassword")]
     [AllowAnonymous]
     public async Task<IActionResult> AdminChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken) =>
-    Ok(await userService.ChangePasswordAsync(request.Username, request.Password, cancellationToken));    
+    Ok(await userService.ChangePasswordAsync(request.Username, request.Password, cancellationToken));
 
     [HttpPost("updateProfile")]
     [AllowAnonymous]
@@ -69,5 +69,19 @@ public class UsersController(IUserService userService) : ControllerBase
 
         var result = await userService.UpdateUserAsync(userId, dto, cancellationToken);
         return Ok(result);
+    }
+
+    [HttpGet("search")]
+    public async Task<IActionResult> SearchUser(
+        [FromQuery] string input,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 10,
+        CancellationToken cancellationToken = default)
+    {
+        return Ok(await userService.SearchUserAsync(
+            input,
+            pageNumber,
+            pageSize,
+            cancellationToken));
     }
 }

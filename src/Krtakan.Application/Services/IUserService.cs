@@ -26,6 +26,9 @@ public interface IUserService
     Task<UserViewModel> UpdateUserRolesAsync(int userId, List<int> roleIds, CancellationToken cancellationToken = default);
     Task<bool> ChangePasswordAsync(string email, string newPassword, CancellationToken cancellationToken = default);
     Task<UserViewModel> UpdateUserAsync(int userId, UpdateUserDto dto, CancellationToken cancellationToken = default);
-
-
+    Task<PagedResult<UserViewModel>> SearchUserAsync(
+        string input,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default);
 }

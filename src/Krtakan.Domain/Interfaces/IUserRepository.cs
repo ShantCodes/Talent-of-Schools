@@ -26,4 +26,10 @@ public interface IUserRepository : IRepository<User>
         int pageNumber,
         int pageSize,
         CancellationToken cancellationToken = default);
+
+    Task<PagedResult<User>> SearchUsersAsync(
+        string input,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default);
 }

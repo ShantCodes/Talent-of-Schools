@@ -162,4 +162,25 @@ public class UserService : IUserService
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return _mapper.Map<UserViewModel>(user);
     }
+
+    public async Task<PagedResult<UserViewModel>> SearchUserAsync(
+        string input,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await _users.SearchUsersAsync(
+            input,
+            pageNumber,
+            pageSize,
+            cancellationToken);
+
+        var items = _mapper.Map<List<UserViewModel>>(result.Items);
+
+        return new PagedResult<UserViewModel>(
+            items,
+            result.TotalCount,
+            result.PageNumber,
+            result.PageSize);
+    }
 }

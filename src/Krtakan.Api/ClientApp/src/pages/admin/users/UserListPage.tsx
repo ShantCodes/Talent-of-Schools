@@ -10,6 +10,7 @@ import type { MessageKey } from '../../../i18n/I18nContext';
 import { Alert, Button, LinkButton, PageHeader, Pagination, Table, cell, errorText, formatDate, useConfirm, useFlashNotice, usePaged } from '../../../components/ui';
 import { ChangeRoleModal } from './ChangeRoleModal';
 import { UserAvatar } from '../../../components/Avatar';
+import { Search, X } from 'lucide-react';
 
 const filters: { value: UserFilter; label: MessageKey }[] = [
   { value: 'all', label: 'users.filter.all' },
@@ -21,13 +22,31 @@ export function UserListPage() {
   const { t } = useI18n();
   const { user: currentUser } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const filter = (filters.find(f => f.value === searchParams.get('filter'))?.value ?? 'all') as UserFilter;
   const { items, page, loading, error, setError, reload, setPageNumber } =
-    usePaged((pageNumber: number) => usersApi.list(filter, pageNumber), [filter]);
+    usePaged(
+      (pageNumber: number) =>
+        debouncedSearch
+          ? usersApi.search(debouncedSearch, pageNumber)
+          : usersApi.list(filter, pageNumber),
+      [filter, debouncedSearch]
+    );
   const [notice, setNotice] = useFlashNotice();
   const [roles, setRoles] = useState<Role[]>([]);
   const [roleUser, setRoleUser] = useState<User | null>(null);
   const [confirmDialog, ask] = useConfirm();
+
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedSearch(search.trim());
+      setPageNumber(1);
+    }, 400);
+
+    return () => clearTimeout(timeout);
+  }, [search, setPageNumber]);
 
   useEffect(() => { rolesApi.list(1, 100).then(result => setRoles(result.items)).catch(e => setError(errorText(e))); }, [setError]);
 
@@ -65,13 +84,45 @@ export function UserListPage() {
         subtitle={t('users.subtitle')}
         action={<LinkButton to="/admin/users/new" variant="primary" icon={UserPlus}>{t('users.add')}</LinkButton>}
       />
-      <div className="mb-4 flex flex-wrap gap-2">
+      <div className="mb-4 flex flex-wrap items-center gap-2">
         {filters.map(f => (
-          <Button key={f.value} small variant={filter === f.value ? 'primary' : 'secondary'}
-            onClick={() => { setSearchParams(f.value === 'all' ? {} : { filter: f.value }); setPageNumber(1); }}>
+          <Button
+            key={f.value}
+            small
+            variant={filter === f.value ? 'primary' : 'secondary'}
+            onClick={() => {
+              setSearchParams(f.value === 'all' ? {} : { filter: f.value });
+              setPageNumber(1);
+            }}
+          >
             {t(f.label)}
           </Button>
         ))}
+
+        <div className="relative ml-auto w-full sm:w-64">
+          <Search
+            size={16}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-fg-subtle"
+          />
+
+          <input
+            type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Search users..."
+            className="w-full rounded-lg border border-border bg-bg py-2 pl-9 pr-9 text-sm outline-none focus:border-primary"
+          />
+
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-fg-subtle hover:text-fg"
+            >
+              <X size={16} />
+            </button>
+          )}
+        </div>
       </div>
       <Alert message={error} onClose={() => setError('')} />
       <Alert message={notice} kind="success" onClose={() => setNotice('')} />

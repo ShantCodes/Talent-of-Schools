@@ -231,7 +231,7 @@ export function useLoaded<T>(load: () => Promise<T | null>, deps: unknown[]) {
       .catch(e => { if (live) setError(errorText(e)); })
       .finally(() => { if (live) setLoading(false); });
     return () => { live = false; };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 
   return { data, setData, loading, error, setError };
@@ -247,7 +247,7 @@ export function useFlashNotice() {
     if ((location.state as { notice?: string } | null)?.notice) {
       navigate({ pathname: location.pathname, search: location.search }, { replace: true, state: null });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return [notice, setNotice] as const;
@@ -291,3 +291,5 @@ export function formatDate(value?: string | null) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? value : date.toLocaleString(currentLocale(), { dateStyle: 'medium', timeStyle: 'short' });
 }
+
+export { SearchInput } from './SearchInput';

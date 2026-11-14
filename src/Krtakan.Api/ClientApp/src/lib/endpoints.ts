@@ -80,7 +80,9 @@ const userListPath: Record<UserFilter, string> = {
 export const usersApi = {
   list: (filter: UserFilter, pageNumber = 1, pageSize = 10) => api<PagedResult<User>>(`${userListPath[filter]}?${paged(pageNumber, pageSize)}`),
   search: (input: string, pageNumber = 1, pageSize = 10) =>
-    api<PagedResult<User>>(`/api/users/search?input=${encodeURIComponent(input)}&${paged(pageNumber, pageSize)}`),
+    api<PagedResult<User>>(
+      `/api/users/search?input=${encodeURIComponent(input)}&${paged(pageNumber, pageSize)}`
+    ),
   // There is no admin "create user" endpoint, so new users go through public registration and are then approved.
   create: (input: RegisterRequest) => api<RegisterResult>('/api/auth/register', json('POST', input)),
   approve: (id: number, isApproved: boolean) => api<User>(`/api/users/${id}/approve?isApproved=${isApproved}`, { method: 'PATCH' }),

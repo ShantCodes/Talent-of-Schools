@@ -6,9 +6,12 @@ import { eventsApi, findById, participantsApi } from '../../../lib/endpoints';
 import type { EventItem, Participant, ParticipantResult } from '../../../lib/endpoints';
 import { useI18n } from '../../../i18n/I18nContext';
 import { Alert, BackLink, Button, PageHeader, Pagination, Table, cell, errorText, useConfirm, useLoaded, usePaged } from '../../../components/ui';
+import { UserAvatar } from '../../../components/Avatar';
+import { useAuth } from '../../../context/AuthContext';
 
 export function EventParticipantsPage() {
   const { t } = useI18n();
+  const { user } = useAuth();
   const eventId = Number(useParams().id);
   const passed = (useLocation().state as { event?: EventItem } | null)?.event;
   const { data: event } = useLoaded(async () => passed ?? await findById(eventsApi.list, eventId), [eventId]);
@@ -59,9 +62,19 @@ export function EventParticipantsPage() {
       <Alert message={notice} kind="success" onClose={() => setNotice('')} />
 
       <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold"><UsersRound className="h-5 w-5" aria-hidden />{t('participants.heading')}</h2>
-      <Table headers={[t('common.title'), t('common.author'), t('common.student'), t('common.document'), '']} empty={!loading && items.length === 0}>
+      <Table headers={[t('common.profilePicture'),t('common.title'), t('common.author'), t('common.student'), t('common.document'), '']} empty={!loading && items.length === 0}>
         {items.map(participant => (
           <tr key={participant.id}>
+            <td className={cell}>
+              <div className="flex items-center gap-3">
+                <UserAvatar user={participant} />
+
+                <div className="min-w-0">
+                  <div className="font-medium">{participant.fullName}</div>
+                  <div className="text-xs text-fg-subtle break-all">{participant.email}</div>
+                </div>
+              </div>
+            </td>
             <td className={`${cell} font-medium`}>{participant.title}</td>
             <td className={cell}>{participant.author}</td>
             <td className={cell}>
@@ -85,7 +98,7 @@ export function EventParticipantsPage() {
       <Table headers={[t('participants.col.rank'), t('common.title'), t('common.author'), t('common.student'), t('participants.col.average')]} empty={results.length === 0}>
         {results.map((result, index) => (
           <tr key={`${result.title}-${index}`}>
-            <td className={`${cell} font-bold`}>{index + 1}</td>
+            <td className={`${cell} font-bold`}>{index + 1}</td>            
             <td className={cell}>{result.title}</td>
             <td className={cell}>{result.author}</td>
             <td className={cell}>{result.userName} {result.userLastName}</td>

@@ -72,7 +72,7 @@ public class EventParticipantService(
 
     public async Task<PagedResult<EventParticipantViewModel>> GetParticipantsWithUserDetailsAsync(int eventId, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
     {
-        var pagedResult = await eventParticipantRepository.GetParticipantsWithUserDetailsAsync(eventId, pageNumber, pageSize, cancellationToken);
+        var pagedResult = await eventParticipantRepository.GetParticipantsWithUserDetailsAsync(eventId, pageNumber, pageSize, cancellationToken);        
         return mapper.Map<PagedResult<EventParticipantViewModel>>(pagedResult);
     }
 

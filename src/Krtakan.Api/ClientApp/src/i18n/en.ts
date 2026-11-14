@@ -50,6 +50,7 @@ export const en = {
   'common.birthDate': 'Birth date',
   'common.grade': 'Grade',
   'common.updateProfile': 'Update profile',
+  'common.profilePicture': 'profile',
 
   'error.forbidden': 'You do not have permission to do this.',
   'error.notFound': 'Not found.',

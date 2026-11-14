@@ -7,6 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useI18n } from '../../i18n/I18nContext';
 import { Alert, Button, PageHeader, Pagination, Table, cell, errorText, selectClass, usePaged } from '../../components/ui';
 import { StarRating } from '../../components/StarRating';
+import { UserAvatar } from '../../components/Avatar';
 
 export function JuryPage() {
   const { t } = useI18n();
@@ -70,9 +71,19 @@ function ParticipantScores({ eventId }: { eventId: number }) {
   return (
     <>
       <Alert message={error} onClose={() => setError('')} />
-      <Table headers={[t('common.title'), t('common.author'), t('common.student'), t('common.document'), t('common.score')]} empty={!loading && items.length === 0}>
+      <Table headers={[t('common.profilePicture'), t('common.title'), t('common.author'), t('common.student'), t('common.document'), t('common.score')]} empty={!loading && items.length === 0}>
         {items.map(participant => (
           <tr key={participant.id}>
+            <td className={cell}>
+              <div className="flex items-center gap-3">
+                <UserAvatar user={participant} />
+
+                <div className="min-w-0">
+                  <div className="font-medium">{participant.fullName}</div>
+                  <div className="text-xs text-fg-subtle break-all">{participant.email}</div>
+                </div>
+              </div>
+            </td>
             <td className={`${cell} font-medium`}>{participant.title}</td>
             <td className={cell}>{participant.author}</td>
             <td className={cell}>{participant.fullName ?? t('participants.userFallback', { id: participant.userId })}</td>

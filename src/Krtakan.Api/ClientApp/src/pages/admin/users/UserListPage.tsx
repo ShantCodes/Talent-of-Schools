@@ -9,6 +9,7 @@ import { roleLabel, roleList, useI18n } from '../../../i18n/I18nContext';
 import type { MessageKey } from '../../../i18n/I18nContext';
 import { Alert, Button, LinkButton, PageHeader, Pagination, Table, cell, errorText, formatDate, useConfirm, useFlashNotice, usePaged } from '../../../components/ui';
 import { ChangeRoleModal } from './ChangeRoleModal';
+import { UserAvatar } from '../../../components/Avatar';
 
 const filters: { value: UserFilter; label: MessageKey }[] = [
   { value: 'all', label: 'users.filter.all' },
@@ -79,8 +80,14 @@ export function UserListPage() {
         {items.map(user => (
           <tr key={user.id}>
             <td className={cell}>
-              <div className="font-medium">{user.fullName}</div>
-              <div className="text-xs text-fg-subtle">{user.email}</div>
+              <div className="flex items-center gap-3">
+                <UserAvatar user={user} />
+
+                <div className="min-w-0">
+                  <div className="font-medium">{user.fullName}</div>
+                  <div className="text-xs text-fg-subtle break-all">{user.email}</div>
+                </div>
+              </div>
             </td>
             <td className={cell}>{user.schoolName ?? '—'}</td>
             <td className={cell}>

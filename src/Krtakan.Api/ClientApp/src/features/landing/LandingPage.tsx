@@ -13,9 +13,9 @@ export const LandingPage: React.FC = () => {
     <div>
       <div
         className="relative bg-cover bg-center bg-no-repeat
-    before:absolute before:inset-0 before:bg-white/50
+    before:absolute before:inset-0 before:bg-white/40
     before:content-['']"
-        style={{ backgroundImage: "url('/2026-11-14 20.18.15.jpg')" }}
+        style={{ backgroundImage: "url('public/2026-11-14 22.35.46.jpg" }}
       >
         <div className="relative">
           <PageTitle />

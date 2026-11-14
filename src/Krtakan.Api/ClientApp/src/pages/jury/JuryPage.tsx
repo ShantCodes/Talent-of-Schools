@@ -8,6 +8,7 @@ import { useI18n } from '../../i18n/I18nContext';
 import { Alert, Button, PageHeader, Pagination, Table, cell, errorText, selectClass, usePaged } from '../../components/ui';
 import { StarRating } from '../../components/StarRating';
 import { UserAvatar } from '../../components/Avatar';
+import { ImagePreview } from '../../components/ImagePreview';
 
 export function JuryPage() {
   const { t } = useI18n();
@@ -89,7 +90,7 @@ function ParticipantScores({ eventId }: { eventId: number }) {
             <td className={cell}>{participant.fullName ?? t('participants.userFallback', { id: participant.userId })}</td>
             <td className={cell}>
               {participant.documentId
-                ? <Button small variant="secondary" icon={Download} onClick={() => download(participant)}>{t('common.download')}</Button>
+                ? <ImagePreview mediaId={participant.documentId} />
                 : <span className="text-fg-subtle">—</span>}
             </td>
             <td className={cell}>

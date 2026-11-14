@@ -78,3 +78,22 @@ export async function downloadMedia(mediaId: number, fileName = `media_${mediaId
   link.click()
   URL.revokeObjectURL(link.href)
 }
+
+export async function getMediaPreview(mediaId: number): Promise<{
+  url: string;
+  type: string;
+}> {
+  const response = await fetch(
+    apiUrl(`/api/media/download/${mediaId}`),
+    { headers: buildHeaders({}, authStore.getToken()) }
+  );
+
+  if (!response.ok) throw new Error(await readError(response));
+
+  const blob = await response.blob();
+
+  return {
+    url: URL.createObjectURL(blob),
+    type: blob.type,
+  };
+}

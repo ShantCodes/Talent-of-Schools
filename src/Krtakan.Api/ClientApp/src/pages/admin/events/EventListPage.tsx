@@ -3,12 +3,17 @@ import { eventsApi } from '../../../lib/endpoints';
 import type { EventItem } from '../../../lib/endpoints';
 import { useI18n } from '../../../i18n/I18nContext';
 import { Alert, Button, LinkButton, PageHeader, Pagination, Table, cell, errorText, formatDate, useConfirm, useFlashNotice, usePaged } from '../../../components/ui';
+import { useState } from 'react';
+import { UserPlus } from 'lucide-react';
+import { AddEventParticipantModal } from '../../../components/EventParticipantModal';
+
 
 export function EventListPage() {
   const { t } = useI18n();
   const { items, page, loading, error, setError, reload, setPageNumber } = usePaged(eventsApi.list);
   const [notice, setNotice] = useFlashNotice();
   const [confirmDialog, ask] = useConfirm();
+  const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
 
   async function remove(event: EventItem) {
     const ok = await ask({
@@ -50,6 +55,13 @@ export function EventListPage() {
             <td className={cell}>{event.minBirthDate || event.maxBirthDate ? `${event.minBirthDate ?? '…'} – ${event.maxBirthDate ?? '…'}` : t('common.any')}</td>
             <td className={`${cell} whitespace-nowrap text-end`}>
               <div className="flex justify-end gap-2">
+                <Button
+                  small
+                  variant="secondary"
+                  icon={UserPlus}
+                  onClick={() => setSelectedEvent(event)}
+                >                  
+                </Button>
                 <LinkButton small icon={UsersRound} to={`/admin/events/${event.id}`} state={{ event }}>{t('events.participants')}</LinkButton>
                 <LinkButton small icon={Pencil} to={`/admin/events/${event.id}/edit`} state={{ event }}>{t('common.edit')}</LinkButton>
                 <Button small variant="danger" icon={Trash2} onClick={() => remove(event)}>{t('common.delete')}</Button>
@@ -59,6 +71,16 @@ export function EventListPage() {
         ))}
       </Table>
       <Pagination page={page} onChange={setPageNumber} />
+      {selectedEvent && (
+        <AddEventParticipantModal
+          eventId={selectedEvent.id}
+          onClose={() => setSelectedEvent(null)}
+          onSaved={() => {
+            setSelectedEvent(null);
+            setNotice('Participant added successfully.');
+          }}
+        />
+      )}
       {confirmDialog}
     </>
   );

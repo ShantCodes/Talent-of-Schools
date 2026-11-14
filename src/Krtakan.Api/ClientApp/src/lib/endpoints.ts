@@ -63,6 +63,11 @@ export const participantsApi = {
     api(`/api/EventParticipant/${id}`, json('PUT', { title, author, documentId })),
   remove: (id: number) => api(`/api/EventParticipant/${id}`, { method: 'DELETE' }),
   results: (eventId: number) => api<ParticipantResult[]>(`/results/${eventId}`),
+  adminSignupUser: (userId: number, input: FormData) =>
+    api(`/adminsignupuser?userId=${userId}`, {
+      method: 'POST',
+      body: input,
+    }),
 }
 
 export const scoringApi = {

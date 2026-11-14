@@ -26,15 +26,15 @@ public class EventParticipantService(
         var existingUser = await eventParticipantRepository.GetEventParticipantByUserIdAndEventIdAsync(request.UserId, request.EventId);
         var existingEvent = await eventService.GetEventAsync(request.EventId);
         var user = await authService.GetCurrentUserAsync(userId);        
-        if (user.BirthDate < existingEvent.MinBirthDate || user.BirthDate > existingEvent.MaxBirthDate)
-        {
-            throw new InvalidOperationException("the user is not in the age range");
-        }
-        if (existingUser != null)
-        {
-            throw new InvalidOperationException(
-                $"User {request.UserId} is already a participant of event {request.EventId}.");
-        }
+        // if (user.BirthDate < existingEvent.MinBirthDate || user.BirthDate > existingEvent.MaxBirthDate)
+        // {
+        //     throw new InvalidOperationException("the user is not in the age range");
+        // }
+        // if (existingUser != null)
+        // {
+        //     throw new InvalidOperationException(
+        //         $"User {request.UserId} is already a participant of event {request.EventId}.");
+        // }
         int? documentId = request.DocumentId;
 
         if (request.FileStream != null && !string.IsNullOrEmpty(request.FileName))

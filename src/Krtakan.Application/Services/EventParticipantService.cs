@@ -25,7 +25,7 @@ public class EventParticipantService(
     {
         var existingUser = await eventParticipantRepository.GetEventParticipantByUserIdAndEventIdAsync(request.UserId, request.EventId);
         var existingEvent = await eventService.GetEventAsync(request.EventId);
-        var user = await authService.GetCurrentUserAsync(userId);        
+        var user = await authService.GetCurrentUserAsync(userId);
         // if (user.BirthDate < existingEvent.MinBirthDate || user.BirthDate > existingEvent.MaxBirthDate)
         // {
         //     throw new InvalidOperationException("the user is not in the age range");
@@ -70,9 +70,9 @@ public class EventParticipantService(
         return mapper.Map<PagedResult<EventParticipantViewModel>>(pagedResult);
     }
 
-    public async Task<PagedResult<EventParticipantViewModel>> GetParticipantsWithUserDetailsAsync(int eventId, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<PagedResult<EventParticipantViewModel>> GetParticipantsWithUserDetailsAsync(int jurorId, int eventId, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
     {
-        var pagedResult = await eventParticipantRepository.GetParticipantsWithUserDetailsAsync(eventId, pageNumber, pageSize, cancellationToken);        
+        var pagedResult = await eventParticipantRepository.GetParticipantsWithUserDetailsAsync(eventId, jurorId, pageNumber, pageSize, cancellationToken);
         return mapper.Map<PagedResult<EventParticipantViewModel>>(pagedResult);
     }
 

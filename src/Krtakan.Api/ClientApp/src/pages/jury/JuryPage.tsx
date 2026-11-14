@@ -47,16 +47,28 @@ function ParticipantScores({ eventId }: { eventId: number }) {
   const { items, page, loading, error, setError, setPageNumber } =
     usePaged((pageNumber: number) => participantsApi.byEvent(eventId, pageNumber), [eventId]);
   const [scores, setScores] = useState<Record<number, number>>({});
-  const [submitted, setSubmitted] = useState<Record<number, number>>({});
+  // const [submitted, setSubmitted] = useState<Record<number, number>>({});
   const [busyId, setBusyId] = useState<number | null>(null);
 
   async function submit(participant: Participant) {
     const score = scores[participant.id];
-    if (!(score >= 1 && score <= 5)) { setError(t('jury.scoreRange')); return; }
-    setBusyId(participant.id); setError('');
+    if (!(score >= 1 && score <= 5)) {
+      setError(t('jury.scoreRange'));
+      return;
+    }
+
+    setBusyId(participant.id);
+    setError('');
+
     try {
-      await scoringApi.score({ eventParticipantId: participant.id, jurorId: user!.id, eventId, score });
-      setSubmitted(s => ({ ...s, [participant.id]: score }));
+      await scoringApi.score({
+        eventParticipantId: participant.id,
+        jurorId: user!.id,
+        eventId,
+        score
+      });
+
+      participant.score = score;
     } catch (e) {
       setError(`${errorText(e)} ${t('jury.onceHint')}`);
     } finally {
@@ -94,28 +106,39 @@ function ParticipantScores({ eventId }: { eventId: number }) {
                 : <span className="text-fg-subtle">—</span>}
             </td>
             <td className={cell}>
-              {submitted[participant.id] !== undefined
-                ? (
-                  <span className="inline-flex flex-wrap items-center gap-2 font-semibold text-success">
-                    <StarRating value={submitted[participant.id]} readOnly label={t('jury.scored', { score: submitted[participant.id] })} />
-                    <span className="inline-flex items-center gap-1">
-                      <CircleCheck className="h-4 w-4" aria-hidden />{t('jury.scored', { score: submitted[participant.id] })}
-                    </span>
+              {participant.score !== null && participant.score !== undefined ? (
+                <span className="inline-flex flex-wrap items-center gap-2 font-semibold text-success">
+                  <StarRating
+                    value={participant.score}
+                    readOnly
+                    label={t('jury.scored', { score: participant.score })}
+                  />
+                  <span className="inline-flex items-center gap-1">
+                    <CircleCheck className="h-4 w-4" aria-hidden />
+                    {t('jury.scored', { score: participant.score })}
                   </span>
-                )
-                : (
-                  <div className="flex flex-wrap items-center gap-2">
-                    <StarRating
-                      value={scores[participant.id] ?? null}
-                      onChange={score => setScores(s => ({ ...s, [participant.id]: score }))}
-                      disabled={busyId === participant.id}
-                      label={t('common.score')}
-                    />
-                    <Button small icon={busyId === participant.id ? LoaderCircle : Star} disabled={busyId === participant.id || !scores[participant.id]} onClick={() => submit(participant)}>
-                      {t('jury.submit')}
-                    </Button>
-                  </div>
-                )}
+                </span>
+              ) : (
+                <div className="flex flex-wrap items-center gap-2">
+                  <StarRating
+                    value={scores[participant.id] ?? null}
+                    onChange={score =>
+                      setScores(s => ({ ...s, [participant.id]: score }))
+                    }
+                    disabled={busyId === participant.id}
+                    label={t('common.score')}
+                  />
+
+                  <Button
+                    small
+                    icon={busyId === participant.id ? LoaderCircle : Star}
+                    disabled={busyId === participant.id || !scores[participant.id]}
+                    onClick={() => submit(participant)}
+                  >
+                    {t('jury.submit')}
+                  </Button>
+                </div>
+              )}
             </td>
           </tr>
         ))}

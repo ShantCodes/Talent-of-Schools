@@ -12,9 +12,12 @@ export const LandingPage: React.FC = () => {
   return (
     <div>
       <div
-        className="relative bg-cover bg-center bg-no-repeat
+        className="
+    relative bg-cover bg-center bg-no-repeat
     before:absolute before:inset-0 before:bg-white/40
-    before:content-['']"
+    dark:before:bg-black/50
+    before:content-['']
+  "
         style={{ backgroundImage: "url('public/2026-11-14 22.35.46.jpg" }}
       >
         <div className="relative">

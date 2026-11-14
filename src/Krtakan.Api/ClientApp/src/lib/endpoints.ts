@@ -22,6 +22,7 @@ export type Participant = {
   documentId: number | null;
   fullName?: string | null;
   email?: string | null;
+  score: number | null;
 }
 
 export type ParticipantResult = {

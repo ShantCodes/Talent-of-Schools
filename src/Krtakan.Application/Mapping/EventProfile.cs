@@ -18,6 +18,10 @@ public class EventProfile : Profile
         CreateMap<EventParticipant, EventParticipantViewModel>()
             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User.Name + " " + src.User.LastName))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
-            .ForMember(dest => dest.ProfilePictureMediaId, opt => opt.MapFrom(src => src.User.ProfilePictureMediaId));
+            .ForMember(dest => dest.ProfilePictureMediaId, opt => opt.MapFrom(src => src.User.ProfilePictureMediaId))
+            .ForMember(dest => dest.Score,
+                        opt => opt.MapFrom(src => src.Scorings
+                        .Select(s => (decimal?)s.Score)
+                        .FirstOrDefault()));
     }
 }

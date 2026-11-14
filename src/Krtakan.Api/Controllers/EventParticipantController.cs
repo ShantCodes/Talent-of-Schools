@@ -27,7 +27,8 @@ public class EventParticipantController(
     [Authorize(Roles = RoleNames.Juror + "," + RoleNames.Admin)]
     public async Task<IActionResult> GetParticipantsWithUserDetails(int eventId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
-        var result = await eventParticipantService.GetParticipantsWithUserDetailsAsync(eventId, pageNumber, pageSize);
+        var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var result = await eventParticipantService.GetParticipantsWithUserDetailsAsync(currentUserId, eventId, pageNumber, pageSize);
         return Ok(result);
     }
 
@@ -91,7 +92,7 @@ public class EventParticipantController(
     [HttpPost("/adminsignupuser")]
     [Authorize(Roles = RoleNames.Admin)]
     public async Task<IActionResult> AdminCreateEventParticipant(int userId, EventsViewModels.SignUpFormViewModel request)
-    {        
+    {
         var createRequest = new CreateEventParticipantRequest(
             request.Title,
             request.Author,

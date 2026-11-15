@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @layer base {
+
   /* Color tokens as "R G B" so Tailwind opacity modifiers (e.g. bg-primary/10) work. Used via tailwind.config.js. */
   :root {
     color-scheme: light;
@@ -54,16 +55,72 @@
     @apply min-h-screen bg-canvas text-fg antialiased;
     accent-color: rgb(var(--primary));
   }
-  input { @apply w-full rounded-lg border border-line-strong bg-surface px-3 py-2 text-fg outline-none placeholder:text-fg-subtle focus:border-primary focus:ring-2 focus:ring-primary/20; }
-  button { @apply rounded-lg px-4 py-2 font-medium transition disabled:cursor-not-allowed disabled:opacity-60; }
-  a:focus-visible, button:focus-visible, select:focus-visible { @apply outline-none ring-2 ring-primary/50 ring-offset-2 ring-offset-canvas; }
+
+  input {
+    @apply w-full rounded-lg border border-line-strong bg-surface px-3 py-2 text-fg outline-none placeholder:text-fg-subtle focus:border-primary focus:ring-2 focus:ring-primary/20;
+  }
+
+  button {
+    @apply rounded-lg px-4 py-2 font-medium transition disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  select:focus-visible {
+    @apply outline-none ring-2 ring-primary/50 ring-offset-2 ring-offset-canvas;
+  }
 
   /* Only the Arabic-script subset of Vazirmatn is loaded, so Latin text falls through to the system font. */
-  html[lang='fa'] body { font-family: 'Vazirmatn', ui-sans-serif, system-ui, 'Segoe UI', Tahoma, sans-serif; }
+  html[lang='fa'] body {
+    font-family: 'Vazirmatn', ui-sans-serif, system-ui, 'Segoe UI', Tahoma, sans-serif;
+  }
+
   /* Letter-spacing breaks the joined letters of Persian script. */
-  html[lang='fa'] .tracking-wide { letter-spacing: normal; }
+  html[lang='fa'] .tracking-wide {
+    letter-spacing: normal;
+  }
 
   /* Emails, passwords, numbers and dates read left-to-right even on RTL pages. */
-  input[type='email'], input[type='password'], input[data-password], input[type='tel'], input[type='number'], input[type='date'], input[type='datetime-local'] { direction: ltr; }
-  [dir='rtl'] input[type='email'], [dir='rtl'] input[type='password'], [dir='rtl'] input[data-password], [dir='rtl'] input[type='tel'], [dir='rtl'] input[type='number'] { text-align: right; }
+  input[type='email'],
+  input[type='password'],
+  input[data-password],
+  input[type='tel'],
+  input[type='number'],
+  input[type='date'],
+  input[type='datetime-local'] {
+    direction: ltr;
+  }
+
+  [dir='rtl'] input[type='email'],
+  [dir='rtl'] input[type='password'],
+  [dir='rtl'] input[data-password],
+  [dir='rtl'] input[type='tel'],
+  [dir='rtl'] input[type='number'] {
+    text-align: right;
+  }
+
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+
+    #printable-table,
+    #printable-table * {
+      visibility: visible;
+    }
+
+    #printable-table {
+      display: block !important;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      padding: 20px;
+    }
+
+    @page {
+      size: A4 landscape;
+      margin: 10mm;
+    }
+  }
 }

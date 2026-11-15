@@ -16,7 +16,7 @@ public class EventParticipantController(
     IEventParticipantService eventParticipantService) : ControllerBase
 {
     [HttpGet("event/{eventId}")]
-    [Authorize(Roles = RoleNames.Juror + "," + RoleNames.Admin)]
+    [Authorize(Roles = "Admin,Juror")]
     public async Task<IActionResult> GetParticipantsByEvent(int eventId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
         var result = await eventParticipantService.GetParticipantsByEventIdAsync(eventId, pageNumber, pageSize);
@@ -24,7 +24,7 @@ public class EventParticipantController(
     }
 
     [HttpGet("event/{eventId}/details")]
-    [Authorize(Roles = RoleNames.Juror + "," + RoleNames.Admin)]
+    [Authorize(Roles = "Admin,Juror")]
     public async Task<IActionResult> GetParticipantsWithUserDetails(int eventId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
     {
         var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -78,7 +78,7 @@ public class EventParticipantController(
     }
 
     [HttpGet("/results/{eventId}")]
-    [Authorize(Roles = RoleNames.Juror + "," + RoleNames.Admin)]
+    [Authorize(Roles = "Admin,Juror")]
     public async Task<IActionResult> GetResults(int eventId)
     {
         var result = await eventParticipantService.GetParticipantResultsAsync(eventId);

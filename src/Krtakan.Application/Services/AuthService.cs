@@ -95,8 +95,8 @@ public class AuthService : IAuthService
             throw new AppException("Email or password is incorrect.", 401);
 
         var fullName = $"{user.Name} {user.LastName}".Trim();
-        var roleName = user.Roles.FirstOrDefault()?.Name ?? "User";
-        var accessToken = _tokenService.CreateToken(user.Id, user.Email, roleName, fullName);
+        var roleNames = user.Roles.Select(r => r.Name).ToList();
+        var accessToken = _tokenService.CreateToken(user.Id, user.Email, roleNames, fullName);
 
         var (refreshToken, expiresAt) = _tokenService.CreateRefreshToken();
 
@@ -132,8 +132,8 @@ public class AuthService : IAuthService
             ?? throw new AppException("User not found.", 401);
 
         var fullName = $"{user.Name} {user.LastName}".Trim();
-        var roleName = user.Roles.FirstOrDefault()?.Name ?? "User";
-        var accessToken = _tokenService.CreateToken(user.Id, user.Email, roleName, fullName);
+        var roleNames = user.Roles.Select(r => r.Name).ToList();
+        var accessToken = _tokenService.CreateToken(user.Id, user.Email, roleNames, fullName);
 
         var (newRefreshToken, newExpiresAt) = _tokenService.CreateRefreshToken();
 

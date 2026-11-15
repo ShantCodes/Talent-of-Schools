@@ -300,6 +300,7 @@ export const en = {
   'account.title': 'My account',
   'account.changePassword': 'Change password',
   'account.profileUpdated': 'Your profile was updated.',
+  'account.passwordChanged': 'Password changed.',
 } as const;
 
 export type MessageKey = keyof typeof en;

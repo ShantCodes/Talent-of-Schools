@@ -10,11 +10,20 @@ namespace Krtakan.Infrastructure.Security;
 
 public class JwtTokenService(IOptions<JwtOptions> options) : IJwtTokenService
 {
-    public AccessToken CreateToken(int userId, string email, string role, string fullName)
+    public AccessToken CreateToken(int userId, string email, IEnumerable<string> roles, string fullName)
     {
         var settings = options.Value;
         var expiresAt = DateTime.UtcNow.AddMinutes(settings.ExpiryMinutes);
-        var claims = new[] { new Claim(ClaimTypes.NameIdentifier, userId.ToString()), new Claim(ClaimTypes.Email, email), new Claim(ClaimTypes.Role, role), new Claim(ClaimTypes.Name, fullName) };
+        var claims = new List<Claim>
+    {
+        new(ClaimTypes.NameIdentifier, userId.ToString()),
+        new(ClaimTypes.Email, email),
+        new(ClaimTypes.Name, fullName)
+    };
+
+        claims.AddRange(roles.Select(role =>
+                new Claim(ClaimTypes.Role, role)));
+
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.Secret));
         var token = new JwtSecurityToken(settings.Issuer, settings.Audience, claims, expires: expiresAt, signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
         return new AccessToken(new JwtSecurityTokenHandler().WriteToken(token), expiresAt);

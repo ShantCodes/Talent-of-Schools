@@ -42,7 +42,7 @@ export function ImagePreview({ mediaId }: { mediaId: number }) {
                 <img
                     src={url}
                     alt="Document preview"
-                    className="h-10 w-32 object-cover b rounded-xl"
+                    className="h-10 w-24 object-cover b rounded-xl"
                 />
             </button>
 

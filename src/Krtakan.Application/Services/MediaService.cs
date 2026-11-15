@@ -6,6 +6,9 @@ using Krtakan.Domain.Entities;
 using Krtakan.Domain.Interfaces;
 using Microsoft.Extensions.Options;
 using System.IO;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Formats.Webp;
 
 namespace Krtakan.Application.Services;
 
@@ -16,31 +19,74 @@ public class MediaService(IMediaRepository mediaRepository, IFileStorage fileSto
         return await mediaRepository.GetByIdWithDetailsAsync(id, cancellationToken);
     }
 
-    public async Task<Media> UploadMediaAsync(Stream content, string fileName, int folderId, int formatId, CancellationToken cancellationToken = default)
+
+    public async Task<Media> UploadMediaAsync(
+        Stream content,
+        string fileName,
+        int folderId,
+        int formatId,
+        CancellationToken cancellationToken = default)
     {
         var extension = Path.GetExtension(fileName).ToLowerInvariant();
-        if (string.IsNullOrWhiteSpace(extension)) throw new InvalidOperationException("A file extension is required.");
+
+        if (string.IsNullOrWhiteSpace(extension))
+            throw new InvalidOperationException("A file extension is required.");
 
         var folder = await folderRepository.GetByIdAsync(folderId, cancellationToken);
-        if (folder == null) throw new AppException("Media folder not found.", 404);
 
-        var directory = !string.IsNullOrEmpty(folder.Path) ? folder.Path : folder.Name;
+        if (folder == null)
+            throw new AppException("Media folder not found.", 404);
 
-        var storedFile = await fileStorage.SaveAsync(content, fileName, directory, cancellationToken);
+        var directory = !string.IsNullOrEmpty(folder.Path)
+            ? folder.Path
+            : folder.Name;
 
-        var media = new Media
+        Stream uploadContent = content;
+        var uploadFileName = fileName;
+
+        MemoryStream? compressedStream = null;
+
+        try
         {
-            RelativePath = storedFile.RelativePath,
-            Size = storedFile.SizeBytes,
-            FormatId = formatId,
-            FolderId = folderId
-        };
+            var imageExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
 
-        await mediaRepository.AddAsync(media, cancellationToken);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+            if (imageExtensions.Contains(extension))
+            {
+                compressedStream = await CompressImageAsync(
+                    content,
+                    cancellationToken
+                );
 
-        return media;
+                uploadContent = compressedStream;
+                uploadFileName = Path.ChangeExtension(fileName, ".webp");
+            }
+
+            var storedFile = await fileStorage.SaveAsync(
+                uploadContent,
+                uploadFileName,
+                directory,
+                cancellationToken
+            );
+
+            var media = new Media
+            {
+                RelativePath = storedFile.RelativePath,
+                Size = storedFile.SizeBytes,
+                FormatId = formatId,
+                FolderId = folderId
+            };
+
+            await mediaRepository.AddAsync(media, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return media;
+        }
+        finally
+        {
+            compressedStream?.Dispose();
+        }
     }
+
 
     public string GetDownloadUrl(Media media)
     {
@@ -62,4 +108,38 @@ public class MediaService(IMediaRepository mediaRepository, IFileStorage fileSto
 
         return File.OpenRead(physicalPath);
     }
+
+
+    private async Task<MemoryStream?> CompressImageAsync(
+        Stream content,
+        CancellationToken cancellationToken = default)
+    {
+        var imageExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+
+        if (content.CanSeek)
+            content.Position = 0;
+
+        using var image = await Image.LoadAsync(content, cancellationToken);
+
+        if (image.Width > 1920 || image.Height > 1920)
+        {
+            image.Mutate(x => x.Resize(new ResizeOptions
+            {
+                Size = new Size(1920, 1920),
+                Mode = ResizeMode.Max
+            }));
+        }
+
+        var output = new MemoryStream();
+
+        await image.SaveAsWebpAsync(output, new WebpEncoder
+        {
+            Quality = 80
+        }, cancellationToken);
+
+        output.Position = 0;
+
+        return output;
+    }
+
 }

@@ -19,20 +19,42 @@ public class EventParticipantRepository(AppDbContext context) : EfRepository<Eve
         return await Set.FirstOrDefaultAsync(p => p.UserId == userId && p.EventId == eventId, cancellationToken);
     }
 
-    public async Task<PagedResult<EventParticipant>> GetParticipantsWithUserDetailsAsync(int eventId, int jurorId, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<PagedResult<EventParticipant>> GetParticipantsWithUserDetailsAsync(
+    int eventId,
+    int jurorId,
+    int pageNumber,
+    int pageSize,
+    List<int>? schoolIds,
+    CancellationToken cancellationToken = default)
     {
-        var query = Set.AsNoTracking()
+        IQueryable<EventParticipant> query = Set.AsNoTracking()
             .Where(p => p.EventId == eventId)
             .Include(p => p.User)
             .Include(p => p.Scorings.Where(s => s.JurorId == jurorId));
 
+        if (schoolIds is { Count: > 0 })
+        {
+            foreach (var schoolId in schoolIds.AsEnumerable().Reverse())
+            {
+                var id = schoolId;
+
+                query = query.OrderBy(p => p.User.SchoolId == id ? 0 : 1);
+            }
+        }
+        else
+        {
+            query = query.OrderBy(p => p.Id);
+        }
+
         var totalCount = await query.CountAsync(cancellationToken);
+
         var items = await query
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        return new PagedResult<EventParticipant>(items, totalCount, pageNumber, pageSize);
+        return new PagedResult<EventParticipant>(
+            items, totalCount, pageNumber, pageSize);
     }
 
     public async Task<List<EventParticipant>> GetParticipantsWithUserDetailsByIdsAsync(

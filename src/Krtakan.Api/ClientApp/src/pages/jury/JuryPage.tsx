@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { CircleCheck, LoaderCircle, Star, Trophy, Printer } from 'lucide-react';
-import { eventsApi, participantsApi, scoringApi } from '../../lib/endpoints';
+import { CircleCheck, LoaderCircle, Star, Trophy, Printer, Filter, X } from 'lucide-react';
+import { eventsApi, participantsApi, schoolsApi, scoringApi } from '../../lib/endpoints';
 import type { EventItem, Participant } from '../../lib/endpoints';
 import { downloadMedia } from '../../lib/api';
 import { useAuth } from '../../context/AuthContext';
@@ -10,6 +10,7 @@ import { StarRating } from '../../components/StarRating';
 import { UserAvatar } from '../../components/Avatar';
 import { ImagePreview } from '../../components/ImagePreview';
 import type { ParticipantResult } from '../../lib/endpoints';
+import type { School } from '../../features/auth/types';
 
 export function JuryPage() {
   const { t } = useI18n();
@@ -42,17 +43,60 @@ export function JuryPage() {
   );
 }
 
+
 function ParticipantScores({ eventId }: { eventId: number }) {
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [schools, setSchools] = useState<School[]>([]);
+  const [loadingSchools, setLoadingSchools] = useState(false);
+
+  const [draftSchoolIds, setDraftSchoolIds] = useState<number[]>([]);
+  const [appliedSchoolIds, setAppliedSchoolIds] = useState<number[]>([]);
+
+
   const { t } = useI18n();
   const { user } = useAuth();
   const { items, page, loading, error, setError, setPageNumber } =
-    usePaged((pageNumber: number) => participantsApi.byEvent(eventId, pageNumber), [eventId]);
+    usePaged(
+      (pageNumber: number) =>
+        participantsApi.byEvent(eventId, pageNumber, 10, appliedSchoolIds),
+      [eventId, appliedSchoolIds]
+    );
+
+  useEffect(() => {
+    if (!showFilterModal) return;
+
+    setDraftSchoolIds(appliedSchoolIds);
+
+    if (schools.length > 0) return;
+
+    setLoadingSchools(true);
+
+    schoolsApi.list(1, 1000)
+      .then(result => setSchools(result.items))
+      .catch(e => setError(errorText(e)))
+      .finally(() => setLoadingSchools(false));
+
+  }, [showFilterModal]);
   const [scores, setScores] = useState<Record<number, number>>({});
   // const [submitted, setSubmitted] = useState<Record<number, number>>({});
   const [busyId, setBusyId] = useState<number | null>(null);
 
   const [printItems, setPrintItems] = useState<Participant[]>([]);
   const [printing, setPrinting] = useState(false);
+
+  function toggleSchool(schoolId: number) {
+    setDraftSchoolIds(current =>
+      current.includes(schoolId)
+        ? current.filter(id => id !== schoolId)
+        : [...current, schoolId]
+    );
+  }
+
+  function applySchoolFilter() {
+    setAppliedSchoolIds(draftSchoolIds);
+    setPageNumber(1);
+    setShowFilterModal(false);
+  }
 
   async function handlePrint() {
     setPrinting(true);
@@ -121,6 +165,148 @@ function ParticipantScores({ eventId }: { eventId: number }) {
   return (
     <>
       <Alert message={error} onClose={() => setError('')} />
+      <div className="mb-4 flex justify-end">
+        <Button
+          icon={Filter}
+          variant="secondary"
+          onClick={() => setShowFilterModal(true)}
+        >
+          Sort by School
+          {appliedSchoolIds.length > 0 && ` (${appliedSchoolIds.length})`}
+        </Button>
+      </div>
+
+      {showFilterModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-lg rounded-xl border border-border bg-white p-6 text-gray-900 shadow-xl dark:bg-gray-900 dark:text-gray-100">
+
+            <div className="mb-5 flex items-center justify-between">
+              <h2 className="text-lg font-semibold">
+                Prioritize Schools
+              </h2>
+
+              <button
+                onClick={() => setShowFilterModal(false)}
+                className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {loadingSchools ? (
+              <div className="flex items-center justify-center gap-2 p-8 text-sm text-gray-500">
+                <LoaderCircle className="h-4 w-4 animate-spin" />
+                Loading schools...
+              </div>
+            ) : schools.length === 0 ? (
+              <p className="p-4 text-center text-sm text-gray-500">
+                No schools found.
+              </p>
+            ) : (
+              <>
+                {/* Selected schools */}
+                <div className="mb-6">
+                  <h3 className="mb-3 text-sm font-semibold">
+                    Priority Order
+                  </h3>
+
+                  {draftSchoolIds.length === 0 ? (
+                    <p className="rounded-lg border border-dashed border-border p-4 text-center text-sm text-gray-500">
+                      Select schools below to set their priority.
+                    </p>
+                  ) : (
+                    <div className="flex flex-wrap items-center gap-2">
+                      {draftSchoolIds.map((id, index) => {
+                        const school = schools.find(s => s.id === id);
+                        if (!school) return null;
+
+                        return (
+                          <div
+                            key={id}
+                            className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-800 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-200"
+                          >
+                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-200 text-xs font-bold dark:bg-blue-800">
+                              {index + 1}
+                            </span>
+
+                            <span>{school.name}</span>
+
+                            <button
+                              type="button"
+                              onClick={() => toggleSchool(id)}
+                              className="rounded-full p-0.5 hover:bg-blue-200 dark:hover:bg-blue-800"
+                              aria-label={`Remove ${school.name}`}
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                {/* Available schools */}
+                <div>
+                  <h3 className="mb-3 text-sm font-semibold">
+                    All Schools
+                  </h3>
+
+                  <div className="flex max-h-60 flex-wrap gap-2 overflow-y-auto rounded-lg border border-border p-3">
+                    {schools
+                      .filter(school => !draftSchoolIds.includes(school.id))
+                      .map(school => (
+                        <button
+                          key={school.id}
+                          type="button"
+                          onClick={() => toggleSchool(school.id)}
+                          className="rounded-full border border-border bg-gray-100 px-3 py-1.5 text-sm text-gray-700 transition-colors hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:border-blue-700 dark:hover:bg-blue-950 dark:hover:text-blue-200"
+                        >
+                          + {school.name}
+                        </button>
+                      ))}
+
+                    {schools.every(school => draftSchoolIds.includes(school.id)) && (
+                      <p className="text-sm text-gray-500">
+                        All schools have been selected.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
+
+            <p className="mt-3 text-xs text-gray-500">
+              Participants from the first school will appear first, followed by the second, and so on. Other participants will remain below.
+            </p>
+
+            <div className="mt-6 flex flex-wrap justify-between gap-3">
+              <Button
+                variant="secondary"
+                onClick={() => setDraftSchoolIds([])}
+              >
+                Clear Selection
+              </Button>
+
+              <div className="flex gap-2">
+                <Button
+                  variant="secondary"
+                  onClick={() => setShowFilterModal(false)}
+                >
+                  Cancel
+                </Button>
+
+                <Button
+                  onClick={applySchoolFilter}
+                  disabled={loadingSchools}
+                >
+                  Apply Changes
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <Table headers={[t('common.profilePicture'), t('common.title'), t('common.author'), t('common.student'), t('common.document'), t('common.score')]} empty={!loading && items.length === 0}>
         {items.map(participant => (
           <tr key={participant.id}>

@@ -50,8 +50,20 @@ export const eventsApi = {
 }
 
 export const participantsApi = {
-  byEvent: (eventId: number, pageNumber = 1, pageSize = 10) =>
-    api<PagedResult<Participant>>(`/api/EventParticipant/event/${eventId}/details?${paged(pageNumber, pageSize)}`),
+  byEvent: (
+    eventId: number,
+    pageNumber = 1,
+    pageSize = 10,
+    schoolIds: number[] = []
+  ) => {
+    const params = new URLSearchParams(paged(pageNumber, pageSize));
+
+    schoolIds.forEach(id => params.append('schoolIds', String(id)));
+
+    return api<PagedResult<Participant>>(
+      `/api/EventParticipant/event/${eventId}/details?${params.toString()}`
+    );
+  },
   signUp: (eventId: number, title: string, author: string, file?: File | null) => {
     const form = new FormData()
     form.append('Title', title)

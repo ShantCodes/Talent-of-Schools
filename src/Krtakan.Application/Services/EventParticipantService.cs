@@ -70,9 +70,17 @@ public class EventParticipantService(
         return mapper.Map<PagedResult<EventParticipantViewModel>>(pagedResult);
     }
 
-    public async Task<PagedResult<EventParticipantViewModel>> GetParticipantsWithUserDetailsAsync(int jurorId, int eventId, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<PagedResult<EventParticipantViewModel>> GetParticipantsWithUserDetailsAsync(
+        int jurorId,
+        int eventId,
+        int pageNumber,
+        int pageSize,
+        List<int>? schoolIds,
+        CancellationToken cancellationToken = default)
     {
-        var pagedResult = await eventParticipantRepository.GetParticipantsWithUserDetailsAsync(eventId, jurorId, pageNumber, pageSize, cancellationToken);
+        var pagedResult = await eventParticipantRepository.GetParticipantsWithUserDetailsAsync(
+            eventId, jurorId, pageNumber, pageSize, schoolIds, cancellationToken);
+
         return mapper.Map<PagedResult<EventParticipantViewModel>>(pagedResult);
     }
 

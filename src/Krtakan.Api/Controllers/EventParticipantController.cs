@@ -7,6 +7,7 @@ using Krtakan.Api.ViewModels;
 using System.Security.Claims;
 using Krtakan.Domain.Constants;
 using Krtakan.Domain.Entities;
+using static Krtakan.Api.ViewModels.EventsViewModels;
 
 namespace Krtakan.Api.Controllers;
 
@@ -25,10 +26,15 @@ public class EventParticipantController(
 
     [HttpGet("event/{eventId}/details")]
     [Authorize(Roles = "Admin,Juror")]
-    public async Task<IActionResult> GetParticipantsWithUserDetails(int eventId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    public async Task<IActionResult> GetParticipantsWithUserDetails(int eventId, [FromQuery] GetParticipantsDetailsRequest request)
     {
         var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var result = await eventParticipantService.GetParticipantsWithUserDetailsAsync(currentUserId, eventId, pageNumber, pageSize);
+         var result = await eventParticipantService.GetParticipantsWithUserDetailsAsync(
+        currentUserId,
+        eventId,
+        request.PageNumber,
+        request.PageSize,
+        request.SchoolIds);
         return Ok(result);
     }
 

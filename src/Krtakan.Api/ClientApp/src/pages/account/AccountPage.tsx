@@ -191,8 +191,8 @@ export function AccountPage() {
   return (
     <main className="mx-auto max-w-xl p-4 sm:p-6">
       <PageHeader title={t('account.title')} />
-      <div className="flex gap-6 mb-8 items-start">
-        <div className="flex gap-6 mb-8 items-start">
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-8 items-stretch sm:items-start">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-8 items-stretch sm:items-start">
           <div className="relative group shrink-0">
             <input
               ref={profileInputRef}
@@ -237,7 +237,7 @@ export function AccountPage() {
 
 
         </div>
-        <dl className="flex-1 grid grid-cols-[auto_1fr] gap-y-2 rounded-2xl border border-line p-5 text-sm">
+        <dl className="w-full sm:flex-1 min-w-0 grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 sm:gap-x-5 gap-y-3 rounded-2xl border border-line p-4 sm:p-5 text-sm">
           <dt className="text-fg-subtle">{t('users.col.name')}</dt><dd>{user.fullName}</dd>
           <dt className="text-fg-subtle">{t('common.email')}</dt><dd className="break-all">{user.email}</dd>
           <dt className="text-fg-subtle">{t('common.phone')}</dt><dd className="break-all">{user.phoneNumber}</dd>

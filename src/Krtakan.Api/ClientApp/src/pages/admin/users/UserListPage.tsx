@@ -77,71 +77,76 @@ export function UserListPage() {
         subtitle={t('users.subtitle')}
         action={<LinkButton to="/admin/users/new" variant="primary" icon={UserPlus}>{t('users.add')}</LinkButton>}
       />
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        {filters.map(f => (
-          <Button
-            key={f.value}
-            small
-            variant={filter === f.value ? 'primary' : 'secondary'}
-            onClick={() => {
-              setSearchParams(f.value === 'all' ? {} : { filter: f.value });
-              setPageNumber(1);
-            }}
-          >
-            {t(f.label)}
-          </Button>
-        ))}
+      <div className="mb-4 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2">
+          {filters.map(f => (
+            <Button
+              key={f.value}
+              small
+              variant={filter === f.value ? 'primary' : 'secondary'}
+              onClick={() => {
+                setSearchParams(f.value === 'all' ? {} : { filter: f.value });
+                setPageNumber(1);
+              }}
+            >
+              {t(f.label)}
+            </Button>
+          ))}
+        </div>
 
         <SearchInput
           onSearch={setSearch}
           placeholder="Search users..."
-          className="ml-auto"
+          className="w-full sm:w-auto sm:ml-auto"
         />
       </div>
       <Alert message={error} onClose={() => setError('')} />
       <Alert message={notice} kind="success" onClose={() => setNotice('')} />
+      <div className="w-full overflow-x-auto rounded-lg">
+        <Table headers={[t('users.col.name'), t('common.school'), t('common.roles'), t('common.status'), t('common.registered'), '']} empty={!loading && items.length === 0}>
+          {items.map(user => (
+            <tr key={user.id}>
+              <td className={cell}>
+                <div className="flex items-center gap-3">
+                  <UserAvatar user={user} />
 
-      <Table headers={[t('users.col.name'), t('common.school'), t('common.roles'), t('common.status'), t('common.registered'), '']} empty={!loading && items.length === 0}>
-        {items.map(user => (
-          <tr key={user.id}>
-            <td className={cell}>
-              <div className="flex items-center gap-3">
-                <UserAvatar user={user} />
-
-                <div className="min-w-0">
-                  <div className="font-medium">{user.fullName}</div>
-                  <div className="text-xs text-fg-subtle break-all">{user.email}</div>
+                  <div className="min-w-0">
+                    <div className="font-medium whitespace-normal min-w-[120px]">
+                      {user.fullName}
+                    </div>
+                    <div className="text-xs text-fg-subtle break-all">{user.email}</div>
+                  </div>
                 </div>
-              </div>
-            </td>
-            <td className={cell}>{user.schoolName ?? '—'}</td>
-            <td className={cell}>
-              <div className="flex flex-wrap gap-1">
-                {user.roles.length === 0 && <span className="text-xs text-fg-subtle">{t('common.none')}</span>}
-                {user.roles.map(role => (
-                  <span key={role} className="rounded-full bg-primary-soft px-2 py-0.5 text-xs text-primary">{roleLabel(role)}</span>
-                ))}
-              </div>
-            </td>
-            <td className={cell}>
-              {user.isApproved
-                ? <span className="text-success">{t('common.approved')}</span>
-                : <span className="text-warning">{t('common.pending')}</span>}
-            </td>
-            <td className={`${cell} whitespace-nowrap`}>{formatDate(user.registerDate)}</td>
-            <td className={`${cell} text-end`}>
-              <div className="flex flex-wrap justify-end gap-2">
+              </td>
+              <td className={cell}>{user.schoolName ?? '—'}</td>
+              <td className={cell}>
+                <div className="flex flex-wrap gap-1">
+                  {user.roles.length === 0 && <span className="text-xs text-fg-subtle">{t('common.none')}</span>}
+                  {user.roles.map(role => (
+                    <span key={role} className="rounded-full bg-primary-soft px-2 py-0.5 text-xs text-primary">{roleLabel(role)}</span>
+                  ))}
+                </div>
+              </td>
+              <td className={cell}>
                 {user.isApproved
-                  ? <Button small variant="secondary" icon={Ban} disabled={user.id === currentUser?.id} onClick={() => revoke(user)}>{t('users.revoke')}</Button>
-                  : <Button small variant="success" icon={Check} onClick={() => run(() => usersApi.approve(user.id, true), t('users.approvedNotice', { name: user.fullName }))}>{t('users.approve')}</Button>}
-                <Button small variant="secondary" icon={ShieldCheck} disabled={roles.length === 0} onClick={() => setRoleUser(user)}>{t('users.changeRole')}</Button>
-                <LinkButton small icon={Pencil} to={`/admin/users/${user.id}/edit`} state={{ user }}>{t('common.edit')}</LinkButton>
-                <Button small variant="danger" icon={Trash2} disabled={user.id === currentUser?.id} onClick={() => remove(user)}>{t('common.delete')}</Button>
-              </div>
-            </td>
-          </tr>
-        ))}
-      </Table>
+                  ? <span className="text-success">{t('common.approved')}</span>
+                  : <span className="text-warning">{t('common.pending')}</span>}
+              </td>
+              <td className={`${cell} whitespace-nowrap`}>{formatDate(user.registerDate)}</td>
+              <td className={`${cell} text-end`}>
+                <div className="flex flex-wrap justify-start sm:justify-end gap-2 min-w-[280px]">
+                  {user.isApproved
+                    ? <Button small variant="secondary" icon={Ban} disabled={user.id === currentUser?.id} onClick={() => revoke(user)}>{t('users.revoke')}</Button>
+                    : <Button small variant="success" icon={Check} onClick={() => run(() => usersApi.approve(user.id, true), t('users.approvedNotice', { name: user.fullName }))}>{t('users.approve')}</Button>}
+                  <Button small variant="secondary" icon={ShieldCheck} disabled={roles.length === 0} onClick={() => setRoleUser(user)}>{t('users.changeRole')}</Button>
+                  <LinkButton small icon={Pencil} to={`/admin/users/${user.id}/edit`} state={{ user }}>{t('common.edit')}</LinkButton>
+                  <Button small variant="danger" icon={Trash2} disabled={user.id === currentUser?.id} onClick={() => remove(user)}>{t('common.delete')}</Button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </Table>
+      </div>
       <Pagination page={page} onChange={setPageNumber} />
 
       {roleUser && (

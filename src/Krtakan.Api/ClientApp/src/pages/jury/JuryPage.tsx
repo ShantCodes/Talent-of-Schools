@@ -11,6 +11,7 @@ import { UserAvatar } from '../../components/Avatar';
 import { ImagePreview } from '../../components/ImagePreview';
 import type { ParticipantResult } from '../../lib/endpoints';
 import type { School } from '../../features/auth/types';
+import { div } from 'framer-motion/client';
 
 export function JuryPage() {
   const { t } = useI18n();
@@ -28,10 +29,10 @@ export function JuryPage() {
   }, []);
 
   return (
-    <main className="mx-auto max-w-5xl p-4 sm:p-6">
+    <main className="mx-auto w-full max-w-5xl min-w-0 p-3 sm:p-6">
       <PageHeader title={t('jury.title')} subtitle={t('jury.subtitle')} />
       <Alert message={error} onClose={() => setError('')} />
-      <label className="mb-6 block max-w-sm text-sm font-medium text-fg">
+      <label className="mb-6 block w-full sm:max-w-sm text-sm font-medium text-fg">
         {t('jury.event')}
         <select className={`${selectClass} mt-1`} value={eventId ?? ''} onChange={e => setEventId(Number(e.target.value))}>
           {events.length === 0 && <option value="">{t('jury.noEvents')}</option>}
@@ -176,8 +177,8 @@ function ParticipantScores({ eventId }: { eventId: number }) {
       </div>
 
       {showFilterModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-lg rounded-xl border border-border bg-white p-6 text-gray-900 shadow-xl dark:bg-gray-900 dark:text-gray-100">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 p-2 sm:p-4">
+          <div className="w-full max-w-lg max-h-[90dvh] overflow-y-auto rounded-t-2xl sm:rounded-xl border border-border bg-white p-4 sm:p-6 text-gray-900 shadow-xl dark:bg-gray-900 dark:text-gray-100">
 
             <div className="mb-5 flex items-center justify-between">
               <h2 className="text-lg font-semibold">
@@ -214,7 +215,7 @@ function ParticipantScores({ eventId }: { eventId: number }) {
                       Select schools below to set their priority.
                     </p>
                   ) : (
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                       {draftSchoolIds.map((id, index) => {
                         const school = schools.find(s => s.id === id);
                         if (!school) return null;
@@ -279,7 +280,7 @@ function ParticipantScores({ eventId }: { eventId: number }) {
               Participants from the first school will appear first, followed by the second, and so on. Other participants will remain below.
             </p>
 
-            <div className="mt-6 flex flex-wrap justify-between gap-3">
+            <div className="mt-6 flex flex-col-reverse sm:flex-row sm:justify-between gap-3">
               <Button
                 variant="secondary"
                 onClick={() => setDraftSchoolIds([])}
@@ -287,7 +288,7 @@ function ParticipantScores({ eventId }: { eventId: number }) {
                 Clear Selection
               </Button>
 
-              <div className="flex gap-2">
+              <div className="flex flex-col-reverse sm:flex-row gap-2">
                 <Button
                   variant="secondary"
                   onClick={() => setShowFilterModal(false)}
@@ -306,65 +307,67 @@ function ParticipantScores({ eventId }: { eventId: number }) {
           </div>
         </div>
       )}
-      <Table headers={[t('common.profilePicture'), t('common.title'), t('common.author'), t('common.school'), t('common.document'), t('common.score')]} empty={!loading && items.length === 0}>
-        {items.map(participant => (
-          <tr key={participant.id}>
-            <td className={cell}>
-              <div className="flex items-center gap-3">
-                <UserAvatar user={participant} />
+      <div className="w-full overflow-x-auto rounded-lg">
+        <Table headers={[t('common.profilePicture'), t('common.title'), t('common.author'), t('common.school'), t('common.document'), t('common.score')]} empty={!loading && items.length === 0}>
+          {items.map(participant => (
+            <tr key={participant.id}>
+              <td className={cell}>
+                <div className="flex items-center gap-3">
+                  <UserAvatar user={participant} />
 
-                <div className="min-w-0">
-                  <div className="font-medium">{participant.fullName}</div>
-                  <div className="text-xs text-fg-subtle break-all">{participant.email}</div>
+                  <div className="min-w-0">
+                    <div className="font-medium">{participant.fullName}</div>
+                    <div className="text-xs text-fg-subtle break-all">{participant.email}</div>
+                  </div>
                 </div>
-              </div>
-            </td>
-            <td className={`${cell} font-medium`}>{participant.title}</td>
-            <td className={cell}>{participant.author}</td>
-            <td className={cell}>{participant.school ?? '—'}</td>
-            <td className={cell}>
-              {participant.documentId
-                ? <ImagePreview mediaId={participant.documentId} />
-                : <span className="text-fg-subtle">—</span>}
-            </td>
-            <td className={cell}>
-              {participant.score !== null && participant.score !== undefined ? (
-                <span className="inline-flex flex-wrap items-center gap-2 font-semibold text-success">
-                  <StarRating
-                    value={participant.score}
-                    readOnly
-                    label={t('jury.scored', { score: participant.score })}
-                  />
-                  <span className="inline-flex items-center gap-1">
-                    <CircleCheck className="h-4 w-4" aria-hidden />
-                    {t('jury.scored', { score: participant.score })}
+              </td>
+              <td className={`${cell} font-medium`}>{participant.title}</td>
+              <td className={cell}>{participant.author}</td>
+              <td className={cell}>{participant.school ?? '—'}</td>
+              <td className={cell}>
+                {participant.documentId
+                  ? <ImagePreview mediaId={participant.documentId} />
+                  : <span className="text-fg-subtle">—</span>}
+              </td>
+              <td className={cell}>
+                {participant.score !== null && participant.score !== undefined ? (
+                  <span className="inline-flex flex-wrap items-center gap-2 font-semibold text-success">
+                    <StarRating
+                      value={participant.score}
+                      readOnly
+                      label={t('jury.scored', { score: participant.score })}
+                    />
+                    <span className="inline-flex items-center gap-1">
+                      <CircleCheck className="h-4 w-4" aria-hidden />
+                      {t('jury.scored', { score: participant.score })}
+                    </span>
                   </span>
-                </span>
-              ) : (
-                <div className="flex flex-wrap items-center gap-2">
-                  <StarRating
-                    value={scores[participant.id] ?? null}
-                    onChange={score =>
-                      setScores(s => ({ ...s, [participant.id]: score }))
-                    }
-                    disabled={busyId === participant.id}
-                    label={t('common.score')}
-                  />
+                ) : (
+                  <div className="flex flex-wrap items-center gap-2">
+                    <StarRating
+                      value={scores[participant.id] ?? null}
+                      onChange={score =>
+                        setScores(s => ({ ...s, [participant.id]: score }))
+                      }
+                      disabled={busyId === participant.id}
+                      label={t('common.score')}
+                    />
 
-                  <Button
-                    small
-                    icon={busyId === participant.id ? LoaderCircle : Star}
-                    disabled={busyId === participant.id || !scores[participant.id]}
-                    onClick={() => submit(participant)}
-                  >
-                    {t('jury.submit')}
-                  </Button>
-                </div>
-              )}
-            </td>
-          </tr>
-        ))}
-      </Table>
+                    <Button
+                      small
+                      icon={busyId === participant.id ? LoaderCircle : Star}
+                      disabled={busyId === participant.id || !scores[participant.id]}
+                      onClick={() => submit(participant)}
+                    >
+                      {t('jury.submit')}
+                    </Button>
+                  </div>
+                )}
+              </td>
+            </tr>
+          ))}
+        </Table>
+      </div>
       <h2 className="mb-3 mt-10 flex items-center gap-2 text-lg font-semibold">
         <Trophy className="h-5 w-5" aria-hidden />
         {t('participants.results')}
@@ -379,28 +382,30 @@ function ParticipantScores({ eventId }: { eventId: number }) {
           {printing ? 'Preparing...' : 'Print'}
         </Button>
       </div>
-      <Table
-        headers={[
-          t('participants.col.rank'),
-          t('common.title'),
-          t('common.author'),
-          t('common.school'),
-          t('participants.col.average')
-        ]}
-        empty={results.length === 0}
-      >
-        {results.map((result, index) => (
-          <tr key={`${result.title}-${index}`}>
-            <td className={`${cell} font-bold`}>{index + 1}</td>
-            <td className={cell}>{result.title}</td>
-            <td className={cell}>{result.author}</td>
-            <td className={cell}>{result.school ?? '—'}</td>
-            <td className={`${cell} font-semibold`}>
-              {result.averageScore.toFixed(2)}
-            </td>
-          </tr>
-        ))}
-      </Table>
+      <div className="w-full overflow-x-auto rounded-lg">
+        <Table
+          headers={[
+            t('participants.col.rank'),
+            t('common.title'),
+            t('common.author'),
+            t('common.school'),
+            t('participants.col.average')
+          ]}
+          empty={results.length === 0}
+        >
+          {results.map((result, index) => (
+            <tr key={`${result.title}-${index}`}>
+              <td className={`${cell} font-bold`}>{index + 1}</td>
+              <td className={cell}>{result.title}</td>
+              <td className={cell}>{result.author}</td>
+              <td className={cell}>{result.school ?? '—'}</td>
+              <td className={`${cell} font-semibold`}>
+                {result.averageScore.toFixed(2)}
+              </td>
+            </tr>
+          ))}
+        </Table>
+      </div>
       <Pagination page={page} onChange={setPageNumber} />
       <div id="printable-table" className="hidden print:block">
         <h1 className="mb-4 text-xl font-bold">

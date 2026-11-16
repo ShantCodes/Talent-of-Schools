@@ -42,34 +42,37 @@ export function EventListPage() {
       />
       <Alert message={error} onClose={() => setError('')} />
       <Alert message={notice} kind="success" onClose={() => setNotice('')} />
-
-      <Table headers={[t('common.name'), t('events.col.starts'), t('events.col.ends'), t('events.col.birthRange'), '']} empty={!loading && items.length === 0}>
-        {items.map(event => (
-          <tr key={event.id}>
-            <td className={cell}>
-              <div className="font-medium">{event.name}</div>
-              <div className="line-clamp-1 text-xs text-fg-subtle">{event.description}</div>
-            </td>
-            <td className={`${cell} whitespace-nowrap`}>{formatDate(event.startDate)}</td>
-            <td className={`${cell} whitespace-nowrap`}>{formatDate(event.endDate)}</td>
-            <td className={cell}>{event.minBirthDate || event.maxBirthDate ? `${event.minBirthDate ?? '…'} – ${event.maxBirthDate ?? '…'}` : t('common.any')}</td>
-            <td className={`${cell} whitespace-nowrap text-end`}>
-              <div className="flex justify-end gap-2">
-                <Button
-                  small
-                  variant="secondary"
-                  icon={UserPlus}
-                  onClick={() => setSelectedEvent(event)}
-                >                  
-                </Button>
-                <LinkButton small icon={UsersRound} to={`/admin/events/${event.id}`} state={{ event }}>{t('events.participants')}</LinkButton>
-                <LinkButton small icon={Pencil} to={`/admin/events/${event.id}/edit`} state={{ event }}>{t('common.edit')}</LinkButton>
-                <Button small variant="danger" icon={Trash2} onClick={() => remove(event)}>{t('common.delete')}</Button>
-              </div>
-            </td>
-          </tr>
-        ))}
-      </Table>
+      <div className="w-full overflow-x-auto rounded-lg">
+        <Table headers={[t('common.name'), t('events.col.starts'), t('events.col.ends'), t('events.col.birthRange'), '']} empty={!loading && items.length === 0}>
+          {items.map(event => (
+            <tr key={event.id}>
+              <td className={`${cell} whitespace-nowrap`}>
+                <div className="min-w-[140px] font-medium">{event.name}</div>
+                <div className="line-clamp-1 max-w-[220px] text-xs text-fg-subtle">
+                  {event.description}
+                </div>
+              </td>
+              <td className={`${cell} whitespace-nowrap`}>{formatDate(event.startDate)}</td>
+              <td className={`${cell} whitespace-nowrap`}>{formatDate(event.endDate)}</td>
+              <td className={`${cell} whitespace-nowrap`}>{event.minBirthDate || event.maxBirthDate ? `${event.minBirthDate ?? '…'} – ${event.maxBirthDate ?? '…'}` : t('common.any')}</td>
+              <td className={`${cell} whitespace-nowrap text-end`}>
+                <div className="flex min-w-[320px] flex-wrap justify-start gap-2 sm:min-w-0 sm:justify-end">
+                  <Button
+                    small
+                    variant="secondary"
+                    icon={UserPlus}
+                    onClick={() => setSelectedEvent(event)}
+                  >
+                  </Button>
+                  <LinkButton small icon={UsersRound} to={`/admin/events/${event.id}`} state={{ event }}>{t('events.participants')}</LinkButton>
+                  <LinkButton small icon={Pencil} to={`/admin/events/${event.id}/edit`} state={{ event }}>{t('common.edit')}</LinkButton>
+                  <Button small variant="danger" icon={Trash2} onClick={() => remove(event)}>{t('common.delete')}</Button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </Table>
+      </div>
       <Pagination page={page} onChange={setPageNumber} />
       {selectedEvent && (
         <AddEventParticipantModal

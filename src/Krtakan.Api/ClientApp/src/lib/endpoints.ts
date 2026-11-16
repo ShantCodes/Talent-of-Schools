@@ -22,6 +22,7 @@ export type Participant = {
   documentId: number | null;
   fullName?: string | null;
   email?: string | null;
+  school: string | null;
   score: number | null;
 }
 
@@ -30,6 +31,7 @@ export type ParticipantResult = {
   author: string;
   userName: string;
   userLastName: string;
+  school: string | null;
   profilePictureId: number | null;
   averageScore: number;
 }

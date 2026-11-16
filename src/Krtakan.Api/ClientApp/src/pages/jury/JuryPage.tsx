@@ -103,10 +103,9 @@ function ParticipantScores({ eventId }: { eventId: number }) {
     setError('');
 
     try {
-      const result = await participantsApi.byEvent(eventId, 1, 10000);
-      setPrintItems(result.items);
+      const result = await participantsApi.results(eventId);
+      setResults(result);
 
-      // Wait for React to render the printable table
       setTimeout(() => {
         window.print();
         setPrinting(false);
@@ -307,7 +306,7 @@ function ParticipantScores({ eventId }: { eventId: number }) {
           </div>
         </div>
       )}
-      <Table headers={[t('common.profilePicture'), t('common.title'), t('common.author'), t('common.student'), t('common.document'), t('common.score')]} empty={!loading && items.length === 0}>
+      <Table headers={[t('common.profilePicture'), t('common.title'), t('common.author'), t('common.school'), t('common.document'), t('common.score')]} empty={!loading && items.length === 0}>
         {items.map(participant => (
           <tr key={participant.id}>
             <td className={cell}>
@@ -322,7 +321,7 @@ function ParticipantScores({ eventId }: { eventId: number }) {
             </td>
             <td className={`${cell} font-medium`}>{participant.title}</td>
             <td className={cell}>{participant.author}</td>
-            <td className={cell}>{participant.fullName ?? t('participants.userFallback', { id: participant.userId })}</td>
+            <td className={cell}>{participant.school ?? '—'}</td>
             <td className={cell}>
               {participant.documentId
                 ? <ImagePreview mediaId={participant.documentId} />
@@ -385,7 +384,7 @@ function ParticipantScores({ eventId }: { eventId: number }) {
           t('participants.col.rank'),
           t('common.title'),
           t('common.author'),
-          t('common.student'),
+          t('common.school'),
           t('participants.col.average')
         ]}
         empty={results.length === 0}
@@ -395,9 +394,7 @@ function ParticipantScores({ eventId }: { eventId: number }) {
             <td className={`${cell} font-bold`}>{index + 1}</td>
             <td className={cell}>{result.title}</td>
             <td className={cell}>{result.author}</td>
-            <td className={cell}>
-              {result.userName} {result.userLastName}
-            </td>
+            <td className={cell}>{result.school ?? '—'}</td>
             <td className={`${cell} font-semibold`}>
               {result.averageScore.toFixed(2)}
             </td>
@@ -414,24 +411,26 @@ function ParticipantScores({ eventId }: { eventId: number }) {
           <thead>
             <tr>
               <th className="border p-2">#</th>
+              <th className="border p-2">Name</th>
+              <th className="border p-2">school</th>
               <th className="border p-2">Title</th>
               <th className="border p-2">Author</th>
-              <th className="border p-2">Student</th>
-              <th className="border p-2">Email</th>
               <th className="border p-2">Score</th>
             </tr>
           </thead>
 
           <tbody>
-            {printItems.map((participant, index) => (
-              <tr key={participant.id}>
+            {results.map((result, index) => (
+              <tr key={`${result.title}-${index}`}>
                 <td className="border p-2">{index + 1}</td>
-                <td className="border p-2">{participant.title}</td>
-                <td className="border p-2">{participant.author}</td>
-                <td className="border p-2">{participant.fullName}</td>
-                <td className="border p-2">{participant.email}</td>
                 <td className="border p-2">
-                  {participant.score ?? '—'}
+                  {[result.userName, result.userLastName].filter(Boolean).join(' ')}
+                </td>
+                <td className="border p-2">{result.school ?? '—'}</td>
+                <td className="border p-2">{result.title}</td>
+                <td className="border p-2">{result.author}</td>
+                <td className="border p-2">
+                  {result.averageScore.toFixed(2)}
                 </td>
               </tr>
             ))}

@@ -7,5 +7,6 @@ public class ParticipantResultViewModel
     public string UserName { get; set; }
     public string UserLastName { get; set; }
     public int? ProfilePictureId { get; set; }
+    public string School { get; set; }
     public decimal AverageScore { get; set; }
 }

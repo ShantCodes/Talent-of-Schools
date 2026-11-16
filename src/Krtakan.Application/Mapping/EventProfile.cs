@@ -22,6 +22,7 @@ public class EventProfile : Profile
             .ForMember(dest => dest.Score,
                         opt => opt.MapFrom(src => src.Scorings
                         .Select(s => (decimal?)s.Score)
-                        .FirstOrDefault()));
+                        .FirstOrDefault()))
+            .ForMember(s => s.School, opt => opt.MapFrom(src => src.User.School.Name));
     }
 }

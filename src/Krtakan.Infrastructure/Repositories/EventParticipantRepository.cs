@@ -29,7 +29,7 @@ public class EventParticipantRepository(AppDbContext context) : EfRepository<Eve
     {
         IQueryable<EventParticipant> query = Set.AsNoTracking()
             .Where(p => p.EventId == eventId)
-            .Include(p => p.User)
+            .Include(p => p.User).ThenInclude(s => s.School)
             .Include(p => p.Scorings.Where(s => s.JurorId == jurorId));
 
         if (schoolIds is { Count: > 0 })
@@ -67,6 +67,7 @@ public class EventParticipantRepository(AppDbContext context) : EfRepository<Eve
         return await Set.AsNoTracking()
             .Where(p => participantIds.Contains(p.Id))
             .Include(p => p.User)
+            .ThenInclude(u => u.School)
             .ToListAsync(cancellationToken);
     }
 }

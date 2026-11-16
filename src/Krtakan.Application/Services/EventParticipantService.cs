@@ -156,8 +156,9 @@ public class EventParticipantService(
                 {
                     Title = participant.Title,
                     Author = participant.Author,
-                    UserName = participant.User.Name,
+                    UserName = participant.User.Name,                
                     UserLastName = participant.User.LastName,
+                    School = participant.User?.School?.Name,
                     ProfilePictureId = participant.User.ProfilePictureMediaId,
                     AverageScore = Math.Round(r.AverageScore, 2)
                 };

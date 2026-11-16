@@ -15,5 +15,6 @@ public record EventParticipantViewModel(
     public string FullName { get; init; }
     public string Email { get; init; }
     public int? ProfilePictureMediaId {get; set;}
+    public string School {get; set;} = string.Empty;
     public decimal? Score { get; init; }
 };

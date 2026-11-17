@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Krtakan.Application.ViewModels.Event;
 using Krtakan.Domain.Common;
 using Krtakan.Domain.Entities;
 using Krtakan.Domain.Interfaces;
@@ -29,5 +30,16 @@ public class EventRepository(AppDbContext context) : EfRepository<Event>(context
             .ToListAsync(cancellationToken);
 
         return new PagedResult<Event>(items, totalCount, pageNumber, pageSize);
+    }
+
+    public async Task<List<EventParticipant>> GetParticipantsWithScoresAsync(
+        List<int> eventIds,
+        CancellationToken cancellationToken = default)
+    {
+        return await context.Set<EventParticipant>()
+            .AsNoTracking()
+            .Where(ep => eventIds.Contains(ep.EventId))
+            .Include(ep => ep.Scorings)
+            .ToListAsync(cancellationToken);
     }
 }

@@ -1,8 +1,11 @@
 using Krtakan.Domain.Entities;
-using Krtakan.Domain.Interfaces;
+
 
 namespace Krtakan.Domain.Interfaces;
 
 public interface IEventRepository : IRepository<Event>
 {
+    Task<List<EventParticipant>> GetParticipantsWithScoresAsync(
+        List<int> eventIds,
+        CancellationToken cancellationToken = default);
 }

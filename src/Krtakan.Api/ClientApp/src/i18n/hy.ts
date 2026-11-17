@@ -284,6 +284,7 @@ export const hy: Record<MessageKey, string> = {
   'studentEvents.submit': 'Ուղարկել',
   'studentEvents.submitting': 'Ուղարկվում է…',
   'studentEvents.alreadyHint': 'Եթե արդեն գրանցվել եք այս միջոցառմանը, չեք կարող կրկին գրանցվել։',
+  'studentEvents.mySubmission': 'իմ գրառումները',
 
   'jury.title': 'Ժյուրի',
   'jury.subtitle': 'Դիտեք հայտերը և յուրաքանչյուրին տվեք 1-ից 5 գնահատական։',

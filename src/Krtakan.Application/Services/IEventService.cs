@@ -8,7 +8,11 @@ namespace Krtakan.Application.Services;
 public interface IEventService
 {
     Task<EventViewModel> CreateEventAsync(CreateEventRequest request, CancellationToken cancellationToken = default);
-    Task<PagedResult<EventViewModel>> GetEventsAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default);
+    Task<PagedResult<EventViewModel>> GetEventsAsync(
+    int userId,
+    int pageNumber,
+    int pageSize,
+    CancellationToken cancellationToken = default);
     Task<EventViewModel> GetEventAsync(int eventId, CancellationToken cancellationToken = default);
     Task<bool> DeleteEventAsync(int id, CancellationToken cancellationToken = default);
     Task<bool> EditEventAsync(int id, CreateEventRequest request, CancellationToken cancellationToken = default);

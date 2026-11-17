@@ -27,11 +27,84 @@ public class EventService(IEventRepository eventRepository, IUnitOfWork unitOfWo
         return mapper.Map<EventViewModel>(eventEntity);
     }
 
-    public async Task<PagedResult<EventViewModel>> GetEventsAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<PagedResult<EventViewModel>> GetEventsAsync(
+    int userId,
+    int pageNumber,
+    int pageSize,
+    CancellationToken cancellationToken = default)
     {
-        var pagedResult = await eventRepository.ListAsync(null, pageNumber, pageSize, cancellationToken);
+        var pagedResult = await eventRepository.ListAsync(
+            null, pageNumber, pageSize, cancellationToken);
 
-        return mapper.Map<PagedResult<EventViewModel>>(pagedResult);
+        var eventIds = pagedResult.Items.Select(e => e.Id).ToList();
+
+        var participants = await eventRepository.GetParticipantsWithScoresAsync(
+            eventIds, cancellationToken);
+
+        var result = pagedResult.Items.Select(e =>
+        {
+            var userParticipant = participants
+                .FirstOrDefault(p => p.EventId == e.Id && p.UserId == userId);
+
+            if (userParticipant == null)
+            {
+                return new EventViewModel(
+                    e.Id,
+                    e.Name,
+                    e.Description,
+                    e.StartDate,
+                    e.EndDate,
+                    e.MinBirthDate,
+                    e.MaxBirthDate,
+                    null,
+                    null,
+                    null,
+                    null
+                );
+            }
+
+            var averageScore = userParticipant.Scorings.Any()
+                ? userParticipant.Scorings.Average(s => s.Score)
+                : (decimal?)null;
+
+            int? rank = null;
+
+            if (averageScore.HasValue)
+            {
+                var participantAverages = participants
+                    .Where(p => p.EventId == e.Id && p.Scorings.Any())
+                    .Select(p => new
+                    {
+                        p.Id,
+                        Average = p.Scorings.Average(s => s.Score)
+                    })
+                    .ToList();
+
+                rank = participantAverages.Count(p =>
+                    p.Average > averageScore.Value) + 1;
+            }
+
+            return new EventViewModel(
+                e.Id,
+                e.Name,
+                e.Description,
+                e.StartDate,
+                e.EndDate,
+                e.MinBirthDate,
+                e.MaxBirthDate,
+                userParticipant.Title,
+                userParticipant.Author,
+                averageScore,
+                rank
+            );
+        }).ToList();
+
+        return new PagedResult<EventViewModel>(
+            result,
+            pagedResult.TotalCount,
+            pageNumber,
+            pageSize
+        );
     }
     public async Task<EventViewModel> GetEventAsync(int eventId, CancellationToken cancellationToken = default)
     {

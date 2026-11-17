@@ -9,5 +9,18 @@ public record EventViewModel(
     DateTime StartDate,
     DateTime EndDate,
     DateOnly? MinBirthDate,
-    DateOnly? MaxBirthDate
+    DateOnly? MaxBirthDate,
+    string? Title,
+    string? Author,
+    decimal? AverageScore,
+    int? Rank
+);
+
+    public record EventParticipantScore(
+    int Id,
+    int EventId,
+    int UserId,
+    string? Title,
+    string? Author,
+    decimal? AverageScore
 );

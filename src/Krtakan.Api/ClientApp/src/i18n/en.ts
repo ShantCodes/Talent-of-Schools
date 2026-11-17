@@ -287,6 +287,7 @@ export const en = {
   'studentEvents.submit': 'Submit',
   'studentEvents.submitting': 'Submitting…',
   'studentEvents.alreadyHint': 'If you already signed up for this event, you cannot sign up again.',
+  'studentEvents.mySubmission': 'my records',
 
   'jury.title': 'Jury',
   'jury.subtitle': 'Review submissions and give each one a score from 1 to 5.',

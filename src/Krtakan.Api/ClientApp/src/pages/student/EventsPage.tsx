@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Cake, CalendarClock, CalendarDays, LoaderCircle, Lock, Send, Upload, X } from 'lucide-react';
+import { Cake, CalendarClock, CalendarDays, LoaderCircle, Lock, Send, Upload, X, Trophy, Star, FileText, UserRound } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { eventsApi, participantsApi } from '../../lib/endpoints';
 import type { EventItem } from '../../lib/endpoints';
@@ -51,6 +51,7 @@ export function StudentEventsPage() {
       {!loading && items.length === 0 && <p className="text-fg-subtle">{t('studentEvents.none')}</p>}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {items.map(event => {
+          const hasSubmission = event.title !== null;
           const status = eventStatus(event);
           const isEligible = isBirthDateEligible(event, user?.birthDate);
           return (
@@ -70,6 +71,73 @@ export function StudentEventsPage() {
                   </div>
                 )}
               </dl>
+              {hasSubmission && (
+                <div className="mt-4 rounded-xl border border-line bg-surface-muted p-4">
+                  <div className="mb-3 flex items-center gap-2">
+                    <FileText className="h-4 w-4 text-primary" />
+                    <h3 className="text-sm font-semibold">
+                      {t('studentEvents.mySubmission')}
+                    </h3>
+                  </div>
+
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-start gap-2">
+                      <FileText className="mt-0.5 h-4 w-4 shrink-0 text-fg-muted" />
+                      <div>
+                        <span className="text-xs text-fg-muted">
+                          {t('studentEvents.workTitle')}
+                        </span>
+                        <p className="font-medium">{event.title}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-2">
+                      <UserRound className="mt-0.5 h-4 w-4 shrink-0 text-fg-muted" />
+                      <div>
+                        <span className="text-xs text-fg-muted">
+                          {t('common.author')}
+                        </span>
+                        <p className="font-medium">{event.author}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {(event.averageScore !== null || event.rank !== null) && (
+                    <div className="mt-4 grid grid-cols-2 gap-3 border-t border-line pt-3">
+                      {event.averageScore !== null && (
+                        <div>
+                          <div className="flex items-center gap-1.5 text-xs text-fg-muted">
+                            <Star className="h-3.5 w-3.5" />
+                            {t('participants.col.average')}
+                          </div>
+                          <p className="mt-1 text-lg font-bold">
+                            {event.averageScore.toFixed(2)}
+                            <span className="ml-1 text-sm font-normal text-fg-muted">/ 5</span>
+                          </p>
+                        </div>
+                      )}
+
+                      {event.rank !== null && (
+                        <div>
+                          <div className="flex items-center gap-1.5 text-xs text-fg-muted">
+                            <Trophy className="h-3.5 w-3.5" />
+                            {t('participants.col.rank')}
+                          </div>
+                          <p className="mt-1 text-lg font-bold">
+                            #{event.rank}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {event.averageScore === null && (
+                    <p className="mt-3 text-xs text-fg-muted">
+                      {t('participants.results')}
+                    </p>
+                  )}
+                </div>
+              )}
               {isStudent && (
                 <Button
                   className="mt-4"

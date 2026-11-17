@@ -4,6 +4,7 @@ using Krtakan.Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Krtakan.Domain.Common;
+using System.Security.Claims;
 
 namespace Krtakan.Api.Controllers;
 
@@ -22,7 +23,8 @@ public class EventsController(IEventService eventService) : ControllerBase
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10)
     {
-        return Ok(await eventService.GetEventsAsync(pageNumber, pageSize));
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        return Ok(await eventService.GetEventsAsync(userId, pageNumber, pageSize));
     }
 
     [HttpDelete("{id}")]

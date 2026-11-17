@@ -102,7 +102,7 @@ export function UserListPage() {
       </div>
       <Alert message={error} onClose={() => setError('')} />
       <Alert message={notice} kind="success" onClose={() => setNotice('')} />
-      <div className="w-full overflow-x-auto rounded-lg">
+      <div className="w-full overflow-x-auto rounded-lg lg:w-[calc(100%+120px)] lg:max-w-none">
         <Table headers={[t('users.col.name'), t('common.school'), t('common.roles'), t('common.status'), t('common.registered'), '']} empty={!loading && items.length === 0}>
           {items.map(user => (
             <tr key={user.id}>

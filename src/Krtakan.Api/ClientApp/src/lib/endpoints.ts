@@ -10,6 +10,10 @@ export type EventItem = {
   endDate: string;
   minBirthDate: string | null;
   maxBirthDate: string | null;
+  title: string | null;
+  author: string | null;
+  averageScore: number | null;
+  rank: number | null;
 }
 export type EventInput = Omit<EventItem, 'id'>
 

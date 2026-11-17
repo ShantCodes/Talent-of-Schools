@@ -284,6 +284,7 @@ export const fa: Record<MessageKey, string> = {
   'studentEvents.submit': 'ارسال',
   'studentEvents.submitting': 'در حال ارسال…',
   'studentEvents.alreadyHint': 'اگر قبلاً در این رویداد ثبت‌نام کرده‌اید، نمی‌توانید دوباره ثبت‌نام کنید.',
+  'studentEvents.mySubmission': 'سوابق من',
 
   'jury.title': 'داوری',
   'jury.subtitle': 'آثار ارسالی را بررسی کنید و به هر کدام از ۱ تا ۵ امتیاز دهید.',

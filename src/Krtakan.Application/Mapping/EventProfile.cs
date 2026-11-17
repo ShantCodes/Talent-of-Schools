@@ -10,7 +10,20 @@ public class EventProfile : Profile
 {
     public EventProfile()
     {
-        CreateMap<Event, EventViewModel>();
+        CreateMap<Event, EventViewModel>()
+    .ConstructUsing(src => new EventViewModel(
+        src.Id,
+        src.Name,
+        src.Description,
+        src.StartDate,
+        src.EndDate,
+        src.MinBirthDate,
+        src.MaxBirthDate,
+        null,
+        null,
+        null,
+        null
+    ));
         CreateMap<PagedResult<Event>, PagedResult<EventViewModel>>()
             .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
         CreateMap<PagedResult<EventParticipant>, PagedResult<EventParticipantViewModel>>()

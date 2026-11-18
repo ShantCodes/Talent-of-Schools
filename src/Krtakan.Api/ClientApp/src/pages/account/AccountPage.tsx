@@ -246,6 +246,9 @@ export function AccountPage() {
           <dt className="text-fg-subtle">{t('common.grade')}</dt><dd className="break-all">{user.grade ?? '—'}</dd>
           <dt className="text-fg-subtle">{t('common.roles')}</dt><dd className="break-all">{user.roles.length > 0 ? roleList(user.roles) : '—'}</dd>
         </dl>
+
+      </div>
+      <div className="flex justify-end">
         <Button
           variant="secondary"
           icon={showEditForm ? X : PenLine}

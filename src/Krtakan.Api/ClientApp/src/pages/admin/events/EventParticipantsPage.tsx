@@ -8,6 +8,7 @@ import { useI18n } from '../../../i18n/I18nContext';
 import { Alert, BackLink, Button, PageHeader, Pagination, Table, cell, errorText, useConfirm, useLoaded, usePaged } from '../../../components/ui';
 import { UserAvatar } from '../../../components/Avatar';
 import { useAuth } from '../../../context/AuthContext';
+import { ImagePreview } from '../../../components/ImagePreview';
 
 export function EventParticipantsPage() {
   const { t } = useI18n();
@@ -62,7 +63,7 @@ export function EventParticipantsPage() {
       <Alert message={notice} kind="success" onClose={() => setNotice('')} />
 
       <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold"><UsersRound className="h-5 w-5" aria-hidden />{t('participants.heading')}</h2>
-      <Table headers={[t('common.profilePicture'),t('common.title'), t('common.author'), t('common.student'), t('common.document'), '']} empty={!loading && items.length === 0}>
+      <Table headers={[t('common.profilePicture'), t('common.title'), t('common.author'), t('common.student'), t('common.document'), '']} empty={!loading && items.length === 0}>
         {items.map(participant => (
           <tr key={participant.id}>
             <td className={cell}>
@@ -83,7 +84,7 @@ export function EventParticipantsPage() {
             </td>
             <td className={cell}>
               {participant.documentId
-                ? <Button small variant="secondary" icon={Download} onClick={() => download(participant)}>{t('common.download')}</Button>
+                ? <ImagePreview mediaId={participant.documentId} />
                 : <span className="text-fg-subtle">—</span>}
             </td>
             <td className={`${cell} text-end`}>
@@ -98,7 +99,7 @@ export function EventParticipantsPage() {
       <Table headers={[t('participants.col.rank'), t('common.title'), t('common.author'), t('common.student'), t('participants.col.average')]} empty={results.length === 0}>
         {results.map((result, index) => (
           <tr key={`${result.title}-${index}`}>
-            <td className={`${cell} font-bold`}>{index + 1}</td>            
+            <td className={`${cell} font-bold`}>{index + 1}</td>
             <td className={cell}>{result.title}</td>
             <td className={cell}>{result.author}</td>
             <td className={cell}>{result.userName} {result.userLastName}</td>

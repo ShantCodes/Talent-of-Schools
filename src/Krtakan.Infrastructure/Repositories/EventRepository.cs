@@ -25,6 +25,7 @@ public class EventRepository(AppDbContext context) : EfRepository<Event>(context
 
         var totalCount = await query.CountAsync(cancellationToken);
         var items = await query
+        .OrderByDescending(e => e.Id)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);

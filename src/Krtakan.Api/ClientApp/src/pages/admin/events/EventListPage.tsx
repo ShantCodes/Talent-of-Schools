@@ -1,16 +1,30 @@
-import { Pencil, Plus, Trash2, UsersRound } from 'lucide-react';
+
+import { useState } from 'react';
+import { Pencil, Plus, Trash2, UsersRound, UserPlus } from 'lucide-react';
 import { eventsApi } from '../../../lib/endpoints';
 import type { EventItem } from '../../../lib/endpoints';
 import { useI18n } from '../../../i18n/I18nContext';
-import { Alert, Button, LinkButton, PageHeader, Pagination, Table, cell, errorText, formatDate, useConfirm, useFlashNotice, usePaged } from '../../../components/ui';
-import { useState } from 'react';
-import { UserPlus } from 'lucide-react';
+import {
+  Alert,
+  Button,
+  LinkButton,
+  PageHeader,
+  Pagination,
+  Table,
+  cell,
+  errorText,
+  formatDate,
+  useConfirm,
+  useFlashNotice,
+  usePaged,
+} from '../../../components/ui';
 import { AddEventParticipantModal } from '../../../components/EventParticipantModal';
-
 
 export function EventListPage() {
   const { t } = useI18n();
-  const { items, page, loading, error, setError, reload, setPageNumber } = usePaged(eventsApi.list);
+  const { items, page, loading, error, setError, reload, setPageNumber } =
+    usePaged(eventsApi.list);
+
   const [notice, setNotice] = useFlashNotice();
   const [confirmDialog, ask] = useConfirm();
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
@@ -23,7 +37,9 @@ export function EventListPage() {
       variant: 'danger',
       icon: Trash2,
     });
+
     if (!ok) return;
+
     try {
       await eventsApi.remove(event.id);
       setNotice(t('events.deleted'));
@@ -38,42 +54,98 @@ export function EventListPage() {
       <PageHeader
         title={t('events.title')}
         subtitle={t('events.subtitle')}
-        action={<LinkButton to="/admin/events/new" variant="primary" icon={Plus}>{t('events.add')}</LinkButton>}
+        action={
+          <LinkButton to="/admin/events/new" variant="primary" icon={Plus}>
+            {t('events.add')}
+          </LinkButton>
+        }
       />
+
       <Alert message={error} onClose={() => setError('')} />
       <Alert message={notice} kind="success" onClose={() => setNotice('')} />
+
       <div className="w-full overflow-x-auto rounded-lg">
-        <Table headers={[t('common.name'), t('events.col.starts'), t('events.col.ends'), t('events.col.birthRange'), '']} empty={!loading && items.length === 0}>
+        <Table
+          headers={[
+            t('common.name'),
+            t('events.col.starts'),
+            t('events.col.ends'),
+            t('events.col.birthRange'),
+            '',
+          ]}
+          empty={!loading && items.length === 0}
+        >
           {items.map(event => (
             <tr key={event.id}>
-              <td className={`${cell} whitespace-nowrap`}>
-                <div className="min-w-[140px] font-medium">{event.name}</div>
-                <div className="line-clamp-1 max-w-[220px] text-xs text-fg-subtle">
-                  {event.description}
+              <td className={cell}>
+                <div className="min-w-0">
+                  <div className="font-medium whitespace-normal min-w-[120px]">
+                    {event.name}
+                  </div>
+                  <div className="text-xs text-fg-subtle">
+                    {event.description}
+                  </div>
                 </div>
               </td>
-              <td className={`${cell} whitespace-nowrap`}>{formatDate(event.startDate)}</td>
-              <td className={`${cell} whitespace-nowrap`}>{formatDate(event.endDate)}</td>
-              <td className={`${cell} whitespace-nowrap`}>{event.minBirthDate || event.maxBirthDate ? `${event.minBirthDate ?? '…'} – ${event.maxBirthDate ?? '…'}` : t('common.any')}</td>
-              <td className={`${cell} whitespace-nowrap text-end`}>
-                <div className="flex min-w-[320px] flex-wrap justify-start gap-2 sm:min-w-0 sm:justify-end">
+
+              <td className={cell}>
+                {formatDate(event.startDate)}
+              </td>
+
+              <td className={cell}>
+                {formatDate(event.endDate)}
+              </td>
+
+              <td className={cell}>
+                {event.minBirthDate || event.maxBirthDate
+                  ? `${event.minBirthDate ?? '…'} – ${event.maxBirthDate ?? '…'}`
+                  : t('common.any')}
+              </td>
+
+              <td className={`${cell} text-end`}>
+                <div className="flex flex-wrap justify-start sm:justify-end gap-2 min-w-[280px]">
                   <Button
                     small
                     variant="secondary"
                     icon={UserPlus}
                     onClick={() => setSelectedEvent(event)}
+                  />
+
+                  <LinkButton
+                    small
+                    icon={UsersRound}
+                    to={`/admin/events/${event.id}`}
+                    state={{ event }}
                   >
+                    {t('events.participants')}
+                  </LinkButton>
+
+                  <LinkButton
+                    small
+                    icon={Pencil}
+                    to={`/admin/events/${event.id}/edit`}
+                    state={{ event }}
+                  >
+                    {t('common.edit')}
+                  </LinkButton>
+
+                  <Button
+                    small
+                    variant="danger"
+                    icon={Trash2}
+                    onClick={() => remove(event)}
+                  >
+                    {t('common.delete')}
                   </Button>
-                  <LinkButton small icon={UsersRound} to={`/admin/events/${event.id}`} state={{ event }}>{t('events.participants')}</LinkButton>
-                  <LinkButton small icon={Pencil} to={`/admin/events/${event.id}/edit`} state={{ event }}>{t('common.edit')}</LinkButton>
-                  <Button small variant="danger" icon={Trash2} onClick={() => remove(event)}>{t('common.delete')}</Button>
                 </div>
               </td>
             </tr>
           ))}
         </Table>
       </div>
+
       <Pagination page={page} onChange={setPageNumber} />
+
       {selectedEvent && (
         <AddEventParticipantModal
           eventId={selectedEvent.id}
@@ -84,6 +156,7 @@ export function EventListPage() {
           }}
         />
       )}
+
       {confirmDialog}
     </>
   );

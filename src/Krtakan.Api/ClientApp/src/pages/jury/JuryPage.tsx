@@ -385,6 +385,7 @@ function ParticipantScores({ eventId }: { eventId: number }) {
       <div className="w-full overflow-x-auto rounded-lg">
         <Table
           headers={[
+            t('common.profilePicture'),
             t('participants.col.rank'),
             t('common.title'),
             t('common.author'),
@@ -395,6 +396,11 @@ function ParticipantScores({ eventId }: { eventId: number }) {
         >
           {results.map((result, index) => (
             <tr key={`${result.title}-${index}`}>
+              <td className={cell}>
+                <div className="font-medium">
+                  {[result.userName, result.userLastName].filter(Boolean).join(' ')}
+                </div>                
+              </td>
               <td className={`${cell} font-bold`}>{index + 1}</td>
               <td className={cell}>{result.title}</td>
               <td className={cell}>{result.author}</td>

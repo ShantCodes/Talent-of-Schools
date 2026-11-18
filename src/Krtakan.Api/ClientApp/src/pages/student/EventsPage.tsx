@@ -170,7 +170,7 @@ function SignUpModal({ event, onClose, onDone }: { event: EventItem; onClose: ()
   const { t } = useI18n();
   const { user } = useAuth();
   const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState(user?.fullName ?? '');
+  const [author, setAuthor] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);

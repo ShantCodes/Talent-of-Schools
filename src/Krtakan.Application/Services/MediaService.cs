@@ -1,3 +1,4 @@
+
 using Krtakan.Application.Abstractions;
 using Krtakan.Application.Exceptions;
 using Krtakan.Application.Options;
@@ -6,19 +7,23 @@ using Krtakan.Domain.Entities;
 using Krtakan.Domain.Interfaces;
 using Microsoft.Extensions.Options;
 using System.IO;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Formats.Webp;
+using SkiaSharp;
 
 namespace Krtakan.Application.Services;
 
-public class MediaService(IMediaRepository mediaRepository, IFileStorage fileStorage, IUnitOfWork unitOfWork, IOptions<FileStorageOptions> storageOptions, IMediaFolderRepository folderRepository) : IMediaService
+public class MediaService(
+    IMediaRepository mediaRepository,
+    IFileStorage fileStorage,
+    IUnitOfWork unitOfWork,
+    IOptions<FileStorageOptions> storageOptions,
+    IMediaFolderRepository folderRepository) : IMediaService
 {
-    public async Task<Media?> GetMediaByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<Media?> GetMediaByIdAsync(
+        int id,
+        CancellationToken cancellationToken = default)
     {
         return await mediaRepository.GetByIdWithDetailsAsync(id, cancellationToken);
     }
-
 
     public async Task<Media> UploadMediaAsync(
         Stream content,
@@ -87,59 +92,77 @@ public class MediaService(IMediaRepository mediaRepository, IFileStorage fileSto
         }
     }
 
-
     public string GetDownloadUrl(Media media)
     {
         return $"{MediaUrlConstants.DownloadUrl}{media.Id}";
     }
 
-    public async Task<Stream> GetFileStreamAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<Stream> GetFileStreamAsync(
+        int id,
+        CancellationToken cancellationToken = default)
     {
         var media = await GetMediaByIdAsync(id, cancellationToken);
-        if (media == null) throw new AppException("Media not found.", 404);
+
+        if (media == null)
+            throw new AppException("Media not found.", 404);
 
         var relativePath = media.RelativePath.TrimStart('/');
         var physicalPath = fileStorage.GetPhysicalPath(relativePath);
 
         if (!File.Exists(physicalPath))
-        {
             throw new AppException($"File not found at {physicalPath}", 404);
-        }
 
         return File.OpenRead(physicalPath);
     }
 
-
-    private async Task<MemoryStream?> CompressImageAsync(
+    private async Task<MemoryStream> CompressImageAsync(
         Stream content,
         CancellationToken cancellationToken = default)
     {
-        var imageExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
-
         if (content.CanSeek)
             content.Position = 0;
 
-        using var image = await Image.LoadAsync(content, cancellationToken);
+        using var original = SKBitmap.Decode(content);
 
-        if (image.Width > 1920 || image.Height > 1920)
+        if (original == null)
+            throw new InvalidOperationException("Unable to decode image.");
+
+        SKBitmap image = original;
+
+        if (original.Width > 1920 || original.Height > 1920)
         {
-            image.Mutate(x => x.Resize(new ResizeOptions
-            {
-                Size = new Size(1920, 1920),
-                Mode = ResizeMode.Max
-            }));
+            var scale = Math.Min(
+                1920f / original.Width,
+                1920f / original.Height
+            );
+
+            var width = (int)(original.Width * scale);
+            var height = (int)(original.Height * scale);
+
+            image = original.Resize(
+    new SKImageInfo(width, height),
+    SKFilterQuality.Medium
+) ?? throw new InvalidOperationException("Unable to resize image.");
         }
 
-        var output = new MemoryStream();
-
-        await image.SaveAsWebpAsync(output, new WebpEncoder
+        try
         {
-            Quality = 80
-        }, cancellationToken);
+            using var skImage = SKImage.FromBitmap(image);
+            using var encoded = skImage.Encode(SKEncodedImageFormat.Webp, 80);
 
-        output.Position = 0;
+            if (encoded == null)
+                throw new InvalidOperationException("Unable to encode image as WebP.");
 
-        return output;
+            var output = new MemoryStream();
+            encoded.SaveTo(output);
+            output.Position = 0;
+
+            return output;
+        }
+        finally
+        {
+            if (image != original)
+                image.Dispose();
+        }
     }
-
 }
